@@ -2,6 +2,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Joi = require('joi');
+const Promise = require('bluebird');
+const uuid = require('uuid/v4');
 
 
 const AnnotatorSchema = new Schema({
@@ -40,8 +42,14 @@ const AnnotatorSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Item'
 	}],
-	alpha: Number,
-	beta: Number
+	alpha: {
+		type: Number,
+		default: 10.0
+	},
+	beta: {
+		type: Number,
+		default: 1.0
+	}
 });
 
 const Annotator = mongoose.model('Annotator', AnnotatorSchema);
@@ -71,7 +79,8 @@ const validateAnnotator = function (annotator) {
 /* Creates a new Annotator, returns promise */
 const createAnnotator = function (data) {
 	return validateAnnotator(data).then((validatedData) => {
-		const annotator = new Annotator(data).save();
+		const annotator = new Annotator(data);
+		annotator.secret = uuid();
 		return annotator.save();
 	});
 }

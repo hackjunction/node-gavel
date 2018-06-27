@@ -1,3 +1,7 @@
+**Prerequisites**
+
+* [Node.js LTS-version](https://nodejs.org/en/)
+
 **Install dependencies**
 Run `npm install`. Only needs to be run again whenever dependencies change.
 

@@ -17,6 +17,7 @@
     "express": "^4.16.3",
     "http-status": "^1.2.0",
     "joi": "^13.4.0",
-    "mongoose": "^5.1.7"
+    "mongoose": "^5.1.7",
+    "uuid": "^3.3.0"
   }
 }
