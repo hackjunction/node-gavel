@@ -1,6 +1,12 @@
 var express = require('express'),
 	app = express(),
+	mongoose = require('mongoose'),
+	bluebird = require('bluebird'),
 	port = process.env.PORT || 3000;
+
+/* Set mongoose to use Bluebird promises */
+global.Promise = bluebird;
+mongoose.Promise = bluebird;
 
 app.listen(port);
 
