@@ -34,7 +34,10 @@ var AnnotatorSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Item'
 	},
-	ignore_ids: [String],
+	ignore: [{
+		type: Schema.Types.ObjectId,
+		ref: 'Item'
+	}],
 	alpha: Number,
 	beta: Number
 });
