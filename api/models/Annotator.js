@@ -59,7 +59,7 @@ const Annotator = mongoose.model('Annotator', AnnotatorSchema);
  * Returns: Promise resolved with cleaned annotator data, 
  * or Promise rejected with error details
  */
-const validateAnnotator = function (annotator) {
+const validate = function (annotator) {
 	const schema = Joi.object().keys({
 		name: Joi.string().alpha().min(1).max(120).required(),
 		email: Joi.string().email().required()
@@ -77,16 +77,33 @@ const validateAnnotator = function (annotator) {
 }
 
 /* Creates a new Annotator, returns promise */
-const createAnnotator = function (data) {
-	return validateAnnotator(data).then((validatedData) => {
+const create = function (data) {
+	return validate(data).then((validatedData) => {
 		const annotator = new Annotator(data);
 		annotator.secret = uuid();
 		return annotator.save();
 	});
 }
+/* Get all annotators, returns promise */
+const getAll = function () {
+	return Annotator.find({});
+}
+
+/* Find an annotator by their id, returns promise */
+const findById = function (id) {
+	return Annotator.findById(id);
+}
+
+/* Delete an annotator by their id, returns promise */
+const deleteById = function (id) {
+	return Annotator.findById(id).remove().exec();
+}
 
 module.exports = {
 	Annotator,
-	validateAnnotator,
-	createAnnotator
+	validate,
+	create,
+	getAll,
+	findById,
+	deleteById
 };
