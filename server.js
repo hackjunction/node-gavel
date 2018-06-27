@@ -4,6 +4,10 @@ var express = require('express'),
 
 app.listen(port);
 
+/* Routes */
 require('./api/routes/EXAMPLE')(app);
 
-console.log('todo list RESTful API server started on: ' + port);
+/* Models */
+require('./api/models/EXAMPLE');
+
+console.log('Node gavel started at http://localhost:' + port);
