@@ -35,7 +35,7 @@ const ItemSchema = new Schema({
 })
 
 
-const Item = mongoose.model('Item',ItemSchema);
+const Item = mongoose.model('Item', ItemSchema);
 
 const validate = function (item) {
 	const schema = Joi.object().keys({
@@ -43,8 +43,8 @@ const validate = function (item) {
 	});
 
 	return new Promise(function (resolve, reject) {
-		Joi.validate(item, schema, function (err, value){
-			if (err !== null){
+		Joi.validate(item, schema, function (err, value) {
+			if (err !== null) {
 				return reject(err.details);
 			}
 

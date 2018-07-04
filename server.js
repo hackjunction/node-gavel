@@ -10,7 +10,7 @@ global.Promise = bluebird;
 mongoose.Promise = bluebird;
 mongoose.connect('mongodb://localhost/nodeGavel');
 
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
 app.listen(port);
 
 /* Routes */
