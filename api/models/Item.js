@@ -1,7 +1,7 @@
 'use strict';
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Joi = required('joi');
+const Joi = require('joi');
 const Promise = require('bluebird');
 const uuid = require('uuid/v4');
 
@@ -12,7 +12,7 @@ const ItemSchema = new Schema({
 	},
 	location: {
 		type: String,
-		require: true
+		required: true
 	},
 	active: {
 		type: Boolean,
@@ -24,11 +24,11 @@ const ItemSchema = new Schema({
 		required: true,
 		default: false,
 	},
-	viewed: {
+	viewed: [{
 		type: Schema.Types.ObjectId,
 		ref: 'Annotator',
-		required: true
-	},
+
+	}],
 	description: String,
 	mu: Number,
 	sigma: Number,
@@ -41,6 +41,7 @@ const validate = function (item) {
 	const schema = Joi.object().keys({
 		name: Joi.string().alphanum().min(1).max(120).required(),
 		description: Joi.string().max(1000),
+		location: Joi.string().alphanum().min(1).max(5).required(),
 	});
 
 	return new Promise(function (resolve, reject) {
@@ -63,7 +64,7 @@ const create = function (data) {
 }
 
 const getAll = function () {
-	return item.find({});
+	return Item.find({});
 }
 
 const findById = function (id) {
@@ -71,7 +72,7 @@ const findById = function (id) {
 }
 
 const deleteById = function (id) {
-	return Item.deleteById(id).remove().exec();
+	return Item.findById(id).remove().exec();
 }
 
 module.exports = {

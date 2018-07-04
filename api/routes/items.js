@@ -1,7 +1,7 @@
 'use strict'
 
 const status = require('http-status');
-const Annotator = require('../models/Items');
+const Item = require('../models/Item');
 
 module.exports = function (app) {
 
@@ -11,7 +11,7 @@ module.exports = function (app) {
 
   app.route('/items/:itemId')
     .get(getItemById)
-    .delete(deleteItemById);
+    .delete(deleteById);
 }
 
 function getAllItems(req,res) {
@@ -34,7 +34,7 @@ function createItem(req, res) {
 
 	const doc = {
 		name: req.body.name,
-		email: req.body.email
+		location: req.body.location
 	};
 
 	Item.create(doc).then((item) => {
@@ -68,7 +68,7 @@ function getItemById(req, res) {
 	});
 }
 
-function deleteItemById(req, res) {
+function deleteById(req, res) {
 	const id = req.params.itemId;
 
 	Item.deleteById(id).then(() => {
