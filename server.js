@@ -10,15 +10,16 @@ global.Promise = bluebird;
 mongoose.Promise = bluebird;
 mongoose.connect('mongodb://localhost/nodeGavel');
 
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
 app.listen(port);
 
 /* Routes */
-require('./api/routes/EXAMPLE')(app);
+//require('./api/routes/EXAMPLE')(app);
 require('./api/routes/annotators')(app);
 
 /* Models */
-require('./api/models/EXAMPLE');
+//require('./api/models/EXAMPLE');
 require('./api/models/Annotator');
+require('./api/models/Item');
 
 console.log('Node gavel started at http://localhost:' + port);

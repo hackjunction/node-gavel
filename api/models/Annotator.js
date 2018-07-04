@@ -92,7 +92,7 @@ const getAll = function () {
 
 /* Find an annotator by their id, returns promise */
 const findById = function (id) {
-	return Annotator.findById(new ObjectId(id));
+	return Annotator.findById(id);
 }
 
 /* Delete an annotator by their id, returns promise */
