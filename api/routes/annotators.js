@@ -31,6 +31,7 @@ function getAllAnnotators(req, res) {
 }
 
 function createAnnotator(req, res) {
+
 	const doc = {
 		name: req.body.name,
 		email: req.body.email
