@@ -1,7 +1,7 @@
 'use strict'
 
 const status = require('http-status');
-
+const Item = require('../models/Item');
 
 module.exports = function (app) {
 
