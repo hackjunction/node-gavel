@@ -55,8 +55,8 @@ const AnnotatorSchema = new Schema({
 const Annotator = mongoose.model('Annotator', AnnotatorSchema);
 
 /** Validates annotator data
- * 
- * Returns: Promise resolved with cleaned annotator data, 
+ *
+ * Returns: Promise resolved with cleaned annotator data,
  * or Promise rejected with error details
  */
 const validate = function (annotator) {

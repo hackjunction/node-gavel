@@ -39,7 +39,8 @@ const Item = mongoose.model('Item',ItemSchema);
 
 const validate = function (item) {
 	const schema = Joi.object().keys({
-		name: Joi.string().alpha().min(1).max(120).required(),
+		name: Joi.string().alphanum().min(1).max(120).required(),
+		description: Joi.string().max(1000),
 	});
 
 	return new Promise(function (resolve, reject) {
