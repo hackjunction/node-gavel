@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const Joi = require('joi');
 const Promise = require('bluebird');
 const uuid = require('uuid/v4');
+const ObjectId = require('mongodb').ObjectId;
 
 
 const AnnotatorSchema = new Schema({
@@ -61,7 +62,7 @@ const Annotator = mongoose.model('Annotator', AnnotatorSchema);
  */
 const validate = function (annotator) {
 	const schema = Joi.object().keys({
-		name: Joi.string().alpha().min(1).max(120).required(),
+		name: Joi.string().alphanum().min(1).max(120).required(),
 		email: Joi.string().email().required()
 	});
 
@@ -86,12 +87,12 @@ const create = function (data) {
 }
 /* Get all annotators, returns promise */
 const getAll = function () {
-	return Annotator.find({});
+	return Annotator.find({}).exec();
 }
 
 /* Find an annotator by their id, returns promise */
 const findById = function (id) {
-	return Annotator.findById(id);
+	return Annotator.findById(new ObjectId(id));
 }
 
 /* Delete an annotator by their id, returns promise */

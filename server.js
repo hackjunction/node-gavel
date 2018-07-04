@@ -5,9 +5,10 @@ var express = require('express'),
 	bluebird = require('bluebird'),
 	port = process.env.PORT || 3000;
 
-/* Set mongoose to use Bluebird promises */
+/* Set mongoose  & global to use Bluebird promises */
 global.Promise = bluebird;
 mongoose.Promise = bluebird;
+mongoose.connect('mongodb://localhost/nodeGavel');
 
 app.use(bodyParser.json());
 app.listen(port);
