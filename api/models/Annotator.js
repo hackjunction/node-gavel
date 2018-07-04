@@ -5,6 +5,7 @@ const Joi = require('joi');
 const Promise = require('bluebird');
 const uuid = require('uuid/v4');
 const ObjectId = require('mongodb').ObjectId;
+const SETTINGS = require('../../settings.json');
 
 
 const AnnotatorSchema = new Schema({
@@ -101,7 +102,7 @@ const deleteById = function (id) {
 }
 
 const getPreferredItems = function (id) {
-
+	//TODO: Patrik
 }
 
 module.exports = {
