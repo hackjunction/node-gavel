@@ -17,6 +17,7 @@ app.listen(port);
 //require('./api/routes/EXAMPLE')(app);
 require('./api/routes/annotators')(app);
 require('./api/routes/items')(app);
+require('./api/routes/reviewing')(app);
 
 /* Models */
 //require('./api/models/EXAMPLE');

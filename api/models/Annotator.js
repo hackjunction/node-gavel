@@ -100,6 +100,10 @@ const deleteById = function (id) {
 	return Annotator.findById(id).remove().exec();
 }
 
+const getPreferredItems = function (id) {
+
+}
+
 module.exports = {
 	Annotator,
 	validate,
