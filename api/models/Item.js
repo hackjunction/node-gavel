@@ -34,6 +34,7 @@ const ItemSchema = new Schema({
 	sigma: Number,
 })
 
+ItemSchema.index({ active: 1, viewed: 1, prioritized: 1 });
 
 const Item = mongoose.model('Item', ItemSchema);
 
@@ -67,12 +68,22 @@ const getAll = function () {
 	return Item.find({});
 }
 
-const findById = function (id) {
-	return Item.findById(id);
+const findById = function (id, throwsError = true) {
+	return Item.findById(id).then((item) => {
+		if (throwsError && !item) {
+			return Promise.reject('No item found with id: ' + id);
+		}
+		return Promise.resolve(item);
+	});
 }
 
-const deleteById = function (id) {
-	return Item.findById(id).remove().exec();
+const deleteById = function (id, throwsError = true) {
+	return Item.findByIdAndRemove(id).exec().then((item) => {
+		if (throwsError && !item) {
+			return Promise.reject('No item found with id: ' + id);
+		}
+		return Promise.resolve(item);
+	});
 }
 
 module.exports = {

@@ -2,6 +2,7 @@
 
 const status = require('http-status');
 const Item = require('../models/Item');
+const Annotator = require('../models/Annotator');
 
 module.exports = function (app) {
 
@@ -15,11 +16,20 @@ module.exports = function (app) {
 		.post(submitVote)
 }
 
-function getNextDecision() {
-	//TODO: Implement
-	return res.status(status.OK).send({
-		status: 'success',
-		message: 'ROUTE NOT IMPLEMENTED'
+function getNextDecision(req, res) {
+
+	const secret = req.params.annotatorSecret;
+
+	Annotator.findBySecret(secret).then((annotator) => {
+		return res.status(status.INTERNAL_SERVER_ERROR).send({
+			status: 'success',
+			data: annotator
+		});
+	}).catch((error) => {
+		return res.status(status.INTERNAL_SERVER_ERROR).send({
+			status: 'error',
+			message: 'No such annotator'
+		});
 	});
 }
 

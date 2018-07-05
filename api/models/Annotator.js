@@ -54,6 +54,9 @@ const AnnotatorSchema = new Schema({
 	}
 });
 
+AnnotatorSchema.index({ secret: 1 });
+AnnotatorSchema.index({ active: 1, updated: 1 });
+
 const Annotator = mongoose.model('Annotator', AnnotatorSchema);
 
 /** Validates annotator data
@@ -88,17 +91,47 @@ const create = function (data) {
 }
 /* Get all annotators, returns promise */
 const getAll = function () {
-	return Annotator.find({}).exec();
+	return Annotator.find({});
 }
 
-/* Find an annotator by their id, returns promise */
-const findById = function (id) {
-	return Annotator.findById(id);
+/* Find an annotator by theirs id, returns promise */
+const findById = function (id, throwsError = true) {
+	return Annotator.findById(id).then((annotator) => {
+		if (throwsError && !annotator) {
+			return Promise.reject('No annotator found with id: ' + id);
+		}
+		return Promise.resolve(annotator);
+	});
+}
+
+/* Find an annotator by their secret, return promise */
+const findBySecret = function (secret, throwsError = true) {
+	return Annotator.findOne({ secret }).then((annotator) => {
+		if (throwsError && !annotator) {
+			return Promise.reject('No annotator found with secret: ' + secret);
+		}
+		return Promise.resolve(annotator);
+	});
 }
 
 /* Delete an annotator by their id, returns promise */
-const deleteById = function (id) {
-	return Annotator.findById(id).remove().exec();
+const deleteById = function (id, throwsError = true) {
+	return Annotator.findByIdAndRemove(id).exec().then((annotator) => {
+		if (throwsError && !annotator) {
+			return Promise.reject('No annotator found with id: ' + id);
+		}
+		return Promise.resolve(annotator);
+	});
+}
+
+/* Delete an annotator by their secret, returns promise */
+const deleteBySecret = function (secret, throwsError = true) {
+	return Annotator.findOneAndDelete({ secret }).exec().then((annotator) => {
+		if (throwsError && !annotator) {
+			return Promise.reject('No annotator found with secret: ' + secret);
+		}
+		return Promise.resolve(annotator);
+	});
 }
 
 module.exports = {
@@ -107,5 +140,7 @@ module.exports = {
 	create,
 	getAll,
 	findById,
-	deleteById
+	findBySecret,
+	deleteById,
+	deleteBySecret
 };
