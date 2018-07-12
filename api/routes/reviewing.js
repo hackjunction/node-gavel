@@ -111,6 +111,7 @@ function skipDecision(req, res) {
 function submitVote(req, res) {
 
 	const secret = req.params.annotatorSecret;
+	const decision = req.body.decision;
 
 	Annotator.findBySecret(secret).then((annotator) => {
 

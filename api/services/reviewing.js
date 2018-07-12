@@ -27,7 +27,7 @@ const ReviewingService = {
 	},
 
 	updateNext: (annotator) => {
-
+		//TODO: define this
 	},
 
 	anotherFunction: function () {
