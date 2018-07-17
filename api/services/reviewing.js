@@ -2,6 +2,42 @@ const Promise = require('bluebird');
 
 const ReviewingService = {
 	getPreferredItems: (annotator) => {
+
+		items = [];
+		ignored_ids = annotator.ignore;
+
+
+		available_items = [];
+		// TODO judge.py rivi 162-167
+		// if (ignored_ids.length > 0) {
+		// 	Item.query.filter???
+		// }
+
+		prioritized_items = []
+		for (i = 0; i < available_items.length; i++) {
+			if (available_items[i].prioritized) {
+				prioritized_items.push(available_items[i])
+			}
+		}
+
+
+		if (prioritized.length > 0) {
+			items = prioritized_items
+		} else {
+			items = available_items
+		}
+
+
+		// TODO judge.py rivi 173-175
+
+		busy = []
+		
+
+
+
+
+
+
 		return new Promise(function (resolve, reject) {
 
 		});
