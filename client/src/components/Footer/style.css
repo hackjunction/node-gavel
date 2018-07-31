@@ -1,0 +1,12 @@
+.page-footer {
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background: black;
+}
+
+.page-footer__copyright {
+	color: white;
+}

@@ -8,13 +8,13 @@ const ReviewingService = require('../services/reviewing');
 
 module.exports = function (app) {
 
-	app.route('/reviewing/next/:annotatorSecret')
+	app.route('/api/reviewing/next/:annotatorSecret')
 		.get(getNextDecision)
 
-	app.route('/reviewing/skip/:annotatorSecret')
+	app.route('/api/reviewing/skip/:annotatorSecret')
 		.get(skipDecision)
 
-	app.route('/reviewing/vote/:annotatorSecret')
+	app.route('/api/reviewing/vote/:annotatorSecret')
 		.post(submitVote)
 }
 

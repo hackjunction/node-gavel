@@ -66,7 +66,7 @@ const Annotator = mongoose.model('Annotator', AnnotatorSchema);
  */
 const validate = function (annotator) {
 	const schema = Joi.object().keys({
-		name: Joi.string().alphanum().min(1).max(120).required(),
+		name: Joi.string().min(1).max(120).required(),
 		email: Joi.string().email().required()
 	});
 

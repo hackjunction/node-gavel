@@ -5,11 +5,11 @@ const Annotator = require('../models/Annotator');
 
 module.exports = function (app) {
 
-	app.route('/annotators')
+	app.route('/api/annotators')
 		.get(getAllAnnotators)
 		.post(createAnnotator);
 
-	app.route('/annotators/:annotatorId')
+	app.route('/api/annotators/:annotatorId')
 		.get(getAnnotatorById)
 		.delete(deleteAnnotatorById);
 }
