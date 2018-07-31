@@ -15,8 +15,8 @@ git clone git@github.com:hackjunction/node-gavel.git
 
 **Install dependencies**
 
-Run `npm install`. Only needs to be run again whenever dependencies change.
+Run `npm run setup`. Only needs to be run again whenever dependencies change.
 
 **Starting the development server**
 
-Run `npm start`, this will start the development server at `localhost:3000`. The development server will automatically reload when any code changes occur.
+Run `yarn dev`, this will start the development server at `localhost:3000`, and the admin panel frontend at `localhost:5000`. Both the API and the frontend will automatically reload whenever code changes are saved.
