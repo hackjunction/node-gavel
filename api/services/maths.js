@@ -1,6 +1,3 @@
-const { exp, log } = require('numjs');
-const { betaln, psi } = require('scipy');
-
 //Should be equivalent to scipy.special.psi
 const digamma = require('@stdlib/math/base/special/digamma');
 
