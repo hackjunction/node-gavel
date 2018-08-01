@@ -27,14 +27,22 @@ const ReviewingService = {
 							next: {$exists: false},
 							updated: {$exists: false},
 						}).then((annotators) => {
-							// TODO set timeout as constant
 							const nonbusy = _.filter(annotators,(annotator) => {
-								return (Date.now()-annotator.updated) > (5 * 60 * 1000)
+
+								if (Date.now()-annotator.updated) > (settings.ANNOTATOR_TIMEOUT_MINUTES * 60 * 1000) {
+									return annotator.next
+								}
 							})
+
 							const preferred = nonbusy.length > 0 ? nonbusy : items;
 
-							//TODO 178, 181
-							resolve(preferred)
+							const less_seen = _.filter(preferred, (item) => {
+								item.viewed.length < settings.ITEM_MIN_VIEWS
+							})
+
+							const result = less_seen.length > 0 ? less_seen : preferred;
+
+							resolve(result)
 						}).catch((error) => {
 							reject(error)
 						})
