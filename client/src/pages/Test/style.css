@@ -1,0 +1,34 @@
+.Test--wrapper {
+	padding: 20px;
+}
+
+.Test--section-wrapper {
+	background: lightgray;
+}
+
+.Test--section-title {
+	background: black;
+	color: white;
+	padding: 10px;
+	font-size: 18px;
+	margin: 0;
+}
+
+.Test--section-description {
+	margin: 0;
+	padding: 10px;
+}
+
+.Test--container {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	padding: 20px;
+}
+
+.Test--input {
+	height: 30px;
+	padding: 20px;
+	font-size: 14px;
+
+}

@@ -37,6 +37,8 @@ function createItem(req, res) {
 		location: req.body.location
 	};
 
+	console.log(doc);
+
 	Item.create(doc).then((item) => {
 		return res.status(status.OK).send({
 			status: 'success',

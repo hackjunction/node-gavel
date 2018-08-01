@@ -1,14 +1,14 @@
 //Should be equivalent to scipy.special.psi
-const digamma = require('@stdlib/math/base/special/digamma');
+const digamma = require('../../node_modules/@stdlib/stdlib/lib/node_modules/@stdlib/math/base/special/digamma');
 
 //Should be equivalent to scipy.special.betaln
-const betaln = require('@stdlib/math/base/special/betaln');
+const betaln = require('../../node_modules/@stdlib/stdlib/lib/node_modules/@stdlib/math/base/special/betaln');
 
 //Should be equivalent to numpy.exp
-const exp = require('@stdlib/math/base/special/exp');
+const exp = require('../../node_modules/@stdlib/stdlib/lib/node_modules/@stdlib/math/base/special/exp');
 
 //Should be equivalent to numpy.log
-const log = require('@stdlib/math/base/special/ln');
+const log = require('../../node_modules/@stdlib/stdlib/lib/node_modules/@stdlib/math/base/special/ln');
 
 const GAMMA = 0.1;
 const LAMBDA = 1.0;

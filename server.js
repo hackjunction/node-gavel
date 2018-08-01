@@ -11,6 +11,7 @@ mongoose.Promise = bluebird;
 mongoose.connect('mongodb://localhost/nodeGavel');
 
 app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
 
 /* Routes */
 //require('./api/routes/EXAMPLE')(app);
