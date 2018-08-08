@@ -59,7 +59,7 @@ class SubmitProjectTest extends Component {
     render() {
         return (
             <div className="Test--section-wrapper">
-                <h1 className="Test--section-title">Submit Project Test</h1>
+                <h1 className="Test--section-title highlight">Submit Project (POST /api/teams/)</h1>
                 <p className="Test--section-description">Test submitting a project and team members</p>
                 <div className="Test--container">
                     <p className="Test--section-description">Team details</p>
@@ -82,17 +82,15 @@ class SubmitProjectTest extends Component {
                     <p className="Test--section-description">Add team members</p>
                     <input ref="annotatorName" className="Test--input" placeholder="Annotator name" />
                     <input ref="annotatorEmail" className="Test--input" placeholder="Annotator email" />
-                    <button onClick={() => this.addAnnotator()}>Add team member</button>
-                </div>
-                <div className="Test--section-wrapper">
-                    <h1 className="Test--section-title">Request body:</h1>
+                    <button className="Test--submit-button" onClick={() => this.addAnnotator()}>
+                        Add team member
+                    </button>
+                    <p className="Test--section-description">Request body</p>
                     <ReactJson src={this.state.requestBody} />
-                    <button className="Test--submitButton" onClick={() => this.testRequest()}>
+                    <button className="Test--submit-button" onClick={() => this.testRequest()}>
                         Test
                     </button>
-                </div>
-                <div className="Test--section-wrapper">
-                    <h1 className="Test--section-title">Response:</h1>
+                    <p className="Test--section-description">Response</p>
                     <ReactJson src={this.state.response} />
                 </div>
             </div>

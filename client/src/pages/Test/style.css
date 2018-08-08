@@ -15,6 +15,10 @@
     margin: 0;
 }
 
+.Test--section-title.highlight {
+    background: darkblue;
+}
+
 .Test--section-description {
     margin: 0;
     padding: 10px;
@@ -31,4 +35,18 @@
     height: 30px;
     padding: 20px;
     font-size: 14px;
+}
+
+.input--inline {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+}
+
+.Test--submit-button {
+    background-color: darkblue;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
 }
