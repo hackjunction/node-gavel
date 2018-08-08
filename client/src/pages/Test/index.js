@@ -1,16 +1,42 @@
 import React, { Component } from 'react';
-import SubmitProjectTest from './SubmitProjectTest';
 import GetRequestTest from './GetRequestTest';
+import PostRequestTest from './PostRequestTest';
 import './style.css';
 
 class Test extends Component {
     render() {
         return (
             <div className="Test--wrapper">
-                <SubmitProjectTest />
+                <PostRequestTest
+                    route="/api/teams"
+                    routeDescription="Submit a project & associated team members"
+                    params={[
+                        {
+                            jsonName: 'teamName',
+                            fieldName: 'Team Name'
+                        },
+                        {
+                            jsonName: 'teamLocation',
+                            fieldName: 'Team Location'
+                        },
+                        {
+                            jsonName: 'annotators',
+                            fieldName: 'Annotators',
+                            arrayFields: [
+                                {
+                                    jsonName: 'name',
+                                    fieldName: 'Annotator name'
+                                },
+                                {
+                                    jsonName: 'email',
+                                    fieldName: 'Annotator email'
+                                }
+                            ]
+                        }
+                    ]}
+                />
                 <GetRequestTest
                     route="/api/reviewing/welcome"
-                    routeName="Read annotator welcome"
                     routeDescription="Sets the annotator welcome message as read"
                     urlParams={[
                         {
@@ -21,7 +47,6 @@ class Test extends Component {
                 />
                 <GetRequestTest
                     route="/api/reviewing/next"
-                    routeName="Get next decision"
                     routeDescription="Gets the next decision for an annotator"
                     urlParams={[
                         {
@@ -32,7 +57,6 @@ class Test extends Component {
                 />
                 <GetRequestTest
                     route="/api/reviewing/skip"
-                    routeName="Skip next decision"
                     routeDescription="Skips the next decision of an annotator"
                     urlParams={[
                         {

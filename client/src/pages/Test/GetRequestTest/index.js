@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import '../style.css';
-import ReactJson from 'react-json-view';
+import RequestPreview from '../RequestPreview/';
+import ResponsePreview from '../ResponsePreview/';
 
 class GetRequestTest extends Component {
     static propTypes = {
@@ -13,7 +14,6 @@ class GetRequestTest extends Component {
             })
         ),
         route: PropTypes.string,
-        routeName: PropTypes.string,
         routeDescription: PropTypes.string
     };
 
@@ -22,7 +22,8 @@ class GetRequestTest extends Component {
 
         this.state = {
             response: {},
-            urlParams: {}
+            urlParams: {},
+            collapsed: true
         };
 
         this.testRequest = this.testRequest.bind(this);
@@ -65,50 +66,52 @@ class GetRequestTest extends Component {
     renderInputs() {
         return _.map(this.props.urlParams, param => {
             return (
-                <input
-                    className="Test--input"
-                    placeholder={param.fieldName}
-                    onChange={event =>
-                        this.setState({
-                            urlParams: {
-                                ...this.state.urlParams,
-                                [param.jsonName]: event.target.value
-                            }
-                        })
-                    }
-                />
+                <div className="Test--input-wrapper">
+                    <label className="Test--input-label">{param.fieldName}</label>
+                    <input
+                        className="Test--input"
+                        placeholder={param.fieldName}
+                        onChange={event =>
+                            this.setState({
+                                urlParams: {
+                                    ...this.state.urlParams,
+                                    [param.jsonName]: event.target.value
+                                }
+                            })
+                        }
+                    />
+                </div>
             );
         });
     }
 
-    renderRequestPreview() {
-        let urlParams = this.getUrlParams();
-
-        return (
-            <div className="Test--request-preview">
-                <div>
-                    <p className="Test--request-preview-title">Request preview</p>
-                    <code className="Test--request-preview-content">
-                        {'GET: ' + this.props.route + '/' + urlParams}
-                    </code>
-                </div>
-                <button className="Test--submit-button" onClick={this.testRequest}>
-                    Send Request
-                </button>
-            </div>
-        );
-    }
-
     render() {
+        const url = this.props.route + '/' + this.getUrlParams();
+
         return (
             <div className="Test--section-wrapper">
-                <h1 className="Test--section-title highlight">{this.props.routeName + ' (GET ' + this.props.route}</h1>
+                <p
+                    className="Test--collapse-button"
+                    onClick={() => this.setState({ collapsed: !this.state.collapsed })}
+                >
+                    {this.state.collapsed ? 'Expand' : 'Collapse'}
+                </p>
+                <h1 className="Test--section-title highlight">
+                    <span className="Test--method-get">GET</span>
+                    {this.props.route}
+                </h1>
                 <p className="Test--section-description">{this.props.routeDescription}</p>
-                <div className="Test--container">{this.renderInputs()}</div>
-                <div className="Test--container">{this.renderRequestPreview()}</div>
-                <div className="Test--container">
-                    <p className="Test--response-preview-title">Response</p>
-                    <ReactJson src={this.state.response} />
+                <div className={this.state.collapsed ? 'Test--hidden' : ''}>
+                    <div className="Test--container">{this.renderInputs()}</div>
+                    <div className="Test--container">
+                        <RequestPreview method="GET" url={url} />
+                    </div>
+                    <div className="Test--container">
+                        <ResponsePreview response={this.state.response} />
+                    </div>
+                    <button className="Test--submit-button" onClick={this.testRequest}>
+                        Send request
+                    </button>
                 </div>
             </div>
         );

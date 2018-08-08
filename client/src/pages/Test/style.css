@@ -1,10 +1,17 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+* {
+    font-family: 'Montserrat';
+}
+
 .Test--wrapper {
     padding: 20px;
 }
 
 .Test--section-wrapper {
     background: lightgray;
-    margin-top: 50px;
+    margin-top: 20px;
+    position: relative;
 }
 
 .Test--section-title {
@@ -16,7 +23,7 @@
 }
 
 .Test--section-title.highlight {
-    background: darkblue;
+    background: gray;
 }
 
 .Test--section-description {
@@ -31,12 +38,6 @@
     padding: 20px;
 }
 
-.Test--input {
-    height: 30px;
-    padding: 20px;
-    font-size: 14px;
-}
-
 .input--inline {
     background-color: transparent;
     border: none;
@@ -44,9 +45,107 @@
     padding: 0;
 }
 
-.Test--submit-button {
-    background-color: darkblue;
+.Test--button {
+    background-color: black;
     color: white;
     padding: 10px 20px;
     cursor: pointer;
+    font-size: 16px;
+    outline: none;
+}
+
+.Test--submit-button {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    outline: none;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.Test--submit-button:focus,
+.Test--submit-button:hover {
+    background: green;
+    color: white;
+}
+
+.Test--input-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 0px;
+    height: 50px;
+}
+
+.Test--input-label {
+    color: white;
+    color: black;
+    margin-right: 20px;
+    font-weight: bold;
+    width: 130px;
+}
+
+.Test--input {
+    padding: 10px;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.Test--request-preview-title {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.Test--request-preview-section {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+
+.Test--request-preview-section .name {
+    font-weight: bold;
+    width: 130px;
+    margin-right: 20px;
+}
+
+.Test--request-preview-url p {
+    margin-right: 20px;
+}
+
+.Test--collapse-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 5px 10px;
+    margin: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.Test--hidden {
+    display: none;
+}
+
+.Test--method-post {
+    font-weight: bold;
+    background: blue;
+    color: white;
+    margin-right: 20px;
+    padding: 3px;
+}
+
+.Test--method-get {
+    font-weight: bold;
+    margin-right: 20px;
+    background: red;
+    color: white;
+    padding: 3px;
 }
