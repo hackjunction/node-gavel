@@ -18,6 +18,7 @@ app.use(bodyParser.json());
 require('./api/routes/annotators')(app);
 require('./api/routes/items')(app);
 require('./api/routes/reviewing')(app);
+require('./api/routes/teams')(app);
 
 app.get('/api/hello', function (req, res) {
 	res.send({
@@ -29,7 +30,6 @@ app.get('/api/hello', function (req, res) {
 //require('./api/models/EXAMPLE');
 require('./api/models/Annotator');
 require('./api/models/Item');
-
 
 // React config for production
 if (process.env.NODE_ENV === 'production') {
