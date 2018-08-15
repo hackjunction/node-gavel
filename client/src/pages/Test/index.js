@@ -65,6 +65,20 @@ class Test extends Component {
                         }
                     ]}
                 />
+                <PostRequestTest
+                    route="/api/reviewing/vote"
+                    routeDescription="Submits a vote, and returns the updated annotator"
+                    params={[
+                        {
+                            jsonName: 'annotatorSecret',
+                            fieldName: 'Annotator Secret'
+                        },
+                        {
+                            jsonName: 'decision',
+                            fieldName: "Decision ('current' or 'previous')"
+                        }
+                    ]}
+                />
             </div>
         );
     }

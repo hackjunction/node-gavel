@@ -14,7 +14,7 @@ module.exports = function(app) {
 
     app.route('/api/reviewing/skip/:annotatorSecret').get(skipDecision);
 
-    app.route('/api/reviewing/vote/:annotatorSecret').post(submitVote);
+    app.route('/api/reviewing/vote/').post(submitVote);
 };
 
 function setHasReadWelcome(req, res) {
@@ -148,7 +148,7 @@ function skipDecision(req, res) {
 //     return redirect(url_for('index'))
 
 function submitVote(req, res) {
-    const secret = req.params.annotatorSecret;
+    const secret = req.body.annotatorSecret;
     const decision = req.body.decision;
 
     return Annotator.findBySecret(secret)
