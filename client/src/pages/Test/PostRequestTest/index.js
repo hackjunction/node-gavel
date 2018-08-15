@@ -41,7 +41,8 @@ class PostRequestTest extends Component {
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify(this.state.params)
         });
         const body = await response.json();
 
