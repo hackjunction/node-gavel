@@ -77,6 +77,10 @@ const getAll = function() {
 };
 
 const findById = function(id, throwsError = true) {
+    if (!id) {
+        return Promise.resolve(null);
+    }
+
     return Item.findById(id).then(item => {
         if (throwsError && !item) {
             return Promise.reject('No item found with id: ' + id);

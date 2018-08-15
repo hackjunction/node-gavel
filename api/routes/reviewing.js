@@ -49,7 +49,7 @@ function getNextDecision(req, res) {
             }
 
             // If no previous item, this is the first vote of the annotator
-            if (!annotator.prev) {
+            if (!annotator.prev && !annotator.next) {
                 return ReviewingService.initAnnotator(annotator).then(newAnnotator => {
                     if (!annotator.next) {
                         return Errors.annotatorWaitError(res);
@@ -70,14 +70,17 @@ function getNextDecision(req, res) {
                 return Errors.annotatorWaitError(res);
             }
 
-            // Otherwise, return previous and current items
-            return res.status(status.OK).send({
-                status: 'success',
-                data: {
-                    prev: annotator.prev,
-                    current: annotator.next
+            return Promise.all([Item.findById(annotator.prev, false), Item.findById(annotator.next, false)]).then(
+                items => {
+                    return res.status(status.OK).send({
+                        status: 'success',
+                        data: {
+                            prev: items[0],
+                            current: items[1]
+                        }
+                    });
                 }
-            });
+            );
         })
         .catch(error => {
             console.log('ERROR', error);
