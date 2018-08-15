@@ -36,6 +36,17 @@ class Test extends Component {
                     ]}
                 />
                 <GetRequestTest
+                    route="/api/teams"
+                    routeDescription="Gets a team by id"
+                    urlParams={[
+                        {
+                            jsonName: 'teamId',
+                            fieldName: 'A teams Id'
+                        }
+                    ]}
+                />
+
+                <GetRequestTest
                     route="/api/reviewing/welcome"
                     routeDescription="Sets the annotator welcome message as read"
                     urlParams={[

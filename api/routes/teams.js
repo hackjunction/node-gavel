@@ -4,6 +4,7 @@ const status = require('http-status');
 const Item = require('../models/Item');
 const Annotator = require('../models/Annotator');
 const Promise = require('bluebird');
+const _ = require('lodash')
 
 module.exports = function (app) {
 
@@ -13,35 +14,70 @@ module.exports = function (app) {
 
     app.route('/api/teams/:teamId')
         .get(getTeamById)
-        .delete(deleteTeamById);
+        .delete(deleteTeamById);	// Item.deleteById(req.id).then((item) => {
+
+
 }
 
 function getAllTeams(req, res) {
-    // TODO
+
     throw new Error('function getAllTeams not implemented yet')
+
 }
 
 function getTeamById(req, res) {
-    // TODO
-    throw new Error('function getTeamById not implemented yet')
+	Item.findById(req.params.teamId).then(item => {
+		Annotator.getByTeamId(req.params.teamId).then(annotators => {
+			return res.status(status.OK).send({
+				status: 'success',
+				data: {
+					item,
+					annotators
+				}
+			});
+		}).catch((error) => {
+			console.log('Error', error);
+			return res.status(status.INTERNAL_SERVER_ERROR).send({
+				status: 'error',
+				message: 'See console for details'
+			});
+		})
+	}).catch((error) => {
+		console.log('Error', error);
+		return res.status(status.INTERNAL_SERVER_ERROR).send({
+			status: 'error',
+			message: 'See console for details'
+		});
+	})
+
+    //
+    // throw new Error('function getTeamById not implemented yet')
 }
 
 function deleteTeamById(req, res) {
-    // TODO
-    throw new Error('function deleteTeamById not implemented yet')
+	throw new Error('function deleteTeamById not implemented yet')
+
+	// Item.deleteById(req.id).then((item) => {
+	// })
+
+
 }
 
 function createTeam(req, res) {
 
     const doc = {
-        name: req.body.itemName,
-        location: req.body.itemLocation,
+        name: req.body.teamName,
+        location: req.body.teamLocation,
     };
 
-    const annotators = req.body.annotators
 	console.log(req.body)
 
     Item.create(doc).then((item) => {
+		const annotators = _.map(req.body.annotators, (annotator) => {
+			annotator.teamId = item._id
+			return annotator
+		});
+
         Promise.map(annotators, (annotator) => {
             return Annotator.create(annotator)
         }).then((annotators) => {
