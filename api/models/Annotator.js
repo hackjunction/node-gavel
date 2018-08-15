@@ -45,6 +45,10 @@ const AnnotatorSchema = new Schema({
             ref: 'Item'
         }
     ],
+    teamId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Item'
+    },
     alpha: {
         type: Number,
         default: 10.0
@@ -73,7 +77,8 @@ const validate = function(annotator) {
             .required(),
         email: Joi.string()
             .email()
-            .required()
+            .required(),
+        teamId: Joi.any()
     });
 
     return new Promise(function(resolve, reject) {
@@ -90,7 +95,7 @@ const validate = function(annotator) {
 /* Creates a new Annotator, returns promise */
 const create = function(data) {
     return validate(data).then(validatedData => {
-        const annotator = new Annotator(data);
+        const annotator = new Annotator(validatedData);
         annotator.secret = uuid();
         return annotator.save();
     });
@@ -98,6 +103,15 @@ const create = function(data) {
 /* Get all annotators, returns promise */
 const getAll = function() {
     return Annotator.find({});
+};
+
+const getByTeamId = function(teamId, throwsError = true) {
+    return Annotator.find({ teamId }).then(annotators => {
+        if (throwsError && !annotators) {
+            return Promise.reject('No annotator found with teamId: ' + teamId);
+        }
+        return Promise.resolve(annotators);
+    });
 };
 
 /* Find an annotator by theirs id, returns promise */
@@ -164,5 +178,6 @@ module.exports = {
     findBySecret,
     deleteById,
     deleteBySecret,
-    setHasReadWelcome
+    setHasReadWelcome,
+    getByTeamId
 };
