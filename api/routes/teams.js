@@ -20,6 +20,9 @@ module.exports = function (app) {
 }
 
 function getAllTeams(req, res) {
+	// Item.getAll().then((items) => {
+	//
+	// })
 
     throw new Error('function getAllTeams not implemented yet')
 
@@ -55,12 +58,45 @@ function getTeamById(req, res) {
 }
 
 function deleteTeamById(req, res) {
-	throw new Error('function deleteTeamById not implemented yet')
+	const teamId = req.params.teamId
 
-	// Item.deleteById(req.id).then((item) => {
-	// })
+	Item.deleteById(teamId).then(() => {
+		Annotator.getByTeamId(teamId).then((annotators) => {
 
+			const annotatorIds = _.map(annotators, (annotator) => {
+				return annotator._id
+			})
+			Promise.map(annotatorIds, (id) => {
+	            return Annotator.deleteById(id)
+			}).then((deletedAnnotators) => {
+				return res.status(status.OK).send({
+					status: 'success'
+				});
+			}).catch((error) => {
+				console.log('Error', error);
+				return res.status(status.INTERNAL_SERVER_ERROR).send({
+					status: 'error',
+					message: 'See console for details'
+				});
+			});
 
+		}).catch((error) => {
+			console.log('Error', error);
+			return res.status(status.INTERNAL_SERVER_ERROR).send({
+				status: 'error',
+				message: 'See console for details'
+			});
+		});
+
+	}).catch((error) => {
+		console.log('Error', error);
+		return res.status(status.INTERNAL_SERVER_ERROR).send({
+			status: 'error',
+			message: 'See console for details'
+		});
+	});
+
+	// throw new Error('function deleteTeamById not implemented yet')
 }
 
 function createTeam(req, res) {
@@ -69,8 +105,6 @@ function createTeam(req, res) {
         name: req.body.teamName,
         location: req.body.teamLocation,
     };
-
-	console.log(req.body)
 
     Item.create(doc).then((item) => {
 		const annotators = _.map(req.body.annotators, (annotator) => {
