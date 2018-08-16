@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import GetRequestTest from './GetRequestTest';
 import PostRequestTest from './PostRequestTest';
 import './style.css';
+import DeleteRequestTest from './DeleteRequestTest';
 
 class Test extends Component {
     render() {
@@ -90,6 +91,7 @@ class Test extends Component {
                         }
                     ]}
                 />
+                <DeleteRequestTest route="/api/teams" routeDescription="Deletes a team" urlParams={[]} />
             </div>
         );
     }

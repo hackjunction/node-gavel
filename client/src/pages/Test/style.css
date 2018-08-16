@@ -136,16 +136,27 @@
 
 .Test--method-post {
     font-weight: bold;
-    background: blue;
+    background: orange;
     color: white;
     margin-right: 20px;
-    padding: 3px;
+    padding: 3px 6px;
+    border-radius: 2px;
 }
 
 .Test--method-get {
     font-weight: bold;
     margin-right: 20px;
+    background: green;
+    color: white;
+    padding: 3px 6px;
+    border-radius: 2px;
+}
+
+.Test--method-delete {
+    font-weight: bold;
+    margin-right: 20px;
     background: red;
     color: white;
-    padding: 3px;
+    padding: 3px 6px;
+    border-radius: 2px;
 }
