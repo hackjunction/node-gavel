@@ -31,8 +31,14 @@ const ItemSchema = new Schema({
         }
     ],
     description: String,
-    mu: Number,
-    sigma: Number
+    mu: {
+        type: Number,
+        default: 0.0
+    },
+    sigma_sq: {
+        type: Number,
+        default: 0.0
+    }
 });
 
 ItemSchema.index({ active: 1, viewed: 1, prioritized: 1 });

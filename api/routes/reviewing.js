@@ -143,6 +143,30 @@ function submitVote(req, res) {
                 return Errors.annotatorNotReadWelcomeError(res);
             }
 
+            if (!annotator.next) {
+                return Errors.invalidActionError(
+                    res,
+                    'Annotator has no current project, call /api/reviewing/next first to init annotator'
+                );
+            }
+
+            if (!annotator.prev) {
+                return ReviewingService.setFirstProjectSeen(annotator).then(annotator => {
+                    return Item.findById(annotator.prev)
+                        .then(item => {
+                            item.viewed.push(annotator._id);
+                            return item.save();
+                        })
+                        .then(item => {
+                            annotator.prev = item;
+                            return res.status(status.OK).send({
+                                status: 'success',
+                                data: annotator
+                            });
+                        });
+                });
+            }
+
             return Promise.map([annotator.prev, annotator.next], itemId => {
                 return Item.findById(itemId);
             })
@@ -152,24 +176,22 @@ function submitVote(req, res) {
 
                     if (prev.active && next.active) {
                         if (decision === 'previous') {
-                            return ReviewingService.performVote(annotator, next, prev, false).then(data => {
-                                return Decision.create(data.annotator, data.winner, data.loser).then(() => {
-                                    return {
-                                        annotator: data.annotator,
-                                        next: data.loser,
-                                        prev: data.winner
-                                    };
-                                });
+                            const data = ReviewingService.performVote(annotator, next, prev, false);
+                            return Decision.create(data.annotator, data.winner, data.loser).then(() => {
+                                return {
+                                    annotator: data.annotator,
+                                    next: data.loser,
+                                    prev: data.winner
+                                };
                             });
                         } else if (decision === 'current') {
-                            return ReviewingService.performVote(annotator, next, prev, true).then(data => {
-                                return Decision.create(data.annotator, data.winner, data.loser).then(() => {
-                                    return {
-                                        annotator: data.annotator,
-                                        next: data.winner,
-                                        prev: data.loser
-                                    };
-                                });
+                            const data = ReviewingService.performVote(annotator, next, prev, true);
+                            return Decision.create(data.annotator, data.winner, data.loser).then(() => {
+                                return {
+                                    annotator: data.annotator,
+                                    next: data.winner,
+                                    prev: data.loser
+                                };
                             });
                         } else {
                             throw new Error(
@@ -183,7 +205,7 @@ function submitVote(req, res) {
                     data.annotator.prev = data.annotator.next;
                     data.annotator.ignore.push(data.annotator.prev);
 
-                    return Promise.map([data.next.save(), data.annotator.save()]);
+                    return Promise.all([data.next.save(), data.annotator.save()]);
                 })
                 .then(data => {
                     return res.status(status.OK).send({

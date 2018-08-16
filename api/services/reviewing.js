@@ -9,9 +9,6 @@ const ReviewingService = {
         return new Promise(function(resolve, reject) {
             let items = [];
             const ignored_ids = annotator.ignore;
-            if (annotator.teamId) {
-                ignored_ids.push(annotator.teamId);
-            }
             mongoose
                 .model('Item')
                 .find({
@@ -65,12 +62,31 @@ const ReviewingService = {
          * - Should set the 'next' field of the annotator to a new project, if that field is currently empty (or null if no good projects found)
          * - Should return annotator.save()
          */
+        if (annotator.teamId) {
+            annotator.ignore.push(annotator.teamId);
+        }
         return ReviewingService.getPreferredItems(annotator).then(preferredItems => {
             if (Array.isArray(preferredItems) && preferredItems.length > 0) {
                 annotator.next = _.sample(preferredItems);
                 return annotator.save();
             }
             return annotator;
+        });
+    },
+
+    setFirstProjectSeen: annotator => {
+        return ReviewingService.getPreferredItems(annotator).then(preferredItems => {
+            if (Array.isArray(preferredItems) && preferredItems.length > 0) {
+                annotator.ignore.push(annotator.next);
+                annotator.prev = annotator.next;
+                annotator.next = _.sample(preferredItems);
+            } else {
+                annotator.ignore.push(annotator.next);
+                annotator.prev = annotator.next;
+                annotator.next = null;
+            }
+
+            return annotator.save();
         });
     },
 
@@ -94,8 +110,11 @@ const ReviewingService = {
     },
 
     performVote: (annotator, next, prev, next_won) => {
-        const winner = next_won ? next : prev;
-        const loser = next_won ? prev : next;
+        let winner = next_won ? next : prev;
+        let loser = next_won ? prev : next;
+
+        console.log(winner);
+        console.log(loser);
 
         const {
             updated_alpha,
@@ -105,6 +124,13 @@ const ReviewingService = {
             updated_sigma_sq_winner,
             updated_sigma_sq_loser
         } = Maths.update(annotator.alpha, annotator.beta, winner.mu, winner.sigma_sq, loser.mu, loser.sigma_sq);
+
+        console.log('Updated alpha', updated_alpha);
+        console.log('Updated beta', updated_beta);
+        console.log('updated_mu_winner', updated_mu_winner);
+        console.log('updated_sigma_sq_winner', updated_sigma_sq_winner);
+        console.log('updated_mu_loser', updated_mu_loser);
+        console.log('updated_sigma_sq_loser', updated_sigma_sq_loser);
 
         annotator.alpha = updated_alpha;
         annotator.beta = updated_beta;
