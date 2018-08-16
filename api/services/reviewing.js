@@ -85,6 +85,8 @@ const ReviewingService = {
         return ReviewingService.getPreferredItems(annotator).then(preferredItems => {
             if (Array.isArray(preferredItems) && preferredItems.length > 0) {
                 annotator.next = _.sample(preferredItems);
+            } else {
+                annotator.next = null;
             }
 
             return annotator.save();

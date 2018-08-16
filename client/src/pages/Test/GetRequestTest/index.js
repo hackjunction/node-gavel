@@ -66,7 +66,7 @@ class GetRequestTest extends Component {
     renderInputs() {
         return _.map(this.props.urlParams, param => {
             return (
-                <div className="Test--input-wrapper">
+                <div className="Test--input-wrapper" key={param.jsonName}>
                     <label className="Test--input-label">{param.fieldName}</label>
                     <input
                         className="Test--input"
@@ -90,12 +90,17 @@ class GetRequestTest extends Component {
 
         return (
             <div className="Test--section-wrapper">
-                <p
-                    className="Test--collapse-button"
-                    onClick={() => this.setState({ collapsed: !this.state.collapsed })}
-                >
-                    {this.state.collapsed ? 'Expand' : 'Collapse'}
-                </p>
+                <div className="Test--buttons-wrapper">
+                    <p className="Test--toolbar-button" onClick={() => this.setState({ response: {}, urlParams: {} })}>
+                        Clear
+                    </p>
+                    <p
+                        className="Test--toolbar-button"
+                        onClick={() => this.setState({ collapsed: !this.state.collapsed })}
+                    >
+                        {this.state.collapsed ? 'Expand' : 'Collapse'}
+                    </p>
+                </div>
                 <h1 className="Test--section-title highlight">
                     <span className="Test--method-get">GET</span>
                     {this.props.route}

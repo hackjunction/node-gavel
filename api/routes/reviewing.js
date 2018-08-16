@@ -114,13 +114,17 @@ function skipDecision(req, res) {
                     return Errors.annotatorWaitError(res);
                 }
 
-                return res.status(status.OK).send({
-                    status: 'success',
-                    data: {
-                        prev: newAnnotator.prev,
-                        current: newAnnotator.next
+                return Promise.map([Item.findById(annotator.prev, false), Item.findById(annotator.next, false)]).then(
+                    items => {
+                        return res.status(status.OK).send({
+                            status: 'success',
+                            data: {
+                                prev: items[0],
+                                current: items[1]
+                            }
+                        });
                     }
-                });
+                );
             });
         })
         .catch(error => {
@@ -128,27 +132,6 @@ function skipDecision(req, res) {
             return Errors.invalidSecretError(res);
         });
 }
-
-// annotator = get_current_annotator()
-//     if annotator.prev.id == int(request.form['prev_id']) and annotator.next.id == int(request.form['next_id']):
-//         if request.form['action'] == 'Skip':
-//             annotator.ignore.append(annotator.next)
-//         else:
-//             # ignore things that were deactivated in the middle of judging
-//             if annotator.prev.active and annotator.next.active:
-//                 if request.form['action'] == 'Previous':
-//                     perform_vote(annotator, next_won=False)
-//                     decision = Decision(annotator, winner=annotator.prev, loser=annotator.next)
-//                 elif request.form['action'] == 'Current':
-//                     perform_vote(annotator, next_won=True)
-//                     decision = Decision(annotator, winner=annotator.next, loser=annotator.prev)
-//                 db.session.add(decision)
-//             annotator.next.viewed.append(annotator) # counted as viewed even if deactivated
-//             annotator.prev = annotator.next
-//             annotator.ignore.append(annotator.prev)
-//         annotator.update_next(choose_next(annotator))
-//         db.session.commit()
-//     return redirect(url_for('index'))
 
 function submitVote(req, res) {
     const secret = req.body.annotatorSecret;
