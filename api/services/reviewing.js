@@ -9,6 +9,9 @@ const ReviewingService = {
         return new Promise(function(resolve, reject) {
             let items = [];
             const ignored_ids = annotator.ignore;
+            if (annotator.teamId) {
+                ignored_ids.push(annotator.teamId);
+            }
             mongoose
                 .model('Item')
                 .find({

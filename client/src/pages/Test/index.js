@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import GetRequestTest from './GetRequestTest';
 import PostRequestTest from './PostRequestTest';
-import './style.css';
 import DeleteRequestTest from './DeleteRequestTest';
+
+import './style.css';
 
 class Test extends Component {
     render() {
