@@ -39,6 +39,11 @@ class Test extends Component {
                 />
                 <GetRequestTest
                     route="/api/teams"
+                    routeDescription="Get all teams"
+                />
+
+                <GetRequestTest
+                    route="/api/teams"
                     routeDescription="Gets a team by id"
                     urlParams={[
                         {
