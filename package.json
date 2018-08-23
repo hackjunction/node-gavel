@@ -1,37 +1,37 @@
 {
-  "name": "node-gavel",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "setup": "npm install && cd client && npm install && npm install -g yarn",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "client": "cd client && yarn start",
-    "server": "nodemon server.js",
-    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-    "start": "node server.js",
-    "heroku-postbuild": "cd client && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
-    "reset-db": "node api/scripts/reset-db",
-    "create-fake-data": "node api/scripts/create-fake-data"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "concurrently": "^3.6.1",
-    "nodemon": "^1.18.3"
-  },
-  "dependencies": {
-    "@stdlib/stdlib": "0.0.42",
-    "bluebird": "^3.5.1",
-    "body-parser": "^1.18.3",
-    "chance": "^1.0.16",
-    "express": "^4.16.3",
-    "http-status": "^1.2.0",
-    "joi": "^13.6.0",
-    "mongoose": "^5.2.9",
-    "numjs": "^0.16.0",
-    "scipy": "^0.1.4",
-    "uuid": "^3.3.2",
-    "yarn": "^1.9.4"
-  }
+    "name": "node-gavel",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "setup": "npm install -g yarn && yarn install && cd client && yarn install",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "client": "cd client && yarn start",
+        "server": "nodemon server.js",
+        "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
+        "start": "node server.js",
+        "heroku-postbuild": "cd client && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
+        "reset-db": "node api/scripts/reset-db",
+        "create-fake-data": "node api/scripts/create-fake-data"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "concurrently": "^3.6.1",
+        "nodemon": "^1.18.3"
+    },
+    "dependencies": {
+        "@stdlib/stdlib": "0.0.42",
+        "bluebird": "^3.5.1",
+        "body-parser": "^1.18.3",
+        "chance": "^1.0.16",
+        "express": "^4.16.3",
+        "http-status": "^1.2.0",
+        "joi": "^13.6.0",
+        "mongoose": "^5.2.9",
+        "numjs": "^0.16.0",
+        "scipy": "^0.1.4",
+        "uuid": "^3.3.2",
+        "yarn": "^1.9.4"
+    }
 }
