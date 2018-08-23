@@ -1,6 +1,18 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
 import './style.css';
+
+
+class AnnotatorLink extends Component {
+    render()
+    {
+        return (
+            <a href = '/id/{this.props.name}'>Show more...</a>
+        )
+    }
+}
 
 class AnnotatorList extends Component {
     constructor(props) {
@@ -44,21 +56,55 @@ class AnnotatorList extends Component {
         );
     }
 
-    renderAnnotators() {
-        return _.map(this.state.items, annotator => {
-            return (
-                <div key={annotator._id}>
-                    <p>{annotator.name + '  /  secret: ' + annotator.secret}</p>
-                </div>
-            );
-        });
-    }
+    // renderAnnotators() {
+    //     return _.map(this.state.items, annotator => {
+    //         return (
+    //             <div key={annotator._id}>
+    //                 <p>{annotator.name + '  /  secret: ' + annotator.secret}</p>
+    //             </div>
+    //         );
+    //     });
+    // }
 
     render() {
+        const columns = [{
+            Header: "Name",
+            accessor: "name",
+            className: "mid",
+            filterable: true,
+            filterMethod: (filter, row) => row[filter.id].toLowerCase().includes(filter.value)
+        }, {
+            Header: "Secret",
+            accessor: "secret",
+            className: "mid"
+        }, {
+            Header: "Email",
+            accessor: "email",
+            className: "mid"
+        }, {
+            Header: "Next project",
+            accessor: "next",
+            className: "mid"
+        }, {
+            Header: "Team ID",
+            accessor: "teamId",
+            className: "mid"
+        }, {
+            Header: "Alpha",
+            accessor: "alpha",
+            className: "mid"
+        }, {
+            Header: "Beta",
+            accessor: "beta",
+            className: "mid"
+        }]
         return (
             <div className="AnnotatorList--wrapper">
                 <h1 className="AnnotatorList--title">Annotators</h1>
-                {this.renderAnnotators()}
+                <ReactTable 
+                    data = {this.state.items} 
+                    columns = {columns}
+                />
             </div>
         );
     }

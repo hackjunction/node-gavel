@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import './style.css';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css'
 
 class ProjectList extends Component {
     constructor(props) {
@@ -44,21 +46,47 @@ class ProjectList extends Component {
         );
     }
 
-    renderProjects() {
-        return _.map(this.state.items, project => {
-            return (
-                <div key={project._id}>
-                    <p>{project.name + '  /  id: ' + project._id}</p>
-                </div>
-            );
-        });
-    }
+    // renderProjects() {
+    //     return _.map(this.state.items, project => {
+    //         return (
+    //             <div key={project._id}>
+    //                 <p>{project.name + '  /  id: ' + project._id}</p>
+    //             </div>
+    //         );
+    //     });
+    // }
+
+    
 
     render() {
+        const columns = [{
+            Header: "Name",
+            accessor: "name",
+            className: "mid",
+            filterable: true,
+            filterMethod: (filter, row) => row[filter.id].toLowerCase().includes(filter.value)
+        }, {
+            Header: "Description",
+            accessor: "description",
+            className: "mid"
+        }, {
+            Header: "Location",
+            accessor: "location",
+            className: "mid"
+        }, {
+            Header: "Average",
+            accessor: "mu",
+            className: "mid"
+        }, {
+            Header: "Std. deviation",
+            accessor: "sigma_sq",
+            className: "mid"
+        }]
+
         return (
             <div className="ProjectList--wrapper">
                 <h1 className="ProjectList--title">Projects</h1>
-                {this.renderProjects()}
+                <ReactTable data = {this.state.items} columns = {columns} />
             </div>
         );
     }

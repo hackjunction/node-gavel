@@ -8,7 +8,7 @@ class AdminPanel extends Component {
 		return (
 			<div>
 				<h1>Admin Panel</h1>
-				<ProjectList />
+				<ProjectList/>
 				<AnnotatorList />
 			</div>
 		);
