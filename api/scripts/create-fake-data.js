@@ -39,6 +39,7 @@ function generateProjects(count = 100) {
 	for (var i = 0; i < count; i++) {
 		projects.push({
 			name: 'Project ' + chance.animal(),
+			description: chance.string({length: 150}),
 			location: randomLetter() + randomNumber()
 		});
 	}
