@@ -1,0 +1,19 @@
+@import '../../styles/base.scss';
+
+.Table {
+    width: 100%;
+}
+
+.Table--header {
+    border-bottom: 1px solid $turquoise;
+}
+
+.Table--body {
+    td {
+        padding: 10px 0;
+    }
+
+    tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+}

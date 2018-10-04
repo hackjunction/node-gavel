@@ -1,0 +1,101 @@
+@import "../../styles/base.scss";
+
+.FormField {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+	flex-wrap: wrap;
+	margin-bottom: $double-margin;
+
+	&.has-error {
+		.FormField--error {
+			opacity: 1;
+		}
+	}
+}
+
+.FormField--hint {
+	color: rgba(255,255,255,0.3);
+	margin-top: $base-margin;
+	font-size: 12px;
+	transition: color 0.2s ease;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.FormField--error {
+	margin-top: $base-margin;
+	color: red;
+	font-size: 12px;
+	transition: opacity 0.2s ease;
+	opacity: 0;
+	min-height: 18px;
+}
+
+.FormField--label {
+    width: 200px;
+    color: $snow;
+    margin-right: 30px;
+}
+
+.FormField--content-wrapper {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+	align-items: stretch;
+	position: relative;
+	
+	&:focus-within {
+		.FormField--hint {
+			color: $snow;
+		}
+	}
+}
+
+.FormField--input-wrapper {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	position: relative;
+
+	&.has-success {
+		.FormField--success {
+			opacity: 1;
+		}
+	}
+}
+
+.FormField--input {
+	background: transparent;
+    border: none;
+    border-bottom: 1px solid $snow;
+	color: $snow;
+	flex: 1;
+	opacity: 0.5;
+
+    &:focus {
+		outline: none;
+		opacity: 1;
+    }
+}
+
+.FormField--success {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	opacity: 0;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	transition: 0.2s ease;
+}
+
+.FormField--check {
+	color: $spring-green;
+}
+
+.FormField--success-msg {
+	color: $spring-green;
+	margin-right: 6px;
+}

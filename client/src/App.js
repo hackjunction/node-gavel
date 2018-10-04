@@ -1,35 +1,38 @@
 import React, { Component } from 'react';
+
+/* Layouts */
+import DefaultLayout from './layouts/DefaultLayout';
+
 import AdminPanel from './pages/AdminPanel';
 import CreateTeam from './pages/CreateTeam';
 import NotFound from './pages/NotFound';
 import Test from './pages/Test';
-import Header from './components/Header';
-import Footer from './components/Footer';
+
+import AdminEventList from './pages/admin/EventList';
+import AdminCreateEvent from './pages/admin/CreateEvent';
 
 import { Switch, Route } from 'react-router-dom';
 
-import './App.css';
+import './styles/base.scss';
 
 class App extends Component {
     render() {
         return (
-            <div className="page-wrapper">
-                <Header />
-                <div className="page-content">
-                    <Switch>
-                        {/* Public Routes */}
-                        <Route exact path="/teams/create" component={CreateTeam} />
+            <Switch>
+                {/* Public Routes */}
+                <Route exact path="/teams/create" component={CreateTeam} />
 
-                        {/* Admin Routes */}
-                        <Route exact path="/admin" component={AdminPanel} />
-                        <Route exact path="/admin/test" component={Test} />
+                {/* Admin Routes */}
+                <DefaultLayout exact path="/admin" component={AdminEventList} />
+                <DefaultLayout exact path="/admin/edit/new" component={AdminCreateEvent} headerSubtitle={'GOD MODE / Create event'}/>
+                {/* TODO */}
+                <DefaultLayout path="/admin/edit/:eventId" component={AdminCreateEvent} />
+                <Route exact path="/old/admin" component={AdminPanel} />
+                <Route exact path="/old/admin/test" component={Test} />
 
-                        {/* Misc Routes */}
-                        <Route component={NotFound} />
-                    </Switch>
-                </div>
-                <Footer />
-            </div>
+                {/* Misc Routes */}
+                <Route component={NotFound} />
+            </Switch>
         );
     }
 }

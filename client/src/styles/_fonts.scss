@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:300,300i,700|Montserrat:700');
+
+$font-title: 'Montserrat', sans-serif;
+$font-regular: 'Lato', sans-serif;
+
+$fs-title: 22px;
+$fs-base: 16px;
+$fs-secondary: 13px;
+
+%text-title,
+.text-title {
+    font-size: $fs-title;
+    font-family: $font-title;
+}
+
+%text-default,
+.text-default {
+    font-size: $fs-base;
+    font-family: $font-regular;
+}
+
+%text-secondary,
+.text-secondary {
+    font-size: $fs-secondary;
+    font-family: $font-title;
+}
+
+h1 {
+    @extend %text-title;
+    color: $snow;
+    font-size: 30px;
+}
+
+h2,
+h3 {
+    @extend %text-title;
+    color: $snow;
+}
+
+h4,
+h5,
+h6 {
+    @extend %text-title;
+    color: $snow;
+    font-size: 18px;
+}
+
+p,
+label,
+input {
+    @extend %text-default;
+    color: $snow;
+}
+
+span,
+a,
+small {
+    @extend %text-secondary;
+    color: $snow;
+}

@@ -1,0 +1,13 @@
+* {
+    box-sizing: border-box;
+}
+
+body,
+html,
+#root {
+    height: 100%;
+    background: $black;
+}
+
+$base-margin: 10px;
+$double-margin: $base-margin * 2;
