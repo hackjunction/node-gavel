@@ -208,9 +208,12 @@ function submitVote(req, res) {
                     return Promise.all([data.next.save(), data.annotator.save()]);
                 })
                 .then(data => {
-                    return res.status(status.OK).send({
-                        status: 'success',
-                        data: data[1]
+                    const annotator = data[1];
+                    return annotator.populate('next prev').exec(function(err, res) {
+                        return res.status(status.OK).send({
+                            status: 'success',
+                            data: res
+                        });
                     });
                 })
                 .catch(error => {

@@ -45,7 +45,7 @@ const AnnotatorSchema = new Schema({
             ref: 'Item'
         }
     ],
-    teamId: {
+    team: {
         type: Schema.Types.ObjectId,
         ref: 'Item'
     },

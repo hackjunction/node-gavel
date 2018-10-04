@@ -14,6 +14,10 @@ const ItemSchema = new Schema({
         type: String,
         required: true
     },
+    team: {
+        type: Schema.Types.ObjectId,
+        ref: 'Team'
+    },
     active: {
         type: Boolean,
         required: true,
@@ -41,7 +45,7 @@ const ItemSchema = new Schema({
     }
 });
 
-ItemSchema.index({ active: 1, viewed: 1, prioritized: 1 });
+ItemSchema.index({ active: 1, viewed: 1, prioritized: 1, team: 1 });
 
 const Item = mongoose.model('Item', ItemSchema);
 
