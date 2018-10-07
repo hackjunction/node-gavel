@@ -1,6 +1,4 @@
-**Getting started with Node.js (and Express & MongoDB)**
-
-Read [this tutorial](https://www.codementor.io/olatundegaruba/nodejs-restful-apis-in-10-minutes-q0sgsfhbd). The project structure is a bit different, but the basic principles are the same.
+An expo judging system based on the original Gavel: https://github.com/anishathalye/gavel. **This project is in development and not ready for use.** Junction is currently developing this platform for use in various Junction events, and the project will be properly documented after it has been successfully tested there (beginning of 2019 most likely).
 
 **Prerequisites**
 
