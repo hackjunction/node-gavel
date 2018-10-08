@@ -15,13 +15,24 @@ git clone git@github.com:hackjunction/node-gavel.git
 
 Run `npm run setup`. Only needs to be run again whenever dependencies change.
 
+**Add ENV files**
+You need to add two .env files:
+
+First, at the root of the project add an `.env` file with the contents:
+
+```
+MONGODB_URI=mongodb://localhost/nodeGavel
+ADMIN_USER=admin
+ADMIN_PASS=admin
+ADMIN_TOKEN=some-token
+```
+
+Then, at the root of `client` add an `.env` file with the contents:
+
+```
+PORT=5000
+```
+
 **Starting the development server**
 
 Run `yarn dev`, this will start the development server at `localhost:3000`, and the admin panel frontend at `localhost:5000`. Both the API and the frontend will automatically reload whenever code changes are saved.
-
-**Generating fake data**
-
-There are a few scripts to make things a bit easier: 
-
-* Run `npm run create-fake-data` to insert 100 annotators and projects into the DB
-* Run `npm run reset-db` to clear the entire database
