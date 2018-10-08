@@ -27,20 +27,22 @@ class App extends Component {
                 {/* TODO: Route for submitting a team */}
                 <DefaultLayout exact path="/teams/create" component={CreateTeam} />
 
-                {/* TODO: Team dashboard, only accessible with team token */}
-                <DefaultLayout exact path="/teams/:teamId" component={null} />
-
-                {/* TODO: Team submission (create/edit), only accessible with team token */}
-                <DefaultLayout exact path="/teams/:teamId/submission" component={null} />
-
-                {/* TODO: Voting frontend */}
-                <DefaultLayout exact path="/vote/:annotatorId" component={null} />
-
                 {/* TODO: (Low priority) Public route for viewing submitted projects of event */}
                 <DefaultLayout path="/event/:id" component={null} />
 
                 {/* TODO: (Low priority) Public front page */}
                 <DefaultLayout exact path="/" component={null} />
+
+                {/* Accessible with annotator token */}
+
+                {/* TODO: Team dashboard */}
+                <DefaultLayout exact path="/teams/:teamId" component={null} />
+
+                {/* TODO: Team submission (create/edit) */}
+                <DefaultLayout exact path="/teams/:teamId/submission" component={null} />
+
+                {/* TODO: Voting frontend */}
+                <DefaultLayout exact path="/vote/:annotatorId" component={null} />
 
                 {/* Admin Routes */}
 
