@@ -21,14 +21,14 @@ app.use(passport.initialize());
 require('./api/auth/passport');
 
 /* Old routes */
-require('./api/routes/annotators')(app);
-require('./api/routes/items')(app);
-require('./api/routes/reviewing')(app);
-require('./api/routes/teams')(app);
+//require('./api/routes/teams')(app)
+//require('./api/routes/reviewing')(app)
+//require('./api/routes/items')(app)
 
 /* Refactored routes */
 require('./api/routes/login')(app);
 require('./api/routes/events')(app);
+require('./api/routes/annotators')(app);
 
 app.get('/api/hello', function(req, res) {
     res.send({
@@ -36,13 +36,12 @@ app.get('/api/hello', function(req, res) {
     });
 });
 
-/* Old models */
-require('./api/models/Annotator');
-require('./api/models/Item');
-require('./api/models/Team');
-
-/* Refactored models */
+/* Models */
 require('./api/models/Event');
+require('./api/models/Project');
+require('./api/models/Team');
+require('./api/models/Annotator');
+require('./api/models/Decision');
 
 // React config for production
 if (process.env.NODE_ENV === 'production') {

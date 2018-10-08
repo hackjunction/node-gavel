@@ -4,8 +4,6 @@ const Schema = mongoose.Schema;
 const Joi = require('joi');
 const Promise = require('bluebird');
 const uuid = require('uuid/v4');
-const ObjectId = require('mongodb').ObjectId;
-const SETTINGS = require('../../settings.json');
 
 const AnnotatorSchema = new Schema({
     name: {
@@ -30,24 +28,24 @@ const AnnotatorSchema = new Schema({
     },
     next: {
         type: Schema.Types.ObjectId,
-        ref: 'Item'
+        ref: 'Project'
     },
     updated: {
         type: Date
     },
     prev: {
         type: Schema.Types.ObjectId,
-        ref: 'Item'
+        ref: 'Project'
     },
     ignore: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Item'
+            ref: 'Project'
         }
     ],
     team: {
         type: Schema.Types.ObjectId,
-        ref: 'Item'
+        ref: 'Team'
     },
     alpha: {
         type: Number,
