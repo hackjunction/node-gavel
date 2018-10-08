@@ -56,47 +56,44 @@ class AnnotatorList extends Component {
         );
     }
 
-    // renderAnnotators() {
-    //     return _.map(this.state.items, annotator => {
-    //         return (
-    //             <div key={annotator._id}>
-    //                 <p>{annotator.name + '  /  secret: ' + annotator.secret}</p>
-    //             </div>
-    //         );
-    //     });
-    // }
 
     render() {
         const columns = [{
             Header: "Name",
             accessor: "name",
-            className: "mid",
+            className: "center",
             filterable: true,
             filterMethod: (filter, row) => row[filter.id].toLowerCase().includes(filter.value)
         }, {
             Header: "Secret",
             accessor: "secret",
-            className: "mid"
+            className: "center"
         }, {
             Header: "Email",
             accessor: "email",
-            className: "mid"
+            className: "center"
         }, {
             Header: "Next project",
             accessor: "next",
-            className: "mid"
+            className: "center"
         }, {
             Header: "Team ID",
-            accessor: "teamId",
-            className: "mid"
+            accessor: "teamid",
+            className: "center"
         }, {
             Header: "Alpha",
             accessor: "alpha",
-            className: "mid"
+            className: "center"
         }, {
             Header: "Beta",
             accessor: "beta",
-            className: "mid"
+            className: "center"
+        },{
+            Header:"Enable/Disable",
+            accessor:"active",
+            Cell: row => (
+                <button /*TODO: LISÄÄ CHANGESTATUS*/>{row.value ? 'Disable annotator': 'Enable annotator'}</button>
+            )
         }]
         return (
             <div className="AnnotatorList--wrapper">
