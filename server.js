@@ -29,6 +29,7 @@ require('./api/auth/passport');
 require('./api/routes/login')(app);
 require('./api/routes/events')(app);
 require('./api/routes/annotators')(app);
+require('./api/routes/teams')(app);
 
 app.get('/api/hello', function(req, res) {
     res.send({
