@@ -15,6 +15,7 @@ const POST = (url, data) => {
             });
 
             if (response.status !== SUCCESS) {
+                console.log(response);
                 let body = await response.json();
                 reject(new Error(body.message));
             } else {
@@ -93,8 +94,12 @@ const DELETE = url => {
 };
 
 const API = {
-    getEventWithCode: code => {
-        return GET(`/api/events/code/${code}`);
+    adminLogin: (username, password) => {
+        return POST(`/api/login`, { username, password });
+    },
+
+    adminCreateEvent: (event, token) => {
+        return POST('/api/event', { event, token });
     }
 };
 

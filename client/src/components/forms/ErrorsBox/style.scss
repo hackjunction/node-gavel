@@ -1,0 +1,25 @@
+@import '../../../styles/base.scss';
+
+.ErrorsBox {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid $error-red;
+    padding-bottom: $base-margin;
+}
+
+.ErrorsBox--title {
+    padding: $base-margin;
+    background: $error-red;
+    .fas {
+        margin-right: $base-margin;
+    }
+}
+
+.ErrorsBox--error {
+    margin: $base-margin 0 0 0;
+}
+
+.ErrorsBox--error-message {
+    padding: 0 $base-margin;
+    margin: 0;
+}

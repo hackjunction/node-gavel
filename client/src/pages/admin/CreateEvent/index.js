@@ -1,37 +1,112 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
-import moment from 'moment-timezone';
 import './style.scss';
+import _ from 'lodash';
+
+import Validators from '../../../services/validators';
 
 import TextField from '../../../components/forms/TextField/';
 import ArrayTextField from '../../../components/forms/ArrayTextField';
 import BooleanField from '../../../components/forms/BooleanField';
 import SectionTitle from '../../../components/forms/SectionTitle';
+import SubmitButton from '../../../components/forms/SubmitButtton';
+import ErrorsBox from '../../../components/forms/ErrorsBox';
 
-const DEFAULTS = {
-    name: '',
-    hasTracks: false,
-    tracks: [],
-    hasChallenges: false,
-    challenges: [],
-    timezone: '',
-    startTime: '',
-    endTime: '',
-    submissionDeadline: '',
-    votingStartTime: '',
-    votingEndTime: '',
-    participantSecret: '',
-    apiKey: '',
-}
+import API from '../../../services/api';
+
+const FIELDS = [
+    {
+        name: 'name',
+        default: ''
+    },
+    {
+        name: 'hasTracks',
+        default: false
+    },
+    {
+        name: 'tracks',
+        default: []
+    },
+    {
+        name: 'hasChallenges',
+        default: false
+    },
+    {
+        name: 'challenges',
+        default: []
+    },
+    {
+        name: 'timezone',
+        default: ''
+    },
+    {
+        name: 'startTime',
+        default: ''
+    },
+    {
+        name: 'endTime',
+        default: ''
+    },
+    {
+        name: 'submissionDeadline',
+        default: ''
+    },
+    {
+        name: 'votingStartTime',
+        default: new Date()
+    },
+    {
+        name: 'votingEndTime',
+        default: ''
+    }
+];
 
 class AdminCreateEvent extends Component {
-
     constructor(props) {
         super(props);
 
+        const eventData = {};
+
+        _.each(FIELDS, field => {
+            eventData[field.name] = field.default;
+        });
+
         this.state = {
-            eventData: DEFAULTS
+            eventData,
+            loading: false,
+            errors: []
+        };
+
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    onSubmit() {
+        let hasError = false;
+        const errors = _.map(FIELDS, field => {
+            if (this[field.name]) {
+                const data = this[field.name].isValid();
+                if (data.error) {
+                    hasError = true;
+                }
+                return data;
+            } else {
+                return {
+                    error: false,
+                    message: ''
+                };
+            }
+        });
+        if (hasError) {
+            const filtered = _.filter(errors, e => e.error);
+            this.setState({
+                errors: filtered
+            });
+        } else {
+            this.setState({
+                errors: []
+            });
         }
+
+        //TODO: Call /api/events to create event
     }
 
     render() {
@@ -39,336 +114,201 @@ class AdminCreateEvent extends Component {
             <div className="AdminCreateEvent">
                 <div className="form-wrapper">
                     <SectionTitle title="Basic Details" />
-                    <TextField 
-                        label="Event name" 
-                        placeholder="JUNCTIONxBudapest" 
+                    <TextField
+                        ref={ref => (this.name = ref)}
+                        label="Event name"
+                        placeholder="JUNCTIONxBudapest"
                         value={this.state.eventData.name}
-                        onChange={(name) => this.setState({eventData: {...this.state.eventData, name}})}
-                        validate={(value) => {
-                            if (value.length < 5) {
-                                return {
-                                    error: true,
-                                    message: 'Event name must be at least 5 characters'
-                                }
-                            } 
+                        onChange={name => this.setState({ eventData: { ...this.state.eventData, name } })}
+                        required={true}
+                        validate={value =>
+                            Validators.stringMinMax(
+                                value,
+                                5,
+                                50,
+                                'Event name must be at least 5 characters',
+                                'Event name cannot be over 50 characters'
+                            )
+                        }
+                    />
+                    <div style={{ height: '100px' }} />
 
-                            if (value.length > 50) {
-                                return {
-                                    error: true,
-                                    message: 'Event cannot be over 50 characters'
-                                }
-                            }
-
-                            return {
-                                error: false,
-                                meesage: ''
-                            }
-                        }}/>
-                    <div style={{height: '100px'}}/>
-
-                    <SectionTitle title="Tracks & Challenges"/>
+                    <SectionTitle title="Tracks & Challenges" />
                     <BooleanField
-                        label="Tracks"
+                        ref={ref => (this.hasTracks = ref)}
+                        label="Has tracks?"
                         value={this.state.eventData.hasTracks}
                         text="Does the event have multiple different tracks?"
-                        onChange={(hasTracks) => this.setState({eventData: {...this.state.eventData, hasTracks}})}
+                        onChange={hasTracks => this.setState({ eventData: { ...this.state.eventData, hasTracks } })}
                     />
                     {this.state.eventData.hasTracks ? (
                         <ArrayTextField
-                            label=""
+                            ref={ref => (this.tracks = ref)}
+                            label="Tracks"
                             placeholder="Track name"
                             values={this.state.eventData.tracks}
                             hint="Enter the name of each track at the hackathon"
-                            onChange={(tracks) => this.setState({eventData: {...this.state.eventData, tracks}})}
-                            validate={(value) => {
-                                return {
-                                    error: false,
-                                    message: ''
-                                }
-                            }}
+                            onChange={tracks => this.setState({ eventData: { ...this.state.eventData, tracks } })}
+                            required={this.state.eventData.hasTracks}
+                            validateItem={value =>
+                                Validators.stringMinMax(
+                                    value,
+                                    2,
+                                    100,
+                                    'The track name must be at least 2 characters',
+                                    'The track name must be under 100 characters'
+                                )
+                            }
+                            minItems={2}
+                            minItemsMessage="If your event uses tracks, it must have at least two tracks!"
+                            maxItems={20}
+                            maxItemsMessage="The maximum amount of tracks is 20"
+                            unique={true}
+                            uniqueMessage="You've already added a track with that name"
                         />
                     ) : null}
-                    {this.state.eventData.hasTracks ? <div style={{height: '50px'}}/> : null}
+                    {this.state.eventData.hasTracks ? <div style={{ height: '50px' }} /> : null}
                     <BooleanField
-                        label="Challenges"
+                        ref={ref => (this.hasChallenges = ref)}
+                        label="Has challenges?"
                         value={this.state.eventData.hasChallenges}
                         text="Does the event have challenges to choose from?"
-                        onChange={(hasChallenges) => this.setState({eventData: {...this.state.eventData, hasChallenges}})}
+                        onChange={hasChallenges =>
+                            this.setState({ eventData: { ...this.state.eventData, hasChallenges } })
+                        }
                     />
                     {this.state.eventData.hasChallenges ? (
                         <ArrayTextField
-                            label=""
+                            ref={ref => (this.challenges = ref)}
+                            label="Challenges"
                             placeholder="Challenge name"
                             values={this.state.eventData.challenges}
                             hint="Enter the name of each challenge at the hackathon"
-                            onChange={(tracks) => this.setState({eventData: {...this.state.eventData, tracks}})}
-                            validate={(value) => {
-                                return {
-                                    error: false,
-                                    message: ''
-                                }
-                            }}
+                            onChange={challenges =>
+                                this.setState({ eventData: { ...this.state.eventData, challenges } })
+                            }
+                            required={this.state.eventData.hasChallenges}
+                            validateItem={value =>
+                                Validators.stringMinMax(
+                                    value,
+                                    2,
+                                    100,
+                                    'The challenge name must be at least 2 characters',
+                                    'The challenge name must be under 100 characters'
+                                )
+                            }
+                            minItems={1}
+                            minItemsMessage="If your event uses challenges, it must have at least one!"
+                            maxItems={200}
+                            maxItemsMessage="The maximum amount of challenges is 200"
+                            unique={true}
+                            uniqueMessage="You've already added a challenge with that name"
                         />
                     ) : null}
-                    <div style={{height: '100px'}}/>
+                    <div style={{ height: '100px' }} />
                     <SectionTitle title="Times" />
-                    <TextField 
-                        label="Timezone" 
-                        placeholder="Europe/Helsinki" 
+                    <TextField
+                        ref={ref => (this.timezone = ref)}
+                        label="Timezone"
+                        placeholder="Europe/Helsinki"
                         value={this.state.eventData.timezone}
-                        hint="Enter a timezone for the event - this is important as it affects when the platform accepts submissions and votes. See a list of valid timezones here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" 
-                        onChange={(timezone) => this.setState({eventData: {...this.state.eventData, timezone}})}
-                        validate={(value) => {
-                            if (!moment.tz.zone(value)) {
-                                return {
-                                    error: true,
-                                    message: 'Please enter a valid timezone (e.g. Europe/Helsinki)'
-                                }
-                            } else {
-                                return {
-                                    error: false,
-                                    message: ''
-                                }
-                            }
-                        }}
+                        hint="Enter a timezone for the event - see here for a list of timezones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones"
+                        onChange={timezone => this.setState({ eventData: { ...this.state.eventData, timezone } })}
+                        validate={Validators.timezone}
+                        required={true}
                     />
-                    <TextField 
-                        label="Event start time" 
-                        placeholder="dd.mm.yyyy HH:mm" 
+                    <TextField
+                        ref={ref => (this.startTime = ref)}
+                        label="Event start time"
+                        placeholder="dd.mm.yyyy HH:mm"
                         value={this.state.eventData.startTime}
                         hint="When does the event begin?"
-                        onChange={(startTime) => this.setState({eventData: {...this.state.eventData, startTime}})}
-                        validate={(value) => {
-                            const mom = moment(value, 'DD.MM.YYYY HH:mm');
-                            if (!mom.isValid()) {
-                                return {
-                                    error: true,
-                                    message: 'Please enter the date and time as dd.mm.yyyy HH:mm'
-                                };
-                            } else {
-                                return {
-                                    error: false,
-                                    message: mom.format('MMMM Do YYYY, HH:mm')
-                                }
-                            }
-                        }}
+                        onChange={startTime => this.setState({ eventData: { ...this.state.eventData, startTime } })}
+                        validate={Validators.date}
+                        required={true}
                     />
-                    <TextField 
-                        label="Event end time" 
-                        placeholder="dd.mm.yyyy HH:mm" 
+                    <TextField
+                        ref={ref => (this.endTime = ref)}
+                        label="Event end time"
+                        placeholder="dd.mm.yyyy HH:mm"
                         value={this.state.eventData.endTime}
                         hint="When does the event end?"
-                        onChange={(endTime) => this.setState({eventData: {...this.state.eventData, endTime}})} 
-                        validate={(value) => {
-                            const mom = moment(value, 'DD.MM.YYYY HH:mm');
-                            if (!mom.isValid()) {
-                                return {
-                                    error: true,
-                                    message: 'Please enter the date and time as dd.mm.yyyy HH:mm'
-                                };
-                            } else {
-                                const startTime = moment(this.state.eventData.startTime, 'DD.MM.YYYY HH:mm');
-
-                                if (startTime.isValid()) {
-                                    if (!startTime.isBefore(mom)) {
-                                        return {
-                                            error: true,
-                                            message: 'Event end time must be after the event start time!'
-                                        }
-                                    }
-                                }
-
-                                return {
-                                    error: false,
-                                    message: mom.format('MMMM Do YYYY, HH:mm')
-                                }
-                            }
-                        }}
+                        onChange={endTime => this.setState({ eventData: { ...this.state.eventData, endTime } })}
+                        validate={value =>
+                            Validators.dateMinMax(
+                                value,
+                                this.state.eventData.startTime,
+                                null,
+                                'Event end time must be after the event start time!',
+                                null
+                            )
+                        }
+                        required={true}
                     />
-                    <TextField 
-                        label="Submission deadline" 
-                        placeholder="dd.mm.yyyy HH:mm" 
+                    <TextField
+                        ref={ref => (this.submissionDeadline = ref)}
+                        label="Submission deadline"
+                        placeholder="dd.mm.yyyy HH:mm"
                         value={this.state.eventData.submissionDeadline}
                         hint="When does the platform no longer accept project submissions?"
-                        onChange={(submissionDeadline) => this.setState({eventData: {...this.state.eventData, submissionDeadline}})}
-                        validate={(value) => {
-                            const mom = moment(value, 'DD.MM.YYYY HH:mm');
-                            if (!mom.isValid()) {
-                                return {
-                                    error: true,
-                                    message: 'Please enter the date and time as dd.mm.yyyy HH:mm'
-                                };
-                            } else {
-                                const startTime = moment(this.state.eventData.startTime, 'DD.MM.YYYY HH:mm');
-
-                                if (startTime.isValid()) {
-                                    if (!startTime.isBefore(mom)) {
-                                        return {
-                                            error: true,
-                                            message: 'Submission deadline must be after the event begins'
-                                        }
-                                    }
-                                }
-
-                                const endTime = moment(this.state.eventData.endTime, 'DD.MM.YYYY HH:mm');
-
-                                if (endTime.isValid()) {
-                                    if (!endTime.isAfter(mom)) {
-                                        return {
-                                            error: true,
-                                            message: 'Submission deadline must be before the event ends'
-                                        }
-                                    }
-                                }
-
-                                return {
-                                    error: false,
-                                    message: mom.format('MMMM Do YYYY, HH:mm')
-                                }
-                            }
-                        }}
+                        onChange={submissionDeadline =>
+                            this.setState({ eventData: { ...this.state.eventData, submissionDeadline } })
+                        }
+                        validate={value =>
+                            Validators.dateMinMax(
+                                value,
+                                this.state.eventData.startTime,
+                                this.state.eventData.endTime,
+                                'Submission deadline must be after the event begins',
+                                'Submission deadline must be before the event ends'
+                            )
+                        }
+                        required={true}
                     />
-                    <TextField 
-                        label="Voting begins" 
-                        placeholder="dd.mm.yyyy HH:mm" 
-                        value={this.state.eventData.votingStartTime} 
+                    <TextField
+                        ref={ref => (this.votingStartTime = ref)}
+                        label="Voting begins"
+                        placeholder="dd.mm.yyyy HH:mm"
+                        value={this.state.eventData.votingStartTime}
                         hint="When does the judging period begin?"
-                        onChange={(votingStartTime) => this.setState({eventData: {...this.state.eventData, votingStartTime}})}
-                        validate={(value) => {
-                            const mom = moment(value, 'DD.MM.YYYY HH:mm');
-                            if (!mom.isValid()) {
-                                return {
-                                    error: true,
-                                    message: 'Please enter the date and time as dd.mm.yyyy HH:mm'
-                                };
-                            } else {
-                                const submissionDeadline = moment(this.state.eventData.submissionDeadline, 'DD.MM.YYYY HH:mm');
-
-                                if (submissionDeadline.isValid()) {
-                                    if (!submissionDeadline.isBefore(mom)) {
-                                        return {
-                                            error: true,
-                                            message: 'Voting cannot begin before the submission deadline'
-                                        }
-                                    }
-                                }
-
-                                const endTime = moment(this.state.eventData.endTime, 'DD.MM.YYYY HH:mm');
-
-                                if (endTime.isValid()) {
-                                    if (!endTime.isAfter(mom)) {
-                                        return {
-                                            error: true,
-                                            message: 'Voting must start before the event ends!'
-                                        }
-                                    }
-                                }
-
-                                return {
-                                    error: false,
-                                    message: mom.format('MMMM Do YYYY, HH:mm')
-                                }
-                            }
-                        }}
+                        onChange={votingStartTime =>
+                            this.setState({ eventData: { ...this.state.eventData, votingStartTime } })
+                        }
+                        validate={value =>
+                            Validators.dateMinMax(
+                                value,
+                                this.state.eventData.submissionDeadline,
+                                this.state.eventData.endTime,
+                                'Voting cannot begin before the submission deadline',
+                                'Voting must start before the event ends!'
+                            )
+                        }
+                        required={true}
                     />
-                    <TextField 
-                        label="Voting ends" 
-                        placeholder="dd.mm.yyyy HH:mm" 
+                    <TextField
+                        ref={ref => (this.votingEndTime = ref)}
+                        label="Voting ends"
+                        placeholder="dd.mm.yyyy HH:mm"
                         value={this.state.eventData.votingEndTime}
                         hint="When does the judging period end?"
-                        onChange={(votingEndTime) => this.setState({eventData: {...this.state.eventData, votingEndTime}})} 
-                        validate={(value) => {
-                            const mom = moment(value, 'DD.MM.YYYY HH:mm');
-                            if (!mom.isValid()) {
-                                return {
-                                    error: true,
-                                    message: 'Please enter the date and time as dd.mm.yyyy HH:mm'
-                                };
-                            } else {
-                                const votingStartTime = moment(this.state.eventData.votingStartTime, 'DD.MM.YYYY HH:mm');
-
-                                if (votingStartTime.isValid()) {
-                                    if (!votingStartTime.isBefore(mom)) {
-                                        return {
-                                            error: true,
-                                            message: 'Voting end time must be after voting start time'
-                                        }
-                                    }
-                                }
-
-                                const endTime = moment(this.state.eventData.endTime, 'DD.MM.YYYY HH:mm');
-
-                                if (endTime.isValid()) {
-                                    if (!endTime.isAfter(mom)) {
-                                        return {
-                                            error: true,
-                                            message: 'Voting must end before the event ends!'
-                                        }
-                                    }
-                                }
-
-                                return {
-                                    error: false,
-                                    message: mom.format('MMMM Do YYYY, HH:mm')
-                                }
-                            }
-                        }}
+                        onChange={votingEndTime =>
+                            this.setState({ eventData: { ...this.state.eventData, votingEndTime } })
+                        }
+                        validate={value =>
+                            Validators.dateMinMax(
+                                value,
+                                this.state.eventData.votingStartTime,
+                                this.state.eventData.endTime,
+                                'Voting end time must be after voting start time',
+                                'Voting must end before the event ends!'
+                            )
+                        }
+                        required={true}
                     />
                 </div>
-                <div style={{height: '100px'}}/>
-                 <SectionTitle title="Access" />
-                 <TextField 
-                        label="Participant Secret" 
-                        placeholder="At least 10 characters" 
-                        hint="The secret code with which participants are able to create teams and submit projects to this event"
-                        value={this.state.eventData.participantSecret}
-                        onChange={(participantSecret) => this.setState({eventData: {...this.state.eventData, participantSecret}})}
-                        validate={(value) => {
-                            if (value.length < 10) {
-                                return {
-                                    error: true,
-                                    message: 'The secret must be at least 10 characters'
-                                }
-                            } 
-
-                            if (value.length > 50) {
-                                return {
-                                    error: true,
-                                    message: 'The secret must be max 50 characters'
-                                }
-                            }
-
-                            return {
-                                error: false,
-                                meesage: ''
-                            }
-                        }}/>
-                    <TextField 
-                        label="API Key" 
-                        placeholder="At least 24 characters" 
-                        hint="A secret key with which you can access the API of this event"
-                        value={this.state.eventData.apiKey}
-                        onChange={(apiKey) => this.setState({eventData: {...this.state.eventData, apiKey}})}
-                        validate={(value) => {
-                            if (value.length < 24) {
-                                return {
-                                    error: true,
-                                    message: 'The API key must be at least 24 characters'
-                                }
-                            } 
-
-                            if (value.length > 50) {
-                                return {
-                                    error: true,
-                                    message: 'The API key must be max 50 characters'
-                                }
-                            }
-
-                            return {
-                                error: false,
-                                meesage: ''
-                            }
-                        }}/>
+                <ErrorsBox errors={this.state.errors} />
+                <div style={{ height: '100px' }} />
+                <SubmitButton text="Create Event" loading={this.state.loading} onClick={this.onSubmit} />
             </div>
         );
     }

@@ -1,59 +1,64 @@
-@import "../../../styles/base.scss";
+@import '../../../styles/base.scss';
 
 .ArrayTextField--add-button {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-	button {
-		background: transparent;
-		color: $spring-green;
-		height: 20px;
-		line-height: 20px;
-		padding: 0 $base-margin;
-		font-size: 14px;
-		font-weight: bold;
-		text-transform: uppercase;
-		border: none;
-		border-radius: 10px;
-		cursor: pointer;
+    button {
+        background: $black;
+        color: $spring-green;
+        height: 20px;
+        line-height: 20px;
+        padding: 0 $base-margin;
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
 
-		&:focus {
-			outline: none;
-		}
-	}
+        &:focus {
+            outline: none;
+        }
+
+        &:disabled {
+            color: rgba(255, 255, 255, 0.3);
+        }
+    }
 }
 
 .ArrayTextField--row {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	margin-top: $base-margin;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: $base-margin;
 }
 
 .ArrayTextField--item {
-	margin: 0;
+    margin: 0;
 }
 
 .ArrayTextField--remove {
-	background: transparent;
-		color: red;
-		height: 20px;
-		line-height: 20px;
-		padding: 0 $base-margin;
-		font-size: 14px;
-		font-weight: bold;
-		text-transform: uppercase;
-		border: none;
-		border-radius: 10px;
-		cursor: pointer;
+    background: $black;
+    color: red;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 $base-margin;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
 
-		&:focus {
-			outline: none;
-		}
+    &:focus {
+        outline: none;
+    }
 }

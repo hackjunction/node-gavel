@@ -1,25 +1,23 @@
-'use strict';
-
+const EventController = require('../controllers/Event');
 const status = require('http-status');
-const EventController = require('../controllers/events');
+const passport = require('passport');
 
 module.exports = function(app) {
-    // Find an event with it's secret code
-    app.route('/api/events/code/:code').get(getEventWithCode);
+    /* Requires admin token */
+    app.post('/api/events', passport.authenticate('token', { session: false }), createEvent);
 };
 
-function getEventWithCode(req, res) {
-    return EventController.getEventWithCode(req.params.code)
-        .then(event => {
+function createEvent(req, res) {
+    EventController.create(req.body.event)
+        .then(data => {
             return res.status(status.OK).send({
                 status: 'success',
-                data: event
+                data
             });
         })
         .catch(error => {
-            return res.status(status.NOT_FOUND).send({
-                status: 'error',
-                message: error.message
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
             });
         });
 }

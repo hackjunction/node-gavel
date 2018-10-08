@@ -1,24 +1,33 @@
+require('dotenv').config();
+
 var express = require('express'),
     app = express(),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     bluebird = require('bluebird'),
+    passport = require('passport'),
     port = process.env.PORT || 3000;
 
 /* Set mongoose  & global to use Bluebird promises */
 global.Promise = bluebird;
 mongoose.Promise = bluebird;
-mongoose.connect('mongodb://localhost/nodeGavel');
+mongoose.connect(process.env.MONGODB_URI);
 
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
+app.use(passport.initialize());
 
-/* Routes */
-//require('./api/routes/EXAMPLE')(app);
+/* Passport auth config */
+require('./api/auth/passport');
+
+/* Old routes */
 require('./api/routes/annotators')(app);
 require('./api/routes/items')(app);
 require('./api/routes/reviewing')(app);
 require('./api/routes/teams')(app);
+
+/* Refactored routes */
+require('./api/routes/login')(app);
 require('./api/routes/events')(app);
 
 app.get('/api/hello', function(req, res) {
@@ -27,11 +36,12 @@ app.get('/api/hello', function(req, res) {
     });
 });
 
-/* Models */
-//require('./api/models/EXAMPLE');
+/* Old models */
 require('./api/models/Annotator');
 require('./api/models/Item');
 require('./api/models/Team');
+
+/* Refactored models */
 require('./api/models/Event');
 
 // React config for production

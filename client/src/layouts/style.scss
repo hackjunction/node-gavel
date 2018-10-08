@@ -6,6 +6,7 @@
     flex-direction: column;
     align-items: center;
     background: $black;
+    position: relative;
 }
 
 .Page--Header {
@@ -49,4 +50,11 @@
     .footer-text {
         color: $snow;
     }
+}
+
+.logout-button {
+    padding: 10px;
+    position: absolute;
+    top: 0;
+    right: 0;
 }

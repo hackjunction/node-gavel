@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import './style.scss';
 
 const DefaultLayout = ({ component: Component, ...rest }) => {
@@ -11,6 +11,11 @@ const DefaultLayout = ({ component: Component, ...rest }) => {
                     <div className="Page--Header">
                         <h1 className="title">{rest.headerTitle}</h1>
                         <p className="subtitle">{rest.headerSubtitle}</p>
+                        {rest.isAdmin ? (
+                            <Link className="logout-button" to="/login">
+                                Log out
+                            </Link>
+                        ) : null}
                     </div>
                     <div className="Page--Content">
                         <Component {...matchProps} />
@@ -27,7 +32,8 @@ const DefaultLayout = ({ component: Component, ...rest }) => {
 DefaultLayout.defaultProps = {
     headerTitle: 'GAVEL',
     headerSubtitle: 'GOD MODE',
-    footerText: 'Copyright Junction 2018'
+    footerText: 'Copyright Junction 2018',
+    isAdmin: false
 };
 
 export default DefaultLayout;

@@ -49,12 +49,12 @@ p,
 label,
 input {
     @extend %text-default;
-    color: $snow;
+    color: $text-light;
 }
 
 span,
 a,
 small {
     @extend %text-secondary;
-    color: $snow;
+    color: $text-light;
 }
