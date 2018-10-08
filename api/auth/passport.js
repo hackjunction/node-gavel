@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 //Admin token authentication
 passport.use(
     'admin',
-    new TokenStrategy(function(username, token, done) {
+    new LocalStrategy({ usernameField: 'token', passwordField: 'token' }, function(username, token, done) {
         if (token === process.env.ADMIN_TOKEN) {
             return done(null, {
                 isAdmin: true

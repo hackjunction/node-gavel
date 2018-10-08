@@ -2,7 +2,8 @@ import * as ActionTypes from './actionTypes';
 
 const initialState = {
     token: null,
-    tokenVerified: new Date(0)
+    tokenVerified: new Date(0),
+    events: []
 };
 
 export default function reducer(state = initialState, action) {
@@ -12,6 +13,11 @@ export default function reducer(state = initialState, action) {
                 ...state,
                 token: action.payload,
                 tokenVerified: Date.now()
+            };
+        case ActionTypes.SET_EVENTS:
+            return {
+                ...state,
+                events: action.payload
             };
         default:
             return state;

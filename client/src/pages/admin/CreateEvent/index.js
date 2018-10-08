@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './style.scss';
 import _ from 'lodash';
+import uuid from 'uuid/v4';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+
+import * as admin from '../../../redux/admin/selectors';
 
 import Validators from '../../../services/validators';
 
@@ -16,7 +22,7 @@ import API from '../../../services/api';
 const FIELDS = [
     {
         name: 'name',
-        default: ''
+        default: 'JUNCTIONxBudapest'
     },
     {
         name: 'hasTracks',
@@ -28,39 +34,51 @@ const FIELDS = [
     },
     {
         name: 'hasChallenges',
-        default: false
+        default: true
     },
     {
         name: 'challenges',
-        default: []
+        default: ['Challenge 1', 'Challenge 2', 'Challenge 3']
     },
     {
         name: 'timezone',
-        default: ''
+        default: 'Europe/Helsinki'
     },
     {
         name: 'startTime',
-        default: ''
+        default: '01.11.2018 16:00'
     },
     {
         name: 'endTime',
-        default: ''
+        default: '01.11.2018 23:00'
     },
     {
         name: 'submissionDeadline',
-        default: ''
+        default: '01.11.2018 18:00'
     },
     {
         name: 'votingStartTime',
-        default: new Date()
+        default: '01.11.2018 19:00'
     },
     {
         name: 'votingEndTime',
-        default: ''
+        default: '01.11.2018 20:00'
+    },
+    {
+        name: 'participantCode',
+        default: 'super-secret-budapest'
+    },
+    {
+        name: 'apiKey',
+        default: uuid()
     }
 ];
 
 class AdminCreateEvent extends Component {
+    static propTypes = {
+        adminToken: PropTypes.string.isRequired
+    };
+
     constructor(props) {
         super(props);
 
@@ -73,6 +91,8 @@ class AdminCreateEvent extends Component {
         this.state = {
             eventData,
             loading: false,
+            error: false,
+            submittedEvent: null,
             errors: []
         };
 
@@ -101,15 +121,45 @@ class AdminCreateEvent extends Component {
                 errors: filtered
             });
         } else {
-            this.setState({
-                errors: []
-            });
+            this.setState(
+                {
+                    errors: [],
+                    error: false,
+                    loading: true
+                },
+                () => {
+                    API.adminCreateEvent(this.state.eventData, this.props.adminToken)
+                        .then(event => {
+                            this.setState({
+                                loading: false,
+                                submittedEvent: event
+                            });
+                        })
+                        .catch(error => {
+                            this.setState({
+                                loading: false,
+                                error: true
+                            });
+                        });
+                }
+            );
         }
+    }
 
-        //TODO: Call /api/events to create event
+    renderSubmitted() {
+        return (
+            <div className="Event--submitted">
+                <h3 className="Event--submitted-title">Event submitted!</h3>
+                <Link to="/admin">Back to event list</Link>
+            </div>
+        );
     }
 
     render() {
+        if (this.state.submittedEvent) {
+            return this.renderSubmitted();
+        }
+
         return (
             <div className="AdminCreateEvent">
                 <div className="form-wrapper">
@@ -305,13 +355,61 @@ class AdminCreateEvent extends Component {
                         }
                         required={true}
                     />
+                    <div style={{ height: '50px' }} />
+                    <SectionTitle title="Access" />
+                    <TextField
+                        ref={ref => (this.participantCode = ref)}
+                        label="Participant code"
+                        placeholder="my-secret-key"
+                        value={this.state.eventData.participantCode}
+                        hint="A secret code with which participants can register for the event"
+                        onChange={participantCode =>
+                            this.setState({ eventData: { ...this.state.eventData, participantCode } })
+                        }
+                        validate={value =>
+                            Validators.stringMinMax(
+                                value,
+                                16,
+                                50,
+                                'The participant code must be at least 16 characters',
+                                'The participant code must be at most 50 characters'
+                            )
+                        }
+                        required={true}
+                    />
+                    <TextField
+                        ref={ref => (this.apiKey = ref)}
+                        label="API Key"
+                        placeholder=""
+                        value={this.state.eventData.apiKey}
+                        hint="API key for accessing this event via the API"
+                        onChange={apiKey => {
+                            this.setState({ eventData: { ...this.state.eventData, apiKey } });
+                        }}
+                        validate={value =>
+                            Validators.stringMinMax(
+                                value,
+                                16,
+                                50,
+                                'The API key must be at least 16 characters',
+                                'The API key can be at most 50 characters'
+                            )
+                        }
+                        required={true}
+                    />
                 </div>
                 <ErrorsBox errors={this.state.errors} />
                 <div style={{ height: '100px' }} />
                 <SubmitButton text="Create Event" loading={this.state.loading} onClick={this.onSubmit} />
+                <div style={{ height: '50px' }} />
+                {this.state.error ? <p className="CreateEvent--error">Oops, something went wrong</p> : null}
             </div>
         );
     }
 }
 
-export default AdminCreateEvent;
+const mapStateToProps = state => ({
+    adminToken: admin.getToken(state)
+});
+
+export default connect(mapStateToProps)(AdminCreateEvent);

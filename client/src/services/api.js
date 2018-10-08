@@ -99,7 +99,11 @@ const API = {
     },
 
     adminCreateEvent: (event, token) => {
-        return POST('/api/event', { event, token });
+        return POST('/api/events', { event, token });
+    },
+
+    adminGetEvents: token => {
+        return GET(`/api/events/?token=${token}`);
     }
 };
 

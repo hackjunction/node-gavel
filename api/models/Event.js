@@ -45,7 +45,7 @@ const EventSchema = new Schema({
         type: Date,
         required: true
     },
-    secretKey: {
+    participantCode: {
         type: String,
         required: true
     },
@@ -55,6 +55,7 @@ const EventSchema = new Schema({
     }
 });
 
+const DATE_FORMAT = 'DD.MM.YYYY HH:mm';
 const validate = data => {
     if (!moment.tz.zone(data.timezone)) {
         return Promise.reject(new Error('Invalid timezone ' + data.timezone));
@@ -62,25 +63,23 @@ const validate = data => {
 
     const cleaned = {
         ...data,
-        startTime: moment(data.startTime)
+        startTime: moment(data.startTime, DATE_FORMAT)
             .tz(data.timezone)
             .toDate(),
-        endTime: moment(data.endTime)
+        endTime: moment(data.endTime, DATE_FORMAT)
             .tz(data.timezone)
             .toDate(),
-        submissionDeadline: moment(data.submissionDeadline)
+        submissionDeadline: moment(data.submissionDeadline, DATE_FORMAT)
             .tz(data.timezone)
             .toDate(),
-        votingStartTime: moment(data.votingStartTime)
+        votingStartTime: moment(data.votingStartTime, DATE_FORMAT)
             .tz(data.timezone)
             .toDate(),
-        votingEndTime: moment(data.votingEndTime)
+        votingEndTime: moment(data.votingEndTime, DATE_FORMAT)
             .tz(data.timezone)
             .toDate(),
         tracks: data.hasTracks ? data.tracks : [],
-        challenges: data.hasChallenges ? data.challenges : [],
-        secretKey: 'foofoofoo',
-        apiKey: 'asdasdasdasdasadsas'
+        challenges: data.hasChallenges ? data.challenges : []
     };
 
     //TODO: Define more strict schema, shared validation for front/backend
@@ -96,7 +95,7 @@ const validate = data => {
         submissionDeadline: Joi.date(),
         votingStartTime: Joi.date(),
         votingEndTime: Joi.date(),
-        secretKey: Joi.string(),
+        participantCode: Joi.string(),
         apiKey: Joi.string()
     });
 

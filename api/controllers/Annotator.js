@@ -3,18 +3,18 @@ const uuid = require('uuid/v4');
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
-const AnnotatorSchema = Joi.object().keys({
-    name: Joi.string().required(),
-    email: Joi.string()
-        .email()
-        .required(),
-    secret: Joi.string().guid({
-        version: ['uuidv4']
-    }),
-    team: Joi.string().required()
-});
-
 const AnnotatorController = {
+    create: (name, email, teamId) => {
+        const secret = uuid();
+        const doc = {
+            name,
+            email,
+            secret,
+            team: teamId
+        };
+
+        return null;
+    },
     createAnnotator: (name, email, teamId) => {
         const secret = uuid();
         const doc = {

@@ -12,10 +12,7 @@ const TeamSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Annotator'
         }
-    ],
-    secret: {
-        type: String
-    }
+    ]
 });
 // Members are not defined here, but each Annotator has a property teamId for that
 
