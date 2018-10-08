@@ -10,7 +10,6 @@ export const setToken = token => dispatch => {
 
 export const login = (username, password) => async dispatch => {
     return API.adminLogin(username, password).then(token => {
-        console.log('TOKEN', token);
         dispatch(setToken(token));
     });
 };

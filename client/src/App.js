@@ -22,8 +22,26 @@ class App extends Component {
         return (
             <Switch>
                 {/* Public Routes */}
-                <Route exact path="/teams/create" component={CreateTeam} />
                 <DefaultLayout exact path="/login" component={AdminLogin} />
+
+                {/* TODO: Route for submitting a team */}
+                <DefaultLayout exact path="/teams/create" component={CreateTeam} />
+
+                {/* TODO: Team dashboard, only accessible with team token */}
+                <DefaultLayout exact path="/teams/:teamId" component={null} />
+
+                {/* TODO: Team submission (create/edit), only accessible with team token */}
+                <DefaultLayout exact path="/teams/:teamId/submission" component={null} />
+
+                {/* TODO: Voting frontend */}
+                <DefaultLayout exact path="/vote/:annotatorId" component={null} />
+
+                {/* TODO: (Low priority) Public route for viewing submitted projects of event */}
+                <DefaultLayout path="/event/:id" component={null} />
+
+                {/* TODO: (Low priority) Public front page */}
+                <DefaultLayout exact path="/" component={null} />
+
                 {/* Admin Routes */}
 
                 <AdminRoute exact path="/admin" component={AdminEventList} />
@@ -33,8 +51,13 @@ class App extends Component {
                     component={AdminCreateEvent}
                     headerSubtitle={'GOD MODE / Create event'}
                 />
-                {/* TODO */}
-                <DefaultLayout path="/admin/edit/:eventId" component={AdminCreateEvent} />
+                {/* TODO: Admin route for editing event by id */}
+                <AdminRoute path="/admin/edit/:eventId" component={AdminCreateEvent} />
+
+                {/* TODO: Admin route for viewing results of event by id */}
+                <AdminRoute path="/admin/event/:id" component={null} />
+
+                {/* Old routes */}
                 <Route exact path="/old/admin" component={AdminPanel} />
                 <Route exact path="/old/admin/test" component={Test} />
 

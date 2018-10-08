@@ -31,7 +31,7 @@ const DefaultLayout = ({ component: Component, ...rest }) => {
 
 DefaultLayout.defaultProps = {
     headerTitle: 'GAVEL',
-    headerSubtitle: 'GOD MODE',
+    headerSubtitle: '',
     footerText: 'Copyright Junction 2018',
     isAdmin: false
 };

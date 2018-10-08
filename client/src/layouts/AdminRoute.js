@@ -11,9 +11,16 @@ class AdminRoute extends Component {
         isAuthenticated: PropTypes.bool.isRequired
     };
 
+    static defaultProps = {
+        headerTitle: 'GAVEL',
+        headerSubtitle: 'GOD MODE',
+        footerText: 'Copyright Junction 2018',
+        isAdmin: true
+    };
+
     render() {
         if (this.props.isAuthenticated) {
-            return <DefaultLayout isAdmin={true} {...this.props} />;
+            return <DefaultLayout {...this.props} />;
         }
         return <Redirect to={{ pathname: '/login', state: { onSuccess: this.props.path } }} />;
     }
