@@ -2,29 +2,17 @@
 const status = require('http-status');
 const passport = require('passport');
 const TeamController = require('../controllers/Team');
-const {Team} = require('../models/Team');
+const { Team } = require('../models/Team');
 
-module.exports = function (app) {
-    app.get('/api/teams', getTeams);
+module.exports = function(app) {
     /* Requires admin token */
-    // SHOULDN'T NEED ADMIN TOKEN... how to fix? is a user login going to be implemented?
-    app.post('/api/teams', passport.authenticate('admin', {session: false}), createTeam);
+    app.get('/api/teams', passport.authenticate('admin', { session: false }), getTeams);
+
+    app.post('/api/teams', passport.authenticate('admin', { session: false }), createTeam);
 };
 
 function getTeams(req, res) {
-    Team.find({}, function (err, data) {
-        if (err) {
-            res.status(status.INTERNAL_SERVER_ERROR).send({
-                status: 'error'
-            });
-            console.error(err);
-        }
-        res.send({status: 'success', data})
-    })
-}
-
-function createTeam(req, res) {
-    TeamController.createTeam(req.body.eventId)
+    TeamController.getAll()
         .then(data => {
             return res.status(status.OK).send({
                 status: 'success',
@@ -38,6 +26,20 @@ function createTeam(req, res) {
         });
 }
 
+function createTeam(req, res) {
+    TeamController.create(req.body.eventId)
+        .then(data => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data
+            });
+        })
+        .catch(error => {
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
+}
 
 // const status = require('http-status');
 // const Item = require('../models/Item');

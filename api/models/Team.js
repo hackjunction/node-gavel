@@ -12,14 +12,32 @@ const TeamSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Annotator'
         }
-    ]
+    ],
+    contactPhone: {
+        type: String
+    }
 });
-// Members are not defined here, but each Annotator has a property teamId for that
 
 const Team = mongoose.model('Team', TeamSchema);
+
+const validate = data => {
+    const schema = Joi.object().keys({
+        event: Joi.string(),
+        members: Joi.array().items(
+            Joi.object().keys({
+                name: Joi.string(),
+                email: Joi.string()
+            })
+        ),
+        contactPhone: Joi.string().phone()
+    });
+
+    return schema.validate(cleaned);
+};
 
 //TODO: Validation of new team
 //TODO: "Class methods";
 module.exports = {
-    Team
+    Team,
+    validate
 };

@@ -12,6 +12,9 @@ const ProjectSchema = new Schema({
         type: String,
         required: true
     },
+    description: String,
+    /** TODO: Add Generic details here, such as long description, tech used, image, etc...*/
+
     team: {
         type: Schema.Types.ObjectId,
         ref: 'Team'
@@ -36,7 +39,6 @@ const ProjectSchema = new Schema({
             ref: 'Annotator'
         }
     ],
-    description: String,
     mu: {
         type: Number,
         default: 0.0

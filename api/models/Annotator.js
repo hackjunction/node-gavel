@@ -90,6 +90,8 @@ const validate = function(annotator) {
     });
 };
 
+//TODO: Move this to Annotator controller
+
 /* Creates a new Annotator, returns promise */
 const create = function(data) {
     return validate(data).then(validatedData => {
