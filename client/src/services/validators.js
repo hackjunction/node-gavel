@@ -1,4 +1,5 @@
 import moment from 'moment-timezone';
+import phone from 'phone';
 
 const Validators = {
     noValidate: () => {
@@ -136,6 +137,37 @@ const Validators = {
             return {
                 error: false,
                 message: ''
+            };
+        }
+    },
+
+    email: value => {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (!re.test(String(value).toLowerCase())) {
+            return {
+                error: true,
+                message: 'Please enter a valid email address'
+            };
+        } else {
+            return {
+                error: false,
+                message: ''
+            };
+        }
+    },
+
+    phoneNumber: value => {
+        const val = phone(value);
+
+        if (val.length === 0) {
+            return {
+                error: true,
+                message: 'Please enter a valid phone number, including the country code'
+            };
+        } else {
+            return {
+                error: false,
+                message: val[0]
             };
         }
     }

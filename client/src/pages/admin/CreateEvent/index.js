@@ -14,7 +14,7 @@ import TextField from '../../../components/forms/TextField/';
 import ArrayTextField from '../../../components/forms/ArrayTextField';
 import BooleanField from '../../../components/forms/BooleanField';
 import SectionTitle from '../../../components/forms/SectionTitle';
-import SubmitButton from '../../../components/forms/SubmitButtton';
+import SubmitButton from '../../../components/forms/SubmitButton';
 import ErrorsBox from '../../../components/forms/ErrorsBox';
 
 import API from '../../../services/api';

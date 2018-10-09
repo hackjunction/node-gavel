@@ -6,6 +6,9 @@ module.exports = function(app) {
     /* Requires admin token */
     app.post('/api/events', passport.authenticate('admin', { session: false }), createEvent);
     app.get('/api/events', passport.authenticate('admin', { session: false }), getAllEvents);
+
+    /* No auth required */
+    app.get('/api/events/code/:code', getEventWithCode);
 };
 
 function createEvent(req, res) {
@@ -33,6 +36,23 @@ function getAllEvents(req, res) {
             });
         })
         .catch(error => {
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
+}
+
+function getEventWithCode(req, res) {
+    EventController.getEventWithCode(req.params.code)
+        .then(data => {
+            console.log('SUCCESS', data);
+            return res.status(status.OK).send({
+                status: 'success',
+                data
+            });
+        })
+        .catch(error => {
+            console.log('ERROR', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });

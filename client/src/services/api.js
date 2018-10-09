@@ -104,6 +104,10 @@ const API = {
 
     adminGetEvents: token => {
         return GET(`/api/events/?token=${token}`);
+    },
+
+    getEventWithCode: code => {
+        return GET(`/api/events/code/${code}`);
     }
 };
 

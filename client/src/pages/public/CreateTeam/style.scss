@@ -1,0 +1,42 @@
+@import '../../../styles/base.scss';
+
+.CreateTeam {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.CreateTeam--title {
+    text-align: center;
+    width: 100%;
+}
+
+.CreateTeam--event-code {
+    display: flex;
+    flex-direction: column;
+}
+
+.CreateTeam--event-code-error,
+.CreateTeam--form-error {
+    @extend %Error--text;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.CreateTeam--add-member-button {
+    background: transparent;
+    color: $spring-green;
+    border: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.CreateTeam--remove-team-member {
+    color: $error-red;
+    text-decoration: underline;
+    cursor: pointer;
+}

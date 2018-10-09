@@ -14,7 +14,6 @@ class AdminEventList extends Component {
     }
 
     render() {
-        console.log(this.props.events);
         return (
             <div className="AdminEventList">
                 <div className="header">
@@ -32,7 +31,7 @@ class AdminEventList extends Component {
                         },
                         {
                             key: 'secret',
-                            title: 'Secret',
+                            title: 'API Key',
                             render: item => <span>{item.apiKey}</span>
                         },
                         {

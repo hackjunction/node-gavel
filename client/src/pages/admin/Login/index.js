@@ -6,7 +6,7 @@ import './style.scss';
 import * as admin from '../../../redux/admin/selectors';
 import * as AdminActions from '../../../redux/admin/actions';
 
-import SubmitButton from '../../../components/forms/SubmitButtton';
+import SubmitButton from '../../../components/forms/SubmitButton';
 
 class AdminLogin extends Component {
     constructor(props) {

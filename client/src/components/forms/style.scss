@@ -78,6 +78,7 @@
     color: $text-light;
     flex: 1;
     opacity: 0.5;
+    margin-right: $base-margin;
 
     &:focus {
         outline: none;
@@ -104,4 +105,23 @@
 .FormField--success-msg {
     color: $spring-green;
     margin-right: 6px;
+}
+
+.FormField--clear {
+    margin-left: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    i {
+        color: $error-red;
+    }
+}
+
+.FormField--non-editable {
+    margin: 0;
+    flex: 1;
+    border-bottom: 1px solid $text-light;
+    opacity: 0.5;
 }

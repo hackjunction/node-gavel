@@ -12,6 +12,16 @@ const EventController = {
 
     getAll: () => {
         return Event.find({});
+    },
+
+    getEventWithCode: participantCode => {
+        return Event.findOne({ participantCode }).then(event => {
+            if (!event) {
+                return Promise.reject('No event found with code ' + participantCode);
+            }
+
+            return event;
+        });
     }
 };
 

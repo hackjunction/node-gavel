@@ -5,9 +5,10 @@ import DefaultLayout from './layouts/DefaultLayout';
 import AdminRoute from './layouts/AdminRoute';
 
 import AdminPanel from './pages/AdminPanel';
-import CreateTeam from './pages/CreateTeam';
 import NotFound from './pages/NotFound';
 import Test from './pages/Test';
+
+import CreateTeam from './pages/public/CreateTeam';
 
 import AdminLogin from './pages/admin/Login';
 import AdminEventList from './pages/admin/EventList';
@@ -25,7 +26,7 @@ class App extends Component {
                 <DefaultLayout exact path="/login" component={AdminLogin} />
 
                 {/* TODO: Route for submitting a team */}
-                <DefaultLayout exact path="/teams/create" component={CreateTeam} />
+                <DefaultLayout exact path="/teams/create" component={CreateTeam} headerSubtitle="Submit your team" />
 
                 {/* TODO: (Low priority) Public route for viewing submitted projects of event */}
                 <DefaultLayout path="/event/:id" component={null} />
