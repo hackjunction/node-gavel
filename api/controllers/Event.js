@@ -1,7 +1,4 @@
 const { Event, validate } = require('../models/Event');
-const moment = require('moment-timezone');
-
-const DATE_FORMAT = 'DD.MM.YYYY HH:mm';
 
 const EventController = {
     create: data => {

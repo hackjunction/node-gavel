@@ -1,4 +1,5 @@
 const { Team, validate } = require('../models/Team');
+const AnnotatorController = require('./Annotator');
 
 const TeamController = {
     create: (eventId, teamMembers, contactPhone) => {
