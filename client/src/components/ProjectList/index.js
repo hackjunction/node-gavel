@@ -4,6 +4,16 @@ import './style.css';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css'
 
+const testItem = {
+    "name": "testItem1",
+    "location": "A1",
+    "description": "This is a nice little test item for testing purposes, do feel free to ignore it",
+    "mu": 1.952325,
+    "sigma_sq": 0.72564,
+    "active": true,
+    "prioritized": false,
+}
+
 class ProjectList extends Component {
     constructor(props) {
         super(props);
@@ -11,49 +21,39 @@ class ProjectList extends Component {
         this.state = {
             error: false,
             loading: false,
-            items: []
+            items: [testItem]
         };
     }
 
-    componentDidMount() {
-        this.getProjects();
-    }
+    // componentDidMount() {
+    //     this.getProjects();
+    // }
 
-    getProjects() {
-        this.setState(
-            {
-                loading: true,
-                error: false
-            },
-            async () => {
-                const response = await fetch('/api/items');
-                const body = await response.json();
+    // getProjects() {
+    //     this.setState(
+    //         {
+    //             loading: true,
+    //             error: false
+    //         },
+    //         async () => {
+    //             const response = await fetch('/api/items');
+    //             const body = await response.json();
 
-                if (response.status !== 200) {
-                    this.setState({
-                        error: true,
-                        loading: false,
-                        items: []
-                    });
-                } else {
-                    this.setState({
-                        error: false,
-                        loading: false,
-                        items: body.data
-                    });
-                }
-            }
-        );
-    }
-
-    // renderProjects() {
-    //     return _.map(this.state.items, project => {
-    //         return (
-    //             <div key={project._id}>
-    //                 <p>{project.name + '  /  id: ' + project._id}</p>
-    //             </div>
-    //         );
-    //     });
+    //             if (response.status !== 200) {
+    //                 this.setState({
+    //                     error: true,
+    //                     loading: false,
+    //                     items: []
+    //                 });
+    //             } else {
+    //                 this.setState({
+    //                     error: false,
+    //                     loading: false,
+    //                     items: body.data
+    //                 });
+    //             }
+    //         }
+    //     );
     // }
 
     
@@ -68,25 +68,39 @@ class ProjectList extends Component {
         }, {
             Header: "Description",
             accessor: "description",
-            className: "mid"
+            className: "center"
         }, {
             Header: "Location",
             accessor: "location",
-            className: "mid"
+            className: "center"
         }, {
             Header: "Average",
             accessor: "mu",
-            className: "mid"
+            className: "center"
         }, {
             Header: "Std. deviation",
             accessor: "sigma_sq",
-            className: "mid"
+            className: "center"
+        }, {
+            Header: "Prioritize",
+            accessor: "prioritized",
+            className: "center",
+            Cell: row => (
+                <button /*TODO: LISÄÄ TOIMINNALLISUUS */> {row.value  ? 'Stop prioritizing' : 'Prioritize'} </button>
+            )
+        }, {
+            Header:"Enable/Disable",
+            accessor:"active",
+            Cell: row => (
+                <button /*TODO: LISÄÄ CHANGESTATUS*/>{row.value ? 'Disable project': 'Enable project'}</button>
+            )
         }]
 
         return (
             <div className="ProjectList--wrapper">
                 <h1 className="ProjectList--title">Projects</h1>
-                <ReactTable data = {this.state.items} columns = {columns} />
+                <p>Total  projects: {this.state.items.length}</p>
+                <ReactTable className="ProjectList" data = {this.state.items} columns = {columns} />
             </div>
         );
     }
