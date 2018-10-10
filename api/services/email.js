@@ -3,7 +3,8 @@ const Email = require('email-templates');
 const path = require('path');
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    port: parseInt(process.env.EMAILSERVICE_PORT || "587"),
+    host: process.env.EMAILSERVICE_HOST || "",
     auth: {
         user: process.env.EMAILSERVICE_USER || "",
         pass: process.env.EMAILSERVICE_PASS || ""
