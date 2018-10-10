@@ -2,10 +2,15 @@
 const status = require('http-status');
 const passport = require('passport');
 const TeamController = require('../controllers/Team');
+const AnnotatorController = require('../controllers/Annotator');
 
 module.exports = function(app) {
     /* Requires admin token */
     app.get('/api/teams', passport.authenticate('admin', { session: false }), getTeams);
+
+    /* Requires annotator token */
+    app.post('/api/teams/remove-member', passport.authenticate('annotator', { session: false }), removeTeamMember);
+    app.post('/api/teams/add-member', passport.authenticate('annotator', { session: false }), addTeamMember);
 
     /* Public routes */
     app.post('/api/teams', createTeam);
@@ -20,6 +25,7 @@ function getTeams(req, res) {
             });
         })
         .catch(error => {
+            console.log('getTeams', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });
@@ -37,6 +43,49 @@ function createTeam(req, res) {
             });
         })
         .catch(error => {
+            console.log('createTeam', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
+}
+
+function addTeamMember(req, res) {
+    const { name, email } = req.body;
+    const { team } = req.user;
+
+    AnnotatorController.create(name, email, team)
+        .then(annotator => {
+            TeamController.addMembers(teamId, annotator._id).then(data => {
+                return res.status(status.OK).send({
+                    status: 'success',
+                    data
+                });
+            });
+        })
+        .catch(error => {
+            console.log('addTeamMember', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
+}
+
+function removeTeamMember(req, res) {
+    const { email } = req.body;
+    const { team } = req.user;
+
+    AnnotatorController.findByEmail(email)
+        .then(annotator => {
+            TeamController.removeMembers(team, annotator._id).then(data => {
+                return res.status(status.OK).send({
+                    status: 'success',
+                    data
+                });
+            });
+        })
+        .catch(error => {
+            console.log('removeTeamMember', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });

@@ -1,11 +1,11 @@
 const Promise = require('bluebird');
 const _ = require('lodash');
-const {Team, validate} = require('../models/Team');
+const { Team, validate } = require('../models/Team');
 const AnnotatorController = require('./Annotator');
 const EmailService = require('../services/email');
 
 const TeamController = {
-    create: (eventId, teamMembers, contactPhone) => {
+    create: (eventId, teamMembers, contactPhone, sendEmail = true) => {
         const teamData = {
             event: eventId,
             members: teamMembers,
@@ -29,19 +29,26 @@ const TeamController = {
                     return TeamController.addMembers(teamId, ids);
                 })
                 .then(team => {
-                    let context = {
-                        team,
-                        event: {
-                            _id: teamData.event,
-                            link: "https://2018.heckjunction.com"
-                        }
-                    };
-                    EmailService
-                        .sendAll("create-team", team.members, context)
-                        .then(() => {
-                            console.log("Sent message to team " + team._id);
-                        })
-                        .catch(console.error);
+                    if (sendEmail) {
+                        let context = {
+                            team,
+                            event: {
+                                _id: teamData.event,
+                                link: 'https://2018.heckjunction.com'
+                            }
+                        };
+                        return EmailService.sendAll('create-team', team.members, context)
+                            .then(() => {
+                                console.log('Sent message to team ' + team._id);
+                                return team;
+                            })
+                            .catch(e => {
+                                console.log('Error sending emails to team ' + team._id);
+                                return team;
+                            });
+                    } else {
+                        return team;
+                    }
                 });
         });
     },
@@ -51,11 +58,11 @@ const TeamController = {
     },
 
     addMembers: (teamId, annotatorIds) => {
-        return Team.findByIdAndUpdate(teamId, {$addToSet: {members: annotatorIds}}, {new: true});
+        return Team.findByIdAndUpdate(teamId, { $addToSet: { members: annotatorIds } }, { new: true });
     },
 
     removeMembers: (teamId, annotatorIds) => {
-        return Team.findByIdAndUpdate(teamId, {$pull: {members: annotatorIds}}, {new: true});
+        return Team.findByIdAndUpdate(teamId, { $pull: { members: annotatorIds } }, { new: true });
     }
 };
 

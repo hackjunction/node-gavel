@@ -31,6 +31,16 @@ const AnnotatorController = {
 
             return annotator;
         });
+    },
+
+    getByEmail: email => {
+        return Annotator.findOne({ email }).then(annotator => {
+            if (!annotator) {
+                return Promise.reject('No annotator found with the email ' + email);
+            }
+
+            return annotator;
+        });
     }
 };
 

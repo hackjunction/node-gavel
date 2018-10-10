@@ -38,13 +38,18 @@ class App extends Component {
                 {/* Accessible with annotator token */}
 
                 {/* TODO: Team dashboard */}
-                <AnnotatorRoute exact path="/teams/:secret" component={TeamDashboard} />
+                <DefaultLayout exact path="/teams/:secret" component={TeamDashboard} headerSubtitle="Team Dashboard" />
 
                 {/* TODO: Team submission (create/edit) */}
-                <DefaultLayout exact path="/teams/:secret/submission" component={TeamSubmission} />
+                <DefaultLayout
+                    exact
+                    path="/teams/:secret/submission"
+                    component={TeamSubmission}
+                    headerSubtitle="Your submission"
+                />
 
                 {/* TODO: Voting frontend */}
-                <DefaultLayout exact path="/vote/:secret" component={null} />
+                <AnnotatorRoute exact path="/vote/:secret" component={null} />
 
                 {/* Admin Routes */}
 
