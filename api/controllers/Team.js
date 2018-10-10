@@ -37,18 +37,16 @@ const TeamController = {
                                 link: 'https://2018.heckjunction.com'
                             }
                         };
-                        return EmailService.sendAll('create-team', team.members, context)
+                        EmailService.sendAll('create-team', team.members, context)
                             .then(() => {
                                 console.log('Sent message to team ' + team._id);
-                                return team;
                             })
                             .catch(e => {
                                 console.log('Error sending emails to team ' + team._id);
-                                return team;
                             });
-                    } else {
-                        return team;
                     }
+
+                    return team;
                 });
         });
     },
