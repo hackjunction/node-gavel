@@ -1,7 +1,8 @@
 const Promise = require('bluebird');
 const _ = require('lodash');
-const { Team, validate } = require('../models/Team');
+const {Team, validate} = require('../models/Team');
 const AnnotatorController = require('./Annotator');
+const EmailService = require('../services/email');
 
 const TeamController = {
     create: (eventId, teamMembers, contactPhone) => {
@@ -26,6 +27,21 @@ const TeamController = {
                 .then(annotators => {
                     const ids = _.map(annotators, '_id');
                     return TeamController.addMembers(teamId, ids);
+                })
+                .then(team => {
+                    let context = {
+                        team,
+                        event: {
+                            _id: teamData.event,
+                            link: "https://2018.heckjunction.com"
+                        }
+                    };
+                    EmailService
+                        .sendAll("create-team", team.members, context)
+                        .then(() => {
+                            console.log("Sent message to team " + team._id);
+                        })
+                        .catch(console.error);
                 });
         });
     },
@@ -35,11 +51,11 @@ const TeamController = {
     },
 
     addMembers: (teamId, annotatorIds) => {
-        return Team.findByIdAndUpdate(teamId, { $addToSet: { members: annotatorIds } }, { new: true });
+        return Team.findByIdAndUpdate(teamId, {$addToSet: {members: annotatorIds}}, {new: true});
     },
 
     removeMembers: (teamId, annotatorIds) => {
-        return Team.findByIdAndUpdate(teamId, { $pull: { members: annotatorIds } }, { new: true });
+        return Team.findByIdAndUpdate(teamId, {$pull: {members: annotatorIds}}, {new: true});
     }
 };
 
