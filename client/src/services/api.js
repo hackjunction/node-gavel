@@ -108,6 +108,10 @@ const API = {
 
     getEventWithCode: code => {
         return GET(`/api/events/code/${code}`);
+    },
+
+    createTeam: (eventId, teamMembers, contactPhone) => {
+        return POST('/api/teams/', { eventId, teamMembers, contactPhone });
     }
 };
 

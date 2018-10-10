@@ -2,7 +2,6 @@
 const status = require('http-status');
 const passport = require('passport');
 const TeamController = require('../controllers/Team');
-const { Team } = require('../models/Team');
 
 module.exports = function(app) {
     /* Requires admin token */
@@ -28,7 +27,9 @@ function getTeams(req, res) {
 }
 
 function createTeam(req, res) {
-    TeamController.create(req.body.eventId)
+    const { eventId, teamMembers, contactPhone } = req.body;
+
+    TeamController.create(eventId, teamMembers, contactPhone)
         .then(data => {
             return res.status(status.OK).send({
                 status: 'success',

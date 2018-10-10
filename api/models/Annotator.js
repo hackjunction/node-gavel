@@ -74,7 +74,7 @@ const validate = function(annotator) {
         email: Joi.string()
             .email()
             .required(),
-        teamId: Joi.string()
+        team: Joi.string()
     });
 
     return schema.validate(annotator);

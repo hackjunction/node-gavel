@@ -1,6 +1,7 @@
 'use strict';
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Joi = require('joi');
 
 const TeamSchema = new Schema({
     event: {
@@ -25,14 +26,14 @@ const validate = data => {
         event: Joi.string(),
         members: Joi.array().items(
             Joi.object().keys({
-                name: Joi.string(),
-                email: Joi.string()
+                name: Joi.string().trim(),
+                email: Joi.string().trim()
             })
         ),
-        contactPhone: Joi.string().phone()
+        contactPhone: Joi.string().trim()
     });
 
-    return schema.validate(cleaned);
+    return schema.validate(data);
 };
 
 //TODO: Validation of new team

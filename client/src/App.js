@@ -24,8 +24,6 @@ class App extends Component {
             <Switch>
                 {/* Public Routes */}
                 <DefaultLayout exact path="/login" component={AdminLogin} />
-
-                {/* TODO: Route for submitting a team */}
                 <DefaultLayout exact path="/teams/create" component={CreateTeam} headerSubtitle="Submit your team" />
 
                 {/* TODO: (Low priority) Public route for viewing submitted projects of event */}

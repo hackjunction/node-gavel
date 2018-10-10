@@ -26,7 +26,9 @@ class CreateTeam extends Component {
             emailInput: '',
             teamMemberError: '',
             contactPhone: '',
-            formError: ''
+            formError: '',
+            formLoading: false,
+            formSubmitted: false
         };
 
         this.findEvent = this.findEvent.bind(this);
@@ -129,16 +131,22 @@ class CreateTeam extends Component {
         this.setState(
             {
                 formLoading: true,
-                formError: false
+                formError: ''
             },
             () => {
                 API.createTeam(this.state.event._id, this.state.teamMembers, this.state.contactPhone)
                     .then(data => {
-                        window.alert('SUCCESS!');
+                        this.setState({
+                            formLoading: false,
+                            formSubmitted: true
+                        });
                     })
                     .catch(error => {
                         console.log('ERROR', error);
-                        window.alert('ERROR!');
+                        this.setState({
+                            formLoading: false,
+                            formError: 'Oops, something went wrong while submitting your team. Please try again.'
+                        });
                     });
             }
         );
@@ -246,6 +254,19 @@ class CreateTeam extends Component {
     }
 
     render() {
+        if (this.state.formSubmitted) {
+            return (
+                <div className="CreateTeam">
+                    <div style={{ height: '50px' }} />
+                    <h3 className="CreateTeam--submitted-title">Your team has been submitted!</h3>
+                    <p className="CreateTeam--submitted-desc">
+                        Each team member should soon receive their personal login link to their submitted email. With
+                        that link, you can access the team dashboard and submit your project!
+                    </p>
+                </div>
+            );
+        }
+
         return (
             <div className="CreateTeam">
                 <div style={{ height: '50px' }} />
