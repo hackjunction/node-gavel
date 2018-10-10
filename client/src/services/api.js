@@ -112,6 +112,10 @@ const API = {
 
     createTeam: (eventId, teamMembers, contactPhone) => {
         return POST('/api/teams/', { eventId, teamMembers, contactPhone });
+    },
+
+    getUser: secret => {
+        return GET(`/api/annotators/${secret}`);
     }
 };
 

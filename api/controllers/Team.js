@@ -17,10 +17,11 @@ const TeamController = {
                 members: []
             })
                 .then(team => {
-                    teamId = team._id;
-                    return Promise.map(validated.members, member => {
-                        return AnnotatorController.create(member.name, member.email, team._id.toString());
+                    const members = _.map(validated.members, m => {
+                        m.event = eventId;
+                        return m;
                     });
+                    return AnnotatorController.createMany(members);
                 })
                 .then(annotators => {
                     const ids = _.map(annotators, '_id');

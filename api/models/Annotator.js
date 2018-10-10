@@ -45,6 +45,10 @@ const AnnotatorSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Team'
     },
+    event: {
+        type: Schema.Types.ObjectId,
+        ref: 'Event'
+    },
     alpha: {
         type: Number,
         default: 10.0
@@ -74,7 +78,8 @@ const validate = function(annotator) {
         email: Joi.string()
             .email()
             .required(),
-        team: Joi.string()
+        team: Joi.any(),
+        event: Joi.any()
     });
 
     return schema.validate(annotator);

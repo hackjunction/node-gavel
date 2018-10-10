@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 /* Layouts */
 import DefaultLayout from './layouts/DefaultLayout';
 import AdminRoute from './layouts/AdminRoute';
+import AnnotatorRoute from './layouts/AnnotatorRoute';
 
 import AdminPanel from './pages/AdminPanel';
 import NotFound from './pages/NotFound';
@@ -13,6 +14,9 @@ import CreateTeam from './pages/public/CreateTeam';
 import AdminLogin from './pages/admin/Login';
 import AdminEventList from './pages/admin/EventList';
 import AdminCreateEvent from './pages/admin/CreateEvent';
+
+import TeamDashboard from './pages/team/Dashboard';
+import TeamSubmission from './pages/team/Submission';
 
 import { Switch, Route } from 'react-router-dom';
 
@@ -25,7 +29,6 @@ class App extends Component {
                 {/* Public Routes */}
                 <DefaultLayout exact path="/login" component={AdminLogin} />
                 <DefaultLayout exact path="/teams/create" component={CreateTeam} headerSubtitle="Submit your team" />
-
                 {/* TODO: (Low priority) Public route for viewing submitted projects of event */}
                 <DefaultLayout path="/event/:id" component={null} />
 
@@ -35,13 +38,13 @@ class App extends Component {
                 {/* Accessible with annotator token */}
 
                 {/* TODO: Team dashboard */}
-                <DefaultLayout exact path="/teams/:teamId" component={null} />
+                <AnnotatorRoute exact path="/teams/:secret" component={TeamDashboard} />
 
                 {/* TODO: Team submission (create/edit) */}
-                <DefaultLayout exact path="/teams/:teamId/submission" component={null} />
+                <DefaultLayout exact path="/teams/:secret/submission" component={TeamSubmission} />
 
                 {/* TODO: Voting frontend */}
-                <DefaultLayout exact path="/vote/:annotatorId" component={null} />
+                <DefaultLayout exact path="/vote/:secret" component={null} />
 
                 {/* Admin Routes */}
 
@@ -53,7 +56,7 @@ class App extends Component {
                     headerSubtitle={'GOD MODE / Create event'}
                 />
                 {/* TODO: Admin route for editing event by id */}
-                <AdminRoute path="/admin/edit/:eventId" component={AdminCreateEvent} />
+                <AdminRoute path="/admin/edit/:id" component={AdminCreateEvent} />
 
                 {/* TODO: Admin route for viewing results of event by id */}
                 <AdminRoute path="/admin/event/:id" component={null} />

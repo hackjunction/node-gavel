@@ -1,8 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const TokenStrategy = require('passport-token').Strategy;
-const mongoose = require('mongoose');
-
+const AnnotatorController = require('../controllers/Annotator');
 //Admin token authentication
 passport.use(
     'admin',
@@ -14,6 +12,25 @@ passport.use(
         } else {
             return done(null, false, { message: 'Invalid admin token' });
         }
+    })
+);
+
+passport.use(
+    'annotator',
+    new LocalStrategy({ usernameField: 'secret', passwordField: 'secret' }, function(username, secret, done) {
+        if (!secret) {
+            return done(null, false, { message: 'Annotator secret is required' });
+        }
+
+        AnnotatorController.getBySecret(secret)
+            .populate('event team')
+            .then(annotator => {
+                if (!annotator) {
+                    return done(null, false, { message: 'No annotator found with secret ' + secret });
+                }
+
+                return done(null, annotator);
+            });
     })
 );
 

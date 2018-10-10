@@ -58,3 +58,22 @@
     top: 0;
     right: 0;
 }
+
+.RouteError,
+.RouteLoading {
+    padding: $double-margin;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    i {
+        margin-bottom: 50px;
+        color: $snow;
+    }
+}
+
+.RouteError--link {
+    color: $turquoise;
+    text-decoration: underline;
+}

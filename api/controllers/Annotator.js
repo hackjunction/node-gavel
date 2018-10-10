@@ -3,11 +3,12 @@ const uuid = require('uuid/v4');
 const { Annotator, validate } = require('../models/Annotator');
 
 const AnnotatorController = {
-    create: (name, email, teamId) => {
+    create: (name, email, teamId, eventId) => {
         const doc = {
             name,
             email,
-            team: teamId
+            team: teamId,
+            event: eventId
         };
 
         return validate(doc).then(validated => {
@@ -18,7 +19,17 @@ const AnnotatorController = {
 
     createMany: data => {
         return Promise.map(data, annotator => {
-            return AnnotatorController.create(annotator.name, annotator.email, annotator.teamId);
+            return AnnotatorController.create(annotator.name, annotator.email, annotator.team, annotator.event);
+        });
+    },
+
+    getBySecret: secret => {
+        return Annotator.findOne({ secret }).then(annotator => {
+            if (!annotator) {
+                return Promise.reject('No annotator found with the secret ' + secret);
+            }
+
+            return annotator;
         });
     }
 };
