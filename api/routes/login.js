@@ -3,7 +3,7 @@ const passport = require('passport');
 
 module.exports = function(app) {
     app.post('/api/login', adminLogin);
-    app.post('/api/validate-token', passport.authenticate('token', { session: false }), success);
+    app.post('/api/validate-token', passport.authenticate('admin', { session: false }), success);
 };
 
 function success(req, res) {
