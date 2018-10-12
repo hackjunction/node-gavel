@@ -2,12 +2,14 @@ const Promise = require('bluebird');
 const { Project, validate } = require('../models/Project');
 
 const ProjectController = {
-    create: (name, location, description, teamId) => {
+    create: (name, location, description, teamId, image, github) => {
         const doc = {
             name,
             location,
             description,
-            team: teamId
+            team: teamId,
+            image,
+            github
         };
 
         return validate(doc).then(validatedData => {

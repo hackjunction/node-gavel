@@ -15,6 +15,8 @@ const ProjectSchema = new Schema({
     description: String,
     /** TODO: Add Generic details here, such as long description, tech used, image, etc...*/
 
+    image: String,
+    github: String,
     team: {
         type: Schema.Types.ObjectId,
         ref: 'Team'
@@ -60,6 +62,8 @@ const validate = function(item) {
             .max(120)
             .required(),
         description: Joi.string().max(1000),
+        image: Joi.string().uri().trim(),
+        github: Joi.string().uri().trim(),
         location: Joi.string()
             .alphanum()
             .min(1)
