@@ -38,6 +38,11 @@ class AdminEventList extends Component {
                             key: 'date',
                             title: 'Date',
                             render: item => <span>{moment(item.startTime).format('MMMM Do YYYY')}</span>
+                        },
+                        {
+                            key: 'edit',
+                            title: '',
+                            render: item => <a href={`/admin/edit/${item.apiKey}`}>Edit</a>
                         }
                     ]}
                     items={this.props.events}

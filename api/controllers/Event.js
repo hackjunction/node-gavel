@@ -20,7 +20,6 @@ const EventController = {
         delete eventInfo._id
         delete eventInfo.__v
         return validate(eventInfo).then(validated => {
-            console.log(validated)
             return Event.findOneAndUpdate({apiKey: validated.apiKey}, validated, {new: true, upsert: true})
         })
     },

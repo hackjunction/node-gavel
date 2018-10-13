@@ -168,7 +168,7 @@ class AdminEditEvent extends Component {
     renderSubmitted() {
         return (
             <div className="Event--submitted">
-                <h3 className="Event--submitted-title">Event submitted!</h3>
+                <h3 className="Event--submitted-title">Event updated!</h3>
                 <Link to="/admin">Back to event list</Link>
             </div>
         );
