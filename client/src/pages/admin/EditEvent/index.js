@@ -5,6 +5,7 @@ import _ from 'lodash';
 import uuid from 'uuid/v4';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import moment from 'moment-timezone';
 
 import * as AdminActions from '../../../redux/admin/actions';
 import * as admin from '../../../redux/admin/selectors';
@@ -84,6 +85,11 @@ class AdminEditEvent extends Component {
     componentDidMount() {
       API.adminGetEventByID(this.props.adminToken, this.props.match.params.id)
         .then((data) => {
+          data.startTime = moment(data.startTime).format('DD.MM.YYYY HH:mm')
+          data.endTime = moment(data.endTime).format('DD.MM.YYYY HH:mm')
+          data.submissionDeadline = moment(data.submissionDeadline).format('DD.MM.YYYY HH:mm')
+          data.votingStartTime = moment(data.votingStartTime).format('DD.MM.YYYY HH:mm')
+          data.votingEndTime = moment(data.votingEndTime).format('DD.MM.YYYY HH:mm')
           this.setState({
             eventData: data
           })
