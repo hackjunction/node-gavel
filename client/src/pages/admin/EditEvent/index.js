@@ -419,7 +419,7 @@ class AdminEditEvent extends Component {
                 </div>
                 <ErrorsBox errors={this.state.errors} />
                 <div style={{ height: '100px' }} />
-                <SubmitButton text="Create Event" loading={this.state.loading} onClick={this.onSubmit} />
+                <SubmitButton text="Edit Event" loading={this.state.loading} onClick={this.onSubmit} />
                 <div style={{ height: '50px' }} />
                 {this.state.error ? <p className="EditEvent--error">Oops, something went wrong</p> : null}
             </div>

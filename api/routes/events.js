@@ -6,7 +6,8 @@ module.exports = function(app) {
     /* Requires admin token */
     app.post('/api/events', passport.authenticate('admin', { session: false }), createEvent);
     app.get('/api/events', passport.authenticate('admin', { session: false }), getAllEvents);
-    app.get('/api/events/:id', passport.authenticate('admin', { session: false }), getEventByID);
+    app.get('/api/events/:id', passport.authenticate('admin', { session: false }), getEventByApiKey);
+    app.post('/api/events/:id', passport.authenticate('admin', { session: false }), updateEventByApiKey);
 
     /* No auth required */
     app.get('/api/events/code/:code', getEventWithCode);
@@ -44,8 +45,8 @@ function getAllEvents(req, res) {
         });
 }
 
-function getEventByID(req, res) {
-  EventController.getByID(req.params.id)
+function getEventByApiKey(req, res) {
+  EventController.getByApiKey(req.params.id)
       .then(data => {
           return res.status(status.OK).send({
               status: 'success',
@@ -74,4 +75,20 @@ function getEventWithCode(req, res) {
                 status: 'error'
             });
         });
+}
+
+function updateEventByApiKey(req, res) {
+  EventController.updateByApiKey(req.body.event)
+      .then(data => {
+          return res.status(status.OK).send({
+              status: 'success',
+              data
+          });
+      })
+      .catch(error => {
+          console.log('EventController.getByID', error);
+          return res.status(status.INTERNAL_SERVER_ERROR).send({
+              status: 'error'
+          });
+      });
 }

@@ -103,7 +103,11 @@ const API = {
     },
 
     adminGetEventByID: (token, id) => {
-      return GET(`/api/events/${id}?token=${token}`);
+        return GET(`/api/events/${id}?token=${token}`);
+    },
+
+    adminEditEvent: (event, token) => {
+        return POST(`/api/events/${event.apiKey}`, {event, token})
     },
 
     adminGetEvents: token => {

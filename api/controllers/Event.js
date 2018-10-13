@@ -11,8 +11,18 @@ const EventController = {
         return Event.find({});
     },
 
-    getByID: (id) => {
+    getByApiKey: (id) => {
         return Event.findOne({apiKey: id})
+    },
+
+    updateByApiKey: data => {
+        const eventInfo = data
+        delete eventInfo._id
+        delete eventInfo.__v
+        return validate(eventInfo).then(validated => {
+            console.log(validated)
+            return Event.findOneAndUpdate({apiKey: validated.apiKey}, validated, {new: true, upsert: true})
+        })
     },
 
     getEventWithCode: participantCode => {
