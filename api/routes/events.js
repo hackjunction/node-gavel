@@ -6,6 +6,7 @@ module.exports = function(app) {
     /* Requires admin token */
     app.post('/api/events', passport.authenticate('admin', { session: false }), createEvent);
     app.get('/api/events', passport.authenticate('admin', { session: false }), getAllEvents);
+    app.get('/api/events/:id', passport.authenticate('admin', { session: false }), getEventByID);
 
     /* No auth required */
     app.get('/api/events/code/:code', getEventWithCode);
@@ -41,6 +42,22 @@ function getAllEvents(req, res) {
                 status: 'error'
             });
         });
+}
+
+function getEventByID(req, res) {
+  EventController.getByID(req.params.id)
+      .then(data => {
+          return res.status(status.OK).send({
+              status: 'success',
+              data
+          });
+      })
+      .catch(error => {
+          console.log('EventController.getByID', error);
+          return res.status(status.INTERNAL_SERVER_ERROR).send({
+              status: 'error'
+          });
+      });
 }
 
 function getEventWithCode(req, res) {

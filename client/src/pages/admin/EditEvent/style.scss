@@ -1,0 +1,14 @@
+@import '../../../styles/base';
+
+.AdminEditEvent {
+    position: relative;
+}
+
+.EditEvent--error {
+    @extend %Error--text;
+
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+}

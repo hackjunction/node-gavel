@@ -11,6 +11,10 @@ const EventController = {
         return Event.find({});
     },
 
+    getByID: (id) => {
+        return Event.findOne({apiKey: id})
+    },
+
     getEventWithCode: participantCode => {
         return Event.findOne({ participantCode }).then(event => {
             if (!event) {

@@ -14,6 +14,7 @@ import CreateTeam from './pages/public/CreateTeam';
 import AdminLogin from './pages/admin/Login';
 import AdminEventList from './pages/admin/EventList';
 import AdminCreateEvent from './pages/admin/CreateEvent';
+import AdminEditEvent from './pages/admin/EditEvent';
 
 import TeamDashboard from './pages/team/Dashboard';
 import TeamSubmission from './pages/team/Submission';
@@ -61,7 +62,7 @@ class App extends Component {
                     headerSubtitle={'GOD MODE / Create event'}
                 />
                 {/* TODO: Admin route for editing event by id */}
-                <AdminRoute path="/admin/edit/:id" component={AdminCreateEvent} />
+                <AdminRoute path="/admin/edit/:id" component={AdminEditEvent} />
 
                 {/* TODO: Admin route for viewing results of event by id */}
                 <AdminRoute path="/admin/event/:id" component={null} />

@@ -102,6 +102,10 @@ const API = {
         return POST('/api/events', { event, token });
     },
 
+    adminGetEventByID: (token, id) => {
+      return GET(`/api/events/${id}?token=${token}`);
+    },
+
     adminGetEvents: token => {
         return GET(`/api/events/?token=${token}`);
     },
