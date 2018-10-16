@@ -1,18 +1,16 @@
-const nodemailer = require('nodemailer');
 const Email = require('email-templates');
 const path = require('path');
+const sgMail = require('@sendgrid/mail');
+const Promise = require('bluebird');
 
-const transporter = nodemailer.createTransport({
-    port: parseInt(process.env.EMAILSERVICE_PORT || "587"),
-    host: process.env.EMAILSERVICE_HOST || "",
-    auth: {
-        user: process.env.EMAILSERVICE_USER || "",
-        pass: process.env.EMAILSERVICE_PASS || ""
-    }
-});
+const EventController = require('../controllers/Event');
+const AnnotatorController = require('../controllers/Annotator');
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 const email = new Email({
     message: {
-        from: process.env.EMAILSERVICE_FROM || process.env.EMAILSERVICE_USER || ''
+        from: process.env.EMAILSERVICE_FROM,
     },
     transport: {
         jsonTransport: true
@@ -22,7 +20,7 @@ const email = new Email({
     }
 });
 
-const sendEmail = (obj) => transporter.sendMail(obj);
+const sendEmail = (msg) => sgMail.send(msg);
 
 const loadTemplate = (templateName, context) => new Promise((resolve, reject) => {
     email.renderAll(templateName, context)
@@ -35,12 +33,12 @@ const loadTemplate = (templateName, context) => new Promise((resolve, reject) =>
 });
 
 const prepareMessage = (template, user, context) => new Promise((resolve, reject) => {
-    loadTemplate(template, {user, ...context})
+    loadTemplate(template, { user, ...context })
         .then((data) => {
 
             let message = {
                 to: user.email,
-                from: process.env.EMAILSERVICE_FROM || process.env.EMAILSERVICE_USER || "",
+                from: process.env.EMAILSERVICE_FROM || "",
                 ...data
             };
 
@@ -76,3 +74,22 @@ const sendAll = (template, users, context) => new Promise((resolve, reject) => {
         })
         .catch(reject);
 });
+
+const teamMemberAddedEmail = (annotatorId, eventId) => {
+
+    return EventController.getEventWithId(eventId).then(event => {
+        return AnnotatorController.getById(annotatorId).then((annotator) => {
+            const context = {
+                userName: annotator.name,
+                eventName: event.name,
+                loginLink: process.env.BASE_URL + '/login/' + annotator.secret,
+            };
+
+            return sendOne('create-team', annotator, context);
+        });
+    });
+}
+
+module.exports = {
+    teamMemberAddedEmail,
+}

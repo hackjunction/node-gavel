@@ -11,6 +11,7 @@ const TeamController = {
             members: teamMembers,
             contactPhone
         };
+        let teamId = null;
         return validate(teamData).then(validated => {
             let teamId = null;
             return Team.create({
@@ -18,8 +19,10 @@ const TeamController = {
                 members: []
             })
                 .then(team => {
+                    teamId = team._id;
                     const members = _.map(validated.members, m => {
                         m.event = eventId;
+                        m.team = teamId;
                         return m;
                     });
                     return AnnotatorController.createMany(members);
@@ -30,20 +33,14 @@ const TeamController = {
                 })
                 .then(team => {
                     if (sendEmail) {
-                        let context = {
-                            team,
-                            event: {
-                                _id: teamData.event,
-                                link: 'https://2018.heckjunction.com'
-                            }
-                        };
-                        EmailService.sendAll('create-team', team.members, context)
-                            .then(() => {
-                                console.log('Sent message to team ' + team._id);
-                            })
-                            .catch(e => {
-                                console.log('Error sending emails to team ' + team._id);
-                            });
+                        return Promise.map(team.members, annotatorId => {
+                            return EmailService.teamMemberAddedEmail(annotatorId, team.event);
+                        }).then(() => {
+                            return team;
+                        }).catch((error) => {
+                            console.log('ERROR sending emails', error);
+                            return team;
+                        })
                     }
 
                     return team;
@@ -61,7 +58,14 @@ const TeamController = {
 
     removeMembers: (teamId, annotatorIds) => {
         return Team.findByIdAndUpdate(teamId, { $pull: { members: annotatorIds } }, { new: true });
-    }
+    },
+
+    getMembersById: (teamId) => {
+        return Team.findById(teamId).then(team => {
+            console.log('TEAM', team);
+            return AnnotatorController.getManyById(team.members);
+        });
+    },
 };
 
 module.exports = TeamController;

@@ -1,0 +1,18 @@
+@import "../../../styles/base.scss";
+
+.Login--wrapper {
+  padding: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  .fas {
+    color: $snow;
+  }
+
+  a {
+    color: $turquoise;
+    text-decoration: underline;
+  }
+}

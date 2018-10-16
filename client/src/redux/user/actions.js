@@ -15,16 +15,21 @@ export const setUserLoading = user => dispatch => {
 };
 
 export const setUserError = () => dispatch => {
-    dispatch(setUser(null));
+    dispatch({
+        type: ActionTypes.SET_USER_ERROR
+    })
 };
 
 export const fetchUser = secret => dispatch => {
+    console.log('GETTING USER WITH SECRET', secret);
     dispatch(setUserLoading());
     return API.getUser(secret)
         .then(user => {
+            console.log('GOT USER', user);
             dispatch(setUser(user));
         })
         .catch(error => {
+            console.log('ERROR', error);
             dispatch(setUserError());
         });
 };

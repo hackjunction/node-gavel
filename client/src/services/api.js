@@ -3,7 +3,7 @@ import Promise from 'bluebird';
 const SUCCESS = 200;
 
 const POST = (url, data) => {
-    return new Promise(async function(resolve, reject) {
+    return new Promise(async function (resolve, reject) {
         try {
             let response = await fetch(url, {
                 method: 'POST',
@@ -15,9 +15,7 @@ const POST = (url, data) => {
             });
 
             if (response.status !== SUCCESS) {
-                console.log(response);
-                let body = await response.json();
-                reject(new Error(body.message));
+                reject(new Error('Request failed with response', response));
             } else {
                 let body = await response.json();
                 resolve(body.data);
@@ -30,7 +28,7 @@ const POST = (url, data) => {
 };
 
 const PATCH = (url, data) => {
-    return new Promise(async function(resolve, reject) {
+    return new Promise(async function (resolve, reject) {
         try {
             let response = await fetch(url, {
                 method: 'PATCH',
@@ -42,8 +40,7 @@ const PATCH = (url, data) => {
             });
 
             if (response.status !== SUCCESS) {
-                let body = await response.json();
-                reject(new Error(body.message));
+                reject(new Error('Request failed with response', response));
             } else {
                 let body = await response.json();
                 resolve(body.data);
@@ -56,13 +53,12 @@ const PATCH = (url, data) => {
 };
 
 const GET = url => {
-    return new Promise(async function(resolve, reject) {
+    return new Promise(async function (resolve, reject) {
         try {
             let response = await fetch(url);
 
             if (response.status !== SUCCESS) {
-                let body = await response.json();
-                reject(new Error(body.message));
+                reject(new Error('Request failed with response', response));
             } else {
                 let body = await response.json();
                 resolve(body.data);
@@ -75,13 +71,12 @@ const GET = url => {
 };
 
 const DELETE = url => {
-    return new Promise(async function(resolve, reject) {
+    return new Promise(async function (resolve, reject) {
         try {
             let response = await fetch(url, { method: 'DELETE' });
 
             if (response.status !== SUCCESS) {
-                let body = await response.json();
-                reject(new Error(body.message));
+                reject(new Error('Request failed with response', response));
             } else {
                 let body = await response.json();
                 resolve(body.data);
@@ -115,7 +110,15 @@ const API = {
     },
 
     getUser: secret => {
-        return GET(`/api/annotators/${secret}`);
+        return GET(`/api/annotators/?secret=${secret}`);
+    },
+
+    getTeamMembers: annotator => {
+        return GET(`/api/teams/members/?secret=${annotator.secret}`)
+    },
+
+    getSubmission: annotator => {
+        return Promise.resolve([]);
     }
 };
 

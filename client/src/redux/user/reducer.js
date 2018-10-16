@@ -2,7 +2,8 @@ import * as ActionTypes from './actionTypes';
 
 const initialState = {
     user: null,
-    userLoading: false
+    userLoading: false,
+    userError: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -16,8 +17,16 @@ export default function reducer(state = initialState, action) {
         case ActionTypes.SET_USER_LOADING:
             return {
                 ...state,
-                userLoading: true
+                userLoading: true,
+                userError: false,
             };
+        case ActionTypes.SET_USER_ERROR:
+            return {
+                ...state,
+                userLoading: false,
+                userError: true,
+                user: null,
+            }
         default:
             return state;
     }

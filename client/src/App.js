@@ -10,6 +10,7 @@ import NotFound from './pages/NotFound';
 import Test from './pages/Test';
 
 import CreateTeam from './pages/public/CreateTeam';
+import Login from './pages/public/Login';
 
 import AdminLogin from './pages/admin/Login';
 import AdminEventList from './pages/admin/EventList';
@@ -27,7 +28,8 @@ class App extends Component {
         return (
             <Switch>
                 {/* Public Routes */}
-                <DefaultLayout exact path="/login" component={AdminLogin} />
+                <DefaultLayout exact path="/login/:secret" component={Login} />
+                <DefaultLayout exact path="/admin/login" component={AdminLogin} />
                 <DefaultLayout exact path="/teams/create" component={CreateTeam} headerSubtitle="Submit your team" />
                 {/* TODO: (Low priority) Public route for viewing submitted projects of event */}
                 <DefaultLayout path="/event/:id" component={null} />
@@ -38,7 +40,7 @@ class App extends Component {
                 {/* Accessible with annotator token */}
 
                 {/* TODO: Team dashboard */}
-                <DefaultLayout exact path="/teams/:secret" component={TeamDashboard} headerSubtitle="Team Dashboard" />
+                <AnnotatorRoute exact path="/dashboard" component={TeamDashboard} headerSubtitle="Team Dashboard" />
 
                 {/* TODO: Team submission (create/edit) */}
                 <DefaultLayout

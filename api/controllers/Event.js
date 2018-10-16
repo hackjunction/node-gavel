@@ -19,7 +19,17 @@ const EventController = {
 
             return event;
         });
-    }
+    },
+
+    getEventWithId: _id => {
+        return Event.findById(_id).then(event => {
+            if (!event) {
+                return Promise.reject('No event found with _id ' + _id);
+            }
+
+            return event;
+        })
+    },
 };
 
 module.exports = EventController;

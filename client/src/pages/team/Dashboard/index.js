@@ -1,27 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 import './style.scss';
 
 import Table from '../../../components/Table';
 import SectionWrapper from '../../../components/forms/SectionWrapper';
 import SectionTitle from '../../../components/forms/SectionTitle';
 
-const TEAM_MEMBERS = [
-    {
-        name: 'Juuso Lappalainen',
-        email: 'juuso.lappalainen@hackjunction.com'
-    },
-    {
-        name: 'Santeri Hietanen',
-        email: 'snateri.hietanen@hackjunction.com'
-    }
-];
+import API from '../../../services/api';
+import * as user from '../../../redux/user/selectors';
 
 class TeamDashboard extends Component {
-    static defaultProps = {
-        teamMembers: TEAM_MEMBERS
-    };
 
     constructor(props) {
         super(props);
@@ -29,10 +19,26 @@ class TeamDashboard extends Component {
         this.state = {
             nameInput: '',
             emailInput: '',
-            teamMemberError: false
+            teamMembers: [],
+            submission: {},
         };
 
         this.addTeamMember = this.addTeamMember.bind(this);
+    }
+
+    componentDidMount() {
+        API.getTeamMembers(this.props.user).then((teamMembers) => {
+            console.log('TEAM MEMBERs', teamMembers);
+            this.setState({
+                teamMembers
+            });
+        });
+
+        API.getSubmission(this.props.user).then((submission) => {
+            this.setState({
+                submission
+            });
+        });
     }
 
     addTeamMember() {
@@ -103,7 +109,7 @@ class TeamDashboard extends Component {
                                 )
                             }
                         ]}
-                        items={this.props.teamMembers}
+                        items={this.state.teamMembers}
                     />
                 </SectionWrapper>
                 <div style={{ height: '50px' }} />
@@ -140,4 +146,8 @@ class TeamDashboard extends Component {
     }
 }
 
-export default TeamDashboard;
+const mapStateToProps = (state) => ({
+    user: user.getUser(state),
+});
+
+export default connect(mapStateToProps)(TeamDashboard);

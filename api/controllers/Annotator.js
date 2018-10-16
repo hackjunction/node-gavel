@@ -12,6 +12,7 @@ const AnnotatorController = {
         };
 
         return validate(doc).then(validated => {
+            console.log('VALIDATED', validated);
             validated.secret = uuid();
             return Annotator.create(validated);
         });
@@ -41,7 +42,27 @@ const AnnotatorController = {
 
             return annotator;
         });
-    }
+    },
+
+    getById: (_id, includeSecret = true) => {
+        return Annotator.findById(_id).then(annotator => {
+            if (!annotator) {
+                return Promise.reject('No annotator found with _id ' + _id);
+            }
+
+            if (!includeSecret) {
+                annotator.secret = null;
+            }
+
+            return annotator;
+        });
+    },
+
+    getManyById: (_ids, includeSecret = false) => {
+        return Promise.map(_ids, _id => {
+            return AnnotatorController.getById(_id, includeSecret);
+        });
+    },
 };
 
 //TODO: Implement these again as needed
