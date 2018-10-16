@@ -118,7 +118,7 @@ const API = {
     },
 
     getSubmission: annotator => {
-        return Promise.resolve([]);
+        return GET(`/api/teams/submission/?secret=${annotator.secret}`)
     }
 };
 

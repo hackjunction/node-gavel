@@ -3,6 +3,7 @@ const status = require('http-status');
 const passport = require('passport');
 const TeamController = require('../controllers/Team');
 const AnnotatorController = require('../controllers/Annotator');
+const ProjectController = require('../controllers/Project');
 
 module.exports = function (app) {
     /* Requires admin token */
@@ -12,6 +13,7 @@ module.exports = function (app) {
     app.delete('/api/teams/members/', passport.authenticate('annotator', { session: false }), removeTeamMember);
     app.post('/api/teams/members', passport.authenticate('annotator', { session: false }), addTeamMember);
     app.get('/api/teams/members', passport.authenticate('annotator', { session: false }), getTeamMembers);
+    app.get('/api/teams/submission', passport.authenticate('annotator', { session: false }), getTeamSubmission);
 
     /* Public routes */
     app.post('/api/teams', createTeam);
@@ -34,10 +36,8 @@ function getTeams(req, res) {
 }
 
 function getTeamMembers(req, res) {
-    console.log('USER', req.user);
     TeamController.getMembersById(req.user.team)
         .then(data => {
-            console.log('DATA', data);
             return res.status(status.OK).send({
                 status: 'success',
                 data
@@ -48,7 +48,21 @@ function getTeamMembers(req, res) {
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });
-        })
+        });
+}
+
+function getTeamSubmission(req, res) {
+    ProjectController.getByTeamId(req.user.team).then(data => {
+        return res.status(status.OK).send({
+            status: 'success',
+            data
+        });
+    }).catch(error => {
+        console.log('getTeamSubmission', error);
+        return res.status(status.INTERNAL_SERVER_ERROR).send({
+            status: 'error'
+        });
+    });
 }
 
 function createTeam(req, res) {

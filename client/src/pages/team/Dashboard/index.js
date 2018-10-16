@@ -20,24 +20,44 @@ class TeamDashboard extends Component {
             nameInput: '',
             emailInput: '',
             teamMembers: [],
+            teamMembersLoading: false,
+            teamMembersError: '',
             submission: {},
+            submissionLoading: false,
+            submissionError: '',
         };
 
         this.addTeamMember = this.addTeamMember.bind(this);
     }
 
     componentDidMount() {
-        API.getTeamMembers(this.props.user).then((teamMembers) => {
-            console.log('TEAM MEMBERs', teamMembers);
-            this.setState({
-                teamMembers
-            });
+
+        this.setState({
+            teamMembersLoading: true,
+            submissionLoading: true,
         });
 
+        API.getTeamMembers(this.props.user).then((teamMembers) => {
+            this.setState({
+                teamMembers,
+                teamMembersLoading: false,
+            });
+        }).catch((error) => {
+            this.setState({
+                teamMembersLoading: false,
+                teamMembersError: 'Something went wrong and we were unable to fetch your team members. Please reload to try again.'
+            });
+        })
         API.getSubmission(this.props.user).then((submission) => {
             this.setState({
-                submission
+                submission,
+                submissionLoading: false,
             });
+        }).catch((error) => {
+            this.setState({
+                submissionLoading: false,
+                submissionError: 'Something went wrong and we were unable to fetch your submission. Please reload to try again.'
+            })
         });
     }
 
@@ -82,7 +102,7 @@ class TeamDashboard extends Component {
     render() {
         return (
             <div className="TeamDashboard">
-                <SectionTitle title="Team" />
+                <SectionTitle title="Team" showLoading={this.state.teamMembersLoading} />
                 <SectionWrapper label="Team members">
                     <Table
                         columns={[
@@ -140,7 +160,7 @@ class TeamDashboard extends Component {
                     <small className="FormField--error">{this.state.teamMemberError}</small>
                 </SectionWrapper>
                 <div style={{ height: '50px' }} />
-                <SectionTitle title="Submission" />
+                <SectionTitle title="Submission" showLoading={this.state.submissionLoading} />
             </div>
         );
     }

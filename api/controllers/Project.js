@@ -21,7 +21,11 @@ const ProjectController = {
         return Promise.map(data, item => {
             return ProjectController.createItem(item.name, item.location, item.description, item.team);
         });
-    }
+    },
+
+    getByTeamId: teamId => {
+        return Project.findOne({ team: teamId });
+    },
 };
 
 module.exports = ProjectController;
