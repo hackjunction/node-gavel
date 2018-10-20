@@ -4,10 +4,10 @@ const initialState = {
   user: null,
   userLoading: false,
   userError: false,
-  teamMembers: null,
+  teamMembers: [],
   teamMembersLoading: false,
   teamMembersError: false,
-  submission: null,
+  submission: {},
   submissionLoading: false,
   submissionError: false
 };
@@ -52,6 +52,14 @@ export default function reducer(state = initialState, action) {
         ...state,
         teamMembersLoading: false,
         teamMembersError: true
+      };
+    case ActionTypes.EDIT_SUBMISSION:
+      return {
+        ...state,
+        submission: {
+          ...state.submission,
+          [action.payload.field]: action.payload.value
+        }
       };
     case ActionTypes.SET_SUBMISSION:
       return {

@@ -32,6 +32,7 @@ const sendEmail = msg => {
     );
     console.log('MESSAGE', msg);
   } else {
+    console.log('SENDING EMAIL', msg);
     sgMail.send(msg);
   }
 };

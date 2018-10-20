@@ -12,7 +12,6 @@ const AnnotatorController = {
     };
 
     return validate(doc).then(validated => {
-      console.log('VALIDATED', validated);
       validated.secret = uuid();
       return Annotator.create(validated);
     });

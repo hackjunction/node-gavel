@@ -7,9 +7,13 @@ import './style.scss';
 import Table from '../../../components/Table';
 import SectionWrapper from '../../../components/forms/SectionWrapper';
 import SectionTitle from '../../../components/forms/SectionTitle';
+import TextField from '../../../components/forms/TextField';
+import TextArea from '../../../components/forms/TextArea';
+import SubmitButton from '../../../components/forms/SubmitButton';
 
 import * as user from '../../../redux/user/selectors';
 import * as UserActions from '../../../redux/user/actions';
+import Validators from '../../../services/validators';
 
 class TeamDashboard extends Component {
   static propTypes = {
@@ -39,8 +43,6 @@ class TeamDashboard extends Component {
   componentDidMount() {
     const { fetchTeamMembers, fetchSubmission, user } = this.props;
 
-    console.log(this.props.user);
-
     fetchTeamMembers(user.secret);
     fetchSubmission(user.secret);
   }
@@ -62,7 +64,7 @@ class TeamDashboard extends Component {
       });
     }
 
-    if (!this.validateEmail(email)) {
+    if (Validators.email(email).error === true) {
       this.setState({
         teamMemberError: 'Please enter a valid email address'
       });
@@ -78,14 +80,8 @@ class TeamDashboard extends Component {
     //TODO: Remove the team member via an api call
   }
 
-  validateEmail(email) {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  }
-
   renderTeamMembers() {
     const { teamMembers } = this.props;
-    console.log('TEAM', teamMembers);
 
     return _.map(teamMembers, member => {
       const isRemove = this.state.removingTeamMember === member.id;
@@ -138,6 +134,70 @@ class TeamDashboard extends Component {
     });
   }
 
+  renderSubmission() {
+    return (
+      <div>
+        <TextField
+          ref={ref => (this.submissionName = ref)}
+          label="Project name"
+          placeholder="A catchy name for your project"
+          value={this.props.submission ? this.props.submission.name : ''}
+          onChange={name => {
+            this.props.editSubmission('name', name);
+          }}
+          required={true}
+          validate={value =>
+            Validators.stringMinMax(
+              value,
+              5,
+              50,
+              'Project name must be at least 5 characters',
+              'Project name cannot be over 50 characters'
+            )
+          }
+        />
+        <TextArea
+          ref={ref => (this.submissionDescription = ref)}
+          label="Description"
+          placeholder="What problem does your project solve? What tech did you use? What else do you want to tell us about it?"
+          value={this.props.submission ? this.props.submission.description : ''}
+          onChange={description => {
+            this.props.editSubmission('description', description);
+          }}
+          required={true}
+          validate={value =>
+            Validators.stringMinMax(
+              value,
+              1,
+              500,
+              'Project description must be at least 1 character',
+              'Project description cannot be over 500 characters'
+            )
+          }
+        />
+        <TextField
+          ref={ref => (this.submissionLocation = ref)}
+          label="Table Location"
+          placeholder="E.g. A7"
+          value={this.props.submission ? this.props.submission.location : ''}
+          onChange={location => {
+            this.props.editSubmission('location', location);
+          }}
+          required={true}
+          validate={value =>
+            Validators.stringMinMax(
+              value,
+              1,
+              50,
+              'Table location must be at least 2 characters',
+              'Table location cannot be over 50 characters'
+            )
+          }
+        />
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="TeamDashboard">
@@ -152,15 +212,14 @@ class TeamDashboard extends Component {
         </SectionWrapper>
 
         <SectionWrapper label="">
-          <p>Add team members</p>
+          <SubmitButton text="Add team members" size="small" align="right" />
         </SectionWrapper>
         <SectionTitle
           title="Submission"
           showLoading={this.props.submissionLoading}
         />
-        <SectionWrapper label="">
-          <p>Your submission here</p>
-        </SectionWrapper>
+        {this.renderSubmission()}
+        <SubmitButton text="Update submission" size="small" align="right" />
         <SectionTitle title="Voting" />
         <SectionWrapper label="">
           <p>Voting stuff here</p>
@@ -185,7 +244,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   fetchUser: secret => dispatch(UserActions.fetchUser(secret)),
   fetchTeamMembers: secret => dispatch(UserActions.fetchTeamMembers(secret)),
-  fetchSubmission: secret => dispatch(UserActions.fetchSubmission(secret))
+  fetchSubmission: secret => dispatch(UserActions.fetchSubmission(secret)),
+  editSubmission: (field, value) =>
+    dispatch(UserActions.editSubmission(field, value))
 });
 
 export default connect(

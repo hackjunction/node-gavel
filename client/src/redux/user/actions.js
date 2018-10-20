@@ -74,6 +74,16 @@ export const setSubmission = submission => dispatch => {
   });
 };
 
+export const editSubmission = (field, value) => dispatch => {
+  dispatch({
+    type: ActionTypes.EDIT_SUBMISSION,
+    payload: {
+      field,
+      value
+    }
+  });
+};
+
 export const setSubmissionLoading = () => dispatch => {
   dispatch({
     type: ActionTypes.SET_SUBMISSION_LOADING
