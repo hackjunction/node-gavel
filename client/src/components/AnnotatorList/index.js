@@ -2,17 +2,28 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import './style.css';
+import './style.scss';
 
 
-class AnnotatorLink extends Component {
-    render()
-    {
-        return (
-            <a href = '/id/{this.props.name}'>Show more...</a>
-        )
-    }
-}
+const testItem = {
+    "name": "testItem1",
+    "secret": "hulghraui23612780GYHSALD213!",
+    "email": "someguy@somemail.com",
+    "alpha": 1.952325,
+    "beta": 0.72564,
+    "active": true,
+    "next": "some Item",
+    "teamid": "hjdsiauhghrralrg"
+};
+
+// class AnnotatorLink extends Component {
+//     render()
+//     {
+//         return (
+            
+//         )
+//     }
+// }
 
 class AnnotatorList extends Component {
     constructor(props) {
@@ -21,41 +32,40 @@ class AnnotatorList extends Component {
         this.state = {
             error: false,
             loading: false,
-            items: []
+            items: [testItem]
         };
     }
 
-    componentDidMount() {
-        this.getAnnotators();
-    }
+    // componentDidMount() {
+    //     this.getAnnotators();
+    // }
+    //
+    // getAnnotators() {
+    //     this.setState(
+    //         {
+    //             loading: true,
+    //             error: false
+    //         },
+    //         async () => {
+    //             const response = await fetch('/api/annotators');
+    //             const body = await response.json();
 
-    getAnnotators() {
-        this.setState(
-            {
-                loading: true,
-                error: false
-            },
-            async () => {
-                const response = await fetch('/api/annotators');
-                const body = await response.json();
-
-                if (response.status !== 200) {
-                    this.setState({
-                        error: true,
-                        loading: false,
-                        items: []
-                    });
-                } else {
-                    this.setState({
-                        error: false,
-                        loading: false,
-                        items: body.data
-                    });
-                }
-            }
-        );
-    }
-
+    //             if (response.status !== 200) {
+    //                 this.setState({
+    //                     error: true,
+    //                     loading: false,
+    //                     items: []
+    //                 });
+    //             } else {
+    //                 this.setState({
+    //                     error: false,
+    //                     loading: false,
+    //                     items: body.data
+    //                 });
+    //             }
+    //         }
+    //     );
+    // }
 
     render() {
         const columns = [{
@@ -92,15 +102,17 @@ class AnnotatorList extends Component {
             Header:"Enable/Disable",
             accessor:"active",
             Cell: row => (
-                <button /*TODO: LISÄÄ CHANGESTATUS*/>{row.value ? 'Disable annotator': 'Enable annotator'}</button>
+                <button /*TODO: Changevalue APIn puolelta */ >{row.value ? 'Disable annotator': 'Enable annotator'}</button>
             )
         }]
         return (
             <div className="AnnotatorList--wrapper">
                 <h1 className="AnnotatorList--title">Annotators</h1>
                 <ReactTable 
+                    className="AnnotatorList"
                     data = {this.state.items} 
                     columns = {columns}
+                    style={{backgroundColor: "#fbfbfb"}}
                 />
             </div>
         );

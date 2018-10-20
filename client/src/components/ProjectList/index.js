@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import './style.css';
+import './style.scss';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css'
 
@@ -12,6 +12,7 @@ const testItem = {
     "sigma_sq": 0.72564,
     "active": true,
     "prioritized": false,
+    "_id":"212385320"
 }
 
 class ProjectList extends Component {
@@ -56,7 +57,6 @@ class ProjectList extends Component {
     //     );
     // }
 
-    
 
     render() {
         const columns = [{
@@ -64,7 +64,7 @@ class ProjectList extends Component {
             accessor: "name",
             className: "mid",
             filterable: true,
-            filterMethod: (filter, row) => row[filter.id].toLowerCase().includes(filter.value)
+            filterMethod: (filter, row) => row[filter.id].toLowerCase().includes(filter.value),
         }, {
             Header: "Description",
             accessor: "description",
@@ -86,21 +86,34 @@ class ProjectList extends Component {
             accessor: "prioritized",
             className: "center",
             Cell: row => (
-                <button /*TODO: LISÄÄ TOIMINNALLISUUS */> {row.value  ? 'Stop prioritizing' : 'Prioritize'} </button>
+                <button /*TODO: LISÄÄ CHANGESTATUS APIn*/> {row.value  ? 'Stop prioritizing' : 'Prioritize'} </button>
             )
         }, {
             Header:"Enable/Disable",
             accessor:"active",
             Cell: row => (
-                <button /*TODO: LISÄÄ CHANGESTATUS*/>{row.value ? 'Disable project': 'Enable project'}</button>
+                <button /*TODO: LISÄÄ CHANGESTATUS APIn*/>{row.value ? 'Disable project': 'Enable project'}</button>
             )
+        },{
+            Header:"More info",
+            accessor:"_id",
+            Cell: row =>(
+                <a href ={"/old/admin/project/"+row.value} style={{color:'blue'}}>Show more...</a>
+            ),
+            show:true,
+            className:"center"
         }]
 
         return (
             <div className="ProjectList--wrapper">
                 <h1 className="ProjectList--title">Projects</h1>
                 <p>Total  projects: {this.state.items.length}</p>
-                <ReactTable className="ProjectList" data = {this.state.items} columns = {columns} />
+                <ReactTable 
+                    className="ProjectList" 
+                    style={{backgroundColor: "#fbfbfb"}} 
+                    data = {this.state.items} 
+                    columns = {columns} 
+                />
             </div>
         );
     }
