@@ -8,166 +8,187 @@ import Table from '../../../components/Table';
 import SectionWrapper from '../../../components/forms/SectionWrapper';
 import SectionTitle from '../../../components/forms/SectionTitle';
 
-import API from '../../../services/api';
 import * as user from '../../../redux/user/selectors';
+import * as UserActions from '../../../redux/user/actions';
 
 class TeamDashboard extends Component {
+  static propTypes = {
+    user: PropTypes.object,
+    userLoading: PropTypes.bool,
+    userError: PropTypes.bool,
+    teamMembersLoading: PropTypes.bool,
+    teamMembersError: PropTypes.bool,
+    teamMembers: PropTypes.array,
+    submissionLoading: PropTypes.bool,
+    submissionError: PropTypes.bool,
+    submission: PropTypes.object
+  };
 
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            nameInput: '',
-            emailInput: '',
-            teamMembers: [],
-            teamMembersLoading: false,
-            teamMembersError: '',
-            submission: {},
-            submissionLoading: false,
-            submissionError: '',
-        };
+    this.state = {
+      nameInput: '',
+      emailInput: '',
+      removingTeamMember: null
+    };
 
-        this.addTeamMember = this.addTeamMember.bind(this);
+    this.addTeamMember = this.addTeamMember.bind(this);
+  }
+
+  componentDidMount() {
+    const { fetchTeamMembers, fetchSubmission, user } = this.props;
+
+    console.log(this.props.user);
+
+    fetchTeamMembers(user.secret);
+    fetchSubmission(user.secret);
+  }
+
+  addTeamMember() {
+    const name = this.state.nameInput;
+    const email = this.state.emailInput;
+
+    if (!name || name.length === 0) {
+      this.setState({
+        teamMemberError: 'Please enter a valid name'
+      });
+      return;
     }
 
-    componentDidMount() {
-
-        this.setState({
-            teamMembersLoading: true,
-            submissionLoading: true,
-        });
-
-        API.getTeamMembers(this.props.user).then((teamMembers) => {
-            this.setState({
-                teamMembers,
-                teamMembersLoading: false,
-            });
-        }).catch((error) => {
-            this.setState({
-                teamMembersLoading: false,
-                teamMembersError: 'Something went wrong and we were unable to fetch your team members. Please reload to try again.'
-            });
-        })
-        API.getSubmission(this.props.user).then((submission) => {
-            this.setState({
-                submission,
-                submissionLoading: false,
-            });
-        }).catch((error) => {
-            this.setState({
-                submissionLoading: false,
-                submissionError: 'Something went wrong and we were unable to fetch your submission. Please reload to try again.'
-            })
-        });
+    if (_.findIndex(this.state.teamMembers, t => t.email === email) !== -1) {
+      this.setState({
+        teamMemberError: "You've already added a team member with that email"
+      });
     }
 
-    addTeamMember() {
-        const name = this.state.nameInput;
-        const email = this.state.emailInput;
-
-        if (!name || name.length === 0) {
-            this.setState({
-                teamMemberError: 'Please enter a valid name'
-            });
-            return;
-        }
-
-        if (_.findIndex(this.state.teamMembers, t => t.email === email) !== -1) {
-            this.setState({
-                teamMemberError: "You've already added a team member with that email"
-            });
-        }
-
-        if (!this.validateEmail(email)) {
-            this.setState({
-                teamMemberError: 'Please enter a valid email address'
-            });
-            return;
-        }
-
-        //TODO: Add the team member via an api call
-
-        this.nameInput.focus();
+    if (!this.validateEmail(email)) {
+      this.setState({
+        teamMemberError: 'Please enter a valid email address'
+      });
+      return;
     }
 
-    removeTeamMember(email) {
-        //TODO: Remove the team member via an api call
-    }
+    //TODO: Add the team member via an api call
 
-    validateEmail(email) {
-        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase());
-    }
+    this.nameInput.focus();
+  }
 
-    render() {
-        return (
-            <div className="TeamDashboard">
-                <SectionTitle title="Team" showLoading={this.state.teamMembersLoading} />
-                <SectionWrapper label="Team members">
-                    <Table
-                        columns={[
-                            {
-                                key: 'name',
-                                title: 'Name',
-                                render: item => <span>{item.name}</span>
-                            },
-                            {
-                                key: 'email',
-                                title: 'Email',
-                                render: item => <span>{item.email}</span>
-                            },
-                            {
-                                key: 'remove',
-                                title: '',
-                                render: item => (
-                                    <span
-                                        className="CreateTeam--remove-team-member"
-                                        onClick={() => this.removeTeamMember(item.email)}
-                                    >
-                                        Remove
-                                    </span>
-                                )
-                            }
-                        ]}
-                        items={this.state.teamMembers}
-                    />
-                </SectionWrapper>
-                <div style={{ height: '50px' }} />
-                <SectionWrapper label="Add team members" hasError={this.state.teamMemberError}>
-                    <div className="FormField--input-wrapper">
-                        <input
-                            ref={ref => (this.nameInput = ref)}
-                            className="FormField--input"
-                            type="text"
-                            placeholder="Name"
-                            value={this.state.nameInput}
-                            onChange={e => this.setState({ nameInput: e.target.value })}
-                        />
-                        <input
-                            className="FormField--input"
-                            type="text"
-                            placeholder="Email"
-                            value={this.state.emailInput}
-                            onChange={e => this.setState({ emailInput: e.target.value })}
-                        />
-                        <button className="CreateTeam--add-member-button" onClick={this.addTeamMember}>
-                            Add
-                        </button>
-                    </div>
-                    <small className="FormField--hint">
-                        Add members to your team by providing their name and email address
-                    </small>
-                    <small className="FormField--error">{this.state.teamMemberError}</small>
-                </SectionWrapper>
-                <div style={{ height: '50px' }} />
-                <SectionTitle title="Submission" showLoading={this.state.submissionLoading} />
+  removeTeamMember(email) {
+    //TODO: Remove the team member via an api call
+  }
+
+  validateEmail(email) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+
+  renderTeamMembers() {
+    const { teamMembers } = this.props;
+    console.log('TEAM', teamMembers);
+
+    return _.map(teamMembers, member => {
+      const isRemove = this.state.removingTeamMember === member.id;
+      return (
+        <div className="TeamDashboard--team-member">
+          <div className="TeamDashboard--team-member-details">
+            <p className="TeamDashboard--team-member-details__name">
+              {member.name}
+            </p>
+            <p className="TeamDashboard--team-member-details__email">
+              {member.email}
+            </p>
+          </div>
+          <div
+            className={
+              isRemove
+                ? 'TeamDashboard--team-member-remove active'
+                : 'TeamDashboard--team-member-remove'
+            }
+          >
+            <div
+              className="TeamDashboard--team-member-remove__button"
+              onClick={() => {
+                this.setState({
+                  removingTeamMember: member.id
+                });
+              }}
+            >
+              <span>{'Remove'}</span>
             </div>
-        );
-    }
+            <div
+              className="TeamDashboard--team-member-remove__confirm"
+              onClick={() => window.alert('Remove this nephew')}
+            >
+              <span>{'Confirm'}</span>
+            </div>
+            <div
+              className="TeamDashboard--team-member-remove__cancel"
+              onClick={() =>
+                this.setState({
+                  removingTeamMember: null
+                })
+              }
+            >
+              <span>{'Cancel'}</span>
+            </div>
+          </div>
+        </div>
+      );
+    });
+  }
+
+  render() {
+    return (
+      <div className="TeamDashboard">
+        <SectionTitle
+          title="Team"
+          showLoading={this.props.teamMembersLoading}
+        />
+        <SectionWrapper label="">
+          <div className="TeamDashboard--section">
+            {this.renderTeamMembers()}
+          </div>
+        </SectionWrapper>
+
+        <SectionWrapper label="">
+          <p>Add team members</p>
+        </SectionWrapper>
+        <SectionTitle
+          title="Submission"
+          showLoading={this.props.submissionLoading}
+        />
+        <SectionWrapper label="">
+          <p>Your submission here</p>
+        </SectionWrapper>
+        <SectionTitle title="Voting" />
+        <SectionWrapper label="">
+          <p>Voting stuff here</p>
+        </SectionWrapper>
+      </div>
+    );
+  }
 }
 
-const mapStateToProps = (state) => ({
-    user: user.getUser(state),
+const mapStateToProps = state => ({
+  user: user.getUser(state),
+  userLoading: user.isLoading(state),
+  userError: user.isError(state),
+  teamMembersLoading: user.isTeamMembersLoading(state),
+  teamMembersError: user.isTeamMembersError(state),
+  teamMembers: user.getTeamMembers(state),
+  submissionLoading: user.isSubmissionLoading(state),
+  submissionError: user.isSubmissionError(state),
+  submission: user.getSubmission(state)
 });
 
-export default connect(mapStateToProps)(TeamDashboard);
+const mapDispatchToProps = dispatch => ({
+  fetchUser: secret => dispatch(UserActions.fetchUser(secret)),
+  fetchTeamMembers: secret => dispatch(UserActions.fetchTeamMembers(secret)),
+  fetchSubmission: secret => dispatch(UserActions.fetchSubmission(secret))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TeamDashboard);

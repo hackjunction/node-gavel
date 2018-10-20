@@ -2,30 +2,35 @@ const Promise = require('bluebird');
 const { Project, validate } = require('../models/Project');
 
 const ProjectController = {
-    create: (name, location, description, teamId, image, github) => {
-        const doc = {
-            name,
-            location,
-            description,
-            team: teamId,
-            image,
-            github
-        };
+  create: (name, location, description, teamId, image, github) => {
+    const doc = {
+      name,
+      location,
+      description,
+      team: teamId,
+      image,
+      github
+    };
 
-        return validate(doc).then(validatedData => {
-            return Project.create(validatedData);
-        });
-    },
+    return validate(doc).then(validatedData => {
+      return Project.create(validatedData);
+    });
+  },
 
-    createItems: data => {
-        return Promise.map(data, item => {
-            return ProjectController.createItem(item.name, item.location, item.description, item.team);
-        });
-    },
+  createItems: data => {
+    return Promise.map(data, item => {
+      return ProjectController.createItem(
+        item.name,
+        item.location,
+        item.description,
+        item.team
+      );
+    });
+  },
 
-    getByTeamId: teamId => {
-        return Project.findOne({ team: teamId });
-    },
+  getByTeamId: teamId => {
+    return Project.findOne({ team: teamId }).lean();
+  }
 };
 
 module.exports = ProjectController;
