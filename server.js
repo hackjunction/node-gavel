@@ -30,6 +30,7 @@ require('./api/routes/login')(app);
 require('./api/routes/events')(app);
 require('./api/routes/annotators')(app);
 require('./api/routes/teams')(app);
+require('./api/routes/projects')(app);
 
 app.get('/api/hello', function(req, res) {
     res.send({

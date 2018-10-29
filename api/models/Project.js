@@ -61,20 +61,26 @@ const validate = function(item) {
             .min(1)
             .max(120)
             .required(),
-        description: Joi.string().max(1000),
-        image: Joi.string().uri().trim(),
-        github: Joi.string().uri().trim(),
+        description: Joi.string()
+            .max(1000)
+            .required(),
         location: Joi.string()
             .alphanum()
             .min(1)
             .max(5)
             .required(),
+        image: Joi.string()
+            .uri()
+            .optional()
+            .trim(),
+        github: Joi.string()
+            .uri()
+            .optional()
+            .trim(),
         team: Joi.string().required()
     });
 
-    return schema.validate(item).catch(err => {
-        return err.details;
-    });
+    return schema.validate(item, { allowUnknown: true });
 };
 
 module.exports = {

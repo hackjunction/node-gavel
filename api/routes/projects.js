@@ -2,17 +2,16 @@ const ProjectController = require('../controllers/Project');
 const status = require('http-status');
 const passport = require('passport');
 
-module.exports = function (app) {
+module.exports = function(app) {
     /* Requires annotator token */
-    app.post('/api/projects', passport.authenticate('annotator', {session: false}), createProject);
+    app.post('/api/projects', passport.authenticate('annotator', { session: false }), createProject);
     /* Requires admin token */
 
     /* No auth required */
-
 };
 
 function createProject(req, res) {
-    ProjectController.create(req.body.event)
+    ProjectController.update(req.body.project, req.user)
         .then(data => {
             return res.status(status.OK).send({
                 status: 'success',
@@ -26,5 +25,3 @@ function createProject(req, res) {
             });
         });
 }
-
-
