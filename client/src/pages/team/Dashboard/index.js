@@ -10,6 +10,7 @@ import SectionTitle from '../../../components/forms/SectionTitle';
 import TextField from '../../../components/forms/TextField';
 import TextArea from '../../../components/forms/TextArea';
 import SubmitButton from '../../../components/forms/SubmitButton';
+import ErrorsBox from '../../../components/forms/ErrorsBox';
 
 import * as user from '../../../redux/user/selectors';
 import * as UserActions from '../../../redux/user/actions';
@@ -32,8 +33,9 @@ class TeamDashboard extends Component {
         super(props);
 
         this.state = {
-            nameInput: '',
-            emailInput: '',
+            addMemberName: '',
+            addMemberEmail: '',
+            addMemberErrors: [],
             removingTeamMember: null
         };
 
@@ -56,43 +58,40 @@ class TeamDashboard extends Component {
     }
 
     addTeamMember() {
-        const name = this.state.nameInput;
-        const email = this.state.emailInput;
+        const name = this.state.addMemberName;
+        const email = this.state.addMemberEmail;
 
-        if (!name || name.length === 0) {
-            this.setState({
-                teamMemberError: 'Please enter a valid name'
-            });
+        const nameValidation = this.addMemberName.isValid();
+
+        if (nameValidation.error) {
+            window.alert('Please enter a valid name');
             return;
         }
 
-        if (_.findIndex(this.state.teamMembers, t => t.email === email) !== -1) {
-            this.setState({
-                teamMemberError: "You've already added a team member with that email"
-            });
-        }
+        const emailValidation = this.addMemberEmail.isValid();
 
-        if (Validators.email(email).error === true) {
-            this.setState({
-                teamMemberError: 'Please enter a valid email address'
-            });
+        if (emailValidation.error) {
+            window.alert('Please enter a valid email address');
             return;
         }
 
-        //TODO: Add the team member via an api call
+        if (_.findIndex(this.props.teamMembers, t => t.email === email) !== -1) {
+            window.alert('You already have a team member with that email');
+            return;
+        }
 
-        this.nameInput.focus();
+        this.props.addTeamMember(name, email, this.props.user.secret);
     }
 
-    removeTeamMember(email) {
-        //TODO: Remove the team member via an api call
+    removeTeamMember(_id) {
+        this.props.removeTeamMember(_id, this.props.user.secret);
     }
 
     renderTeamMembers() {
         const { teamMembers } = this.props;
 
         return _.map(teamMembers, member => {
-            const isRemove = this.state.removingTeamMember === member.id;
+            const isRemove = this.state.removingTeamMember === member._id;
             return (
                 <div className="TeamDashboard--team-member">
                     <div className="TeamDashboard--team-member-details">
@@ -108,7 +107,7 @@ class TeamDashboard extends Component {
                             className="TeamDashboard--team-member-remove__button"
                             onClick={() => {
                                 this.setState({
-                                    removingTeamMember: member.id
+                                    removingTeamMember: member._id
                                 });
                             }}
                         >
@@ -116,7 +115,7 @@ class TeamDashboard extends Component {
                         </div>
                         <div
                             className="TeamDashboard--team-member-remove__confirm"
-                            onClick={() => window.alert('Remove this nephew')}
+                            onClick={() => this.removeTeamMember(member._id)}
                         >
                             <span>{'Confirm'}</span>
                         </div>
@@ -134,6 +133,10 @@ class TeamDashboard extends Component {
                 </div>
             );
         });
+    }
+
+    renderAddMemberForm() {
+        return <div className="TeamDashboard--add-member-form" />;
     }
 
     renderSubmission() {
@@ -208,12 +211,57 @@ class TeamDashboard extends Component {
                     <div className="TeamDashboard--section">{this.renderTeamMembers()}</div>
                 </SectionWrapper>
 
+                <TextField
+                    ref={ref => (this.addMemberName = ref)}
+                    label="Name"
+                    placeholder="John Doe"
+                    value={this.state.addMemberName}
+                    onChange={addMemberName => {
+                        this.setState({ addMemberName });
+                    }}
+                    required={false}
+                    validate={value =>
+                        Validators.stringMinMax(
+                            value,
+                            1,
+                            100,
+                            'Name must be at least 1 character',
+                            'Name cannot be over 100 characters'
+                        )
+                    }
+                />
+                <TextField
+                    ref={ref => (this.addMemberEmail = ref)}
+                    label="Email"
+                    placeholder="john.doe@host.com"
+                    value={this.state.addMemberEmail}
+                    onChange={addMemberEmail => {
+                        this.setState({ addMemberEmail });
+                    }}
+                    required={false}
+                    validate={Validators.email}
+                />
                 <SectionWrapper label="">
-                    <SubmitButton text="Add team members" size="small" align="right" />
+                    <ErrorsBox errors={this.state.addMemberErrors} />
+
+                    <SubmitButton
+                        text="Add to team"
+                        size="small"
+                        align="right"
+                        noMarginTop
+                        onClick={this.addTeamMember}
+                    />
                 </SectionWrapper>
+
                 <SectionTitle title="Submission" showLoading={this.props.submissionLoading} />
                 {this.renderSubmission()}
-                <SubmitButton text="Update submission" size="small" align="right" onClick={this.saveSubmission} />
+                <SubmitButton
+                    text="Update submission"
+                    size="small"
+                    align="right"
+                    onClick={this.saveSubmission}
+                    noMarginTop
+                />
                 <SectionTitle title="Voting" />
                 <SectionWrapper label="">
                     <p>Voting stuff here</p>
@@ -240,7 +288,9 @@ const mapDispatchToProps = dispatch => ({
     fetchTeamMembers: secret => dispatch(UserActions.fetchTeamMembers(secret)),
     fetchSubmission: secret => dispatch(UserActions.fetchSubmission(secret)),
     editSubmission: (field, value) => dispatch(UserActions.editSubmission(field, value)),
-    saveSubmission: (submission, secret) => dispatch(UserActions.saveSubmission(submission, secret))
+    saveSubmission: (submission, secret) => dispatch(UserActions.saveSubmission(submission, secret)),
+    addTeamMember: (name, email, secret) => dispatch(UserActions.addTeamMember(name, email, secret)),
+    removeTeamMember: (_id, secret) => dispatch(UserActions.removeTeamMember(_id, secret))
 });
 
 export default connect(

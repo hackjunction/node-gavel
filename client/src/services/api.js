@@ -118,7 +118,6 @@ const API = {
     updateSubmission: (project, secret) => {
         const params = { project, secret };
 
-        console.log('POST updateSubmission', params);
         return POST('/api/projects', params);
     },
 
@@ -128,6 +127,20 @@ const API = {
 
     getTeamMembers: secret => {
         return GET(`/api/teams/members/?secret=${secret}`);
+    },
+
+    addTeamMember: (name, email, secret) => {
+        const params = {
+            name,
+            email,
+            secret
+        };
+
+        return POST(`/api/teams/members`, params);
+    },
+
+    removeTeamMember: (_id, secret) => {
+        return DELETE(`/api/teams/members/?secret=${secret}&_id=${_id}`);
     },
 
     getSubmission: secret => {

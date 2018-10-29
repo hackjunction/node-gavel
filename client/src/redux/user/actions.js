@@ -67,6 +67,28 @@ export const fetchTeamMembers = secret => dispatch => {
         });
 };
 
+export const addTeamMember = (name, email, secret) => dispatch => {
+    dispatch(setTeamMembersLoading());
+    return API.addTeamMember(name, email, secret)
+        .then(teamMembers => {
+            dispatch(setTeamMembers(teamMembers));
+        })
+        .catch(() => {
+            dispatch(setTeamMembersError());
+        });
+};
+
+export const removeTeamMember = (_id, secret) => dispatch => {
+    dispatch(setTeamMembersLoading());
+    return API.removeTeamMember(_id, secret)
+        .then(teamMembers => {
+            dispatch(setTeamMembers(teamMembers));
+        })
+        .catch(() => {
+            dispatch(setTeamMembersError());
+        });
+};
+
 export const setSubmission = submission => dispatch => {
     dispatch({
         type: ActionTypes.SET_SUBMISSION,

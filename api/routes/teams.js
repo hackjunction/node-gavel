@@ -5,13 +5,13 @@ const TeamController = require('../controllers/Team');
 const AnnotatorController = require('../controllers/Annotator');
 const ProjectController = require('../controllers/Project');
 
-module.exports = function (app) {
+module.exports = function(app) {
     /* Requires admin token */
     app.get('/api/teams', passport.authenticate('admin', { session: false }), getTeams);
 
     /* Requires annotator token */
-    app.delete('/api/teams/members/', passport.authenticate('annotator', { session: false }), removeTeamMember);
-    app.post('/api/teams/members', passport.authenticate('annotator', { session: false }), addTeamMember);
+    app.delete('/api/teams/members/', passport.authenticate('annotator', { session: false }), deleteTeamMember);
+    app.post('/api/teams/members', passport.authenticate('annotator', { session: false }), createTeamMember);
     app.get('/api/teams/members', passport.authenticate('annotator', { session: false }), getTeamMembers);
     app.get('/api/teams/submission', passport.authenticate('annotator', { session: false }), getTeamSubmission);
 
@@ -52,17 +52,19 @@ function getTeamMembers(req, res) {
 }
 
 function getTeamSubmission(req, res) {
-    ProjectController.getByTeamId(req.user.team).then(data => {
-        return res.status(status.OK).send({
-            status: 'success',
-            data
+    ProjectController.getByTeamId(req.user.team)
+        .then(data => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data
+            });
+        })
+        .catch(error => {
+            console.log('getTeamSubmission', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
         });
-    }).catch(error => {
-        console.log('getTeamSubmission', error);
-        return res.status(status.INTERNAL_SERVER_ERROR).send({
-            status: 'error'
-        });
-    });
 }
 
 function createTeam(req, res) {
@@ -83,42 +85,38 @@ function createTeam(req, res) {
         });
 }
 
-function addTeamMember(req, res) {
+function createTeamMember(req, res) {
     const { name, email } = req.body;
     const { team } = req.user;
 
-    AnnotatorController.create(name, email, team)
-        .then(annotator => {
-            TeamController.addMembers(teamId, annotator._id).then(data => {
-                return res.status(status.OK).send({
-                    status: 'success',
-                    data
-                });
+    TeamController.createMember(name, email, team)
+        .then(teamMembers => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data: teamMembers
             });
         })
         .catch(error => {
-            console.log('addTeamMember', error);
+            console.log('createTeamMember', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });
         });
 }
 
-function removeTeamMember(req, res) {
-    const { email } = req.body;
+function deleteTeamMember(req, res) {
+    const { _id } = req.query;
     const { team } = req.user;
 
-    AnnotatorController.findByEmail(email)
-        .then(annotator => {
-            TeamController.removeMembers(team, annotator._id).then(data => {
-                return res.status(status.OK).send({
-                    status: 'success',
-                    data
-                });
+    TeamController.deleteMember(_id, team)
+        .then(teamMembers => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data: teamMembers
             });
         })
         .catch(error => {
-            console.log('removeTeamMember', error);
+            console.log('deleteTeamMember', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });

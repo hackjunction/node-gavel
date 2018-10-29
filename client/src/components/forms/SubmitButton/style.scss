@@ -1,94 +1,102 @@
 @import '../../../styles/base.scss';
 
 .SubmitButton {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  padding: $double-margin 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: $double-margin 0;
 
-  &.loading {
-    .SubmitButton--button {
-      padding: 0;
-      width: 40px;
-      border-radius: 40px;
-      background: $spring-green;
+    &.loading {
+        .SubmitButton--button {
+            padding: 0;
+            width: 40px;
+            border-radius: 40px;
+            background: $spring-green;
+        }
+
+        .SubmitButton--text {
+            display: none;
+        }
+
+        .SubmitButton--spinner {
+            display: initial;
+        }
     }
 
-    .SubmitButton--text {
-      display: none;
+    &-align-right {
+        justify-content: flex-end;
     }
 
-    .SubmitButton--spinner {
-      display: initial;
-    }
-  }
-
-  &-align-right {
-    justify-content: flex-end;
-  }
-
-  &-align-left {
-    justify-content: flex-start;
-  }
-
-  &-size-small {
-    .SubmitButton--button {
-      height: 30px;
-      border-width: 1px;
-      padding: 0 12px;
+    &-align-left {
+        justify-content: flex-start;
     }
 
-    .SubmitButton--text {
-      font-size: $fs-base;
+    &-size-small {
+        .SubmitButton--button {
+            height: 30px;
+            border-width: 1px;
+            padding: 0 12px;
+        }
+
+        .SubmitButton--text {
+            font-size: $fs-base;
+        }
     }
-  }
+
+    &-mt-0 {
+        padding-top: 0;
+    }
+
+    &-mb-0 {
+        padding-bottom: 0;
+    }
 }
 
 .SubmitButton--button {
-  background: transparent;
-  border: 2px solid $spring-green;
-  height: 40px;
-  padding: 0px 20px;
-  cursor: pointer;
-  transition: all 0.4s ease;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+    background: transparent;
+    border: 2px solid $spring-green;
+    height: 40px;
+    padding: 0px 20px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 
-  &:hover {
-    background: $spring-green;
-    color: $black;
+    &:hover {
+        background: $spring-green;
+        color: $black;
 
-    .SubmitButton--text {
-      color: $black;
+        .SubmitButton--text {
+            color: $black;
+        }
     }
-  }
 
-  &:focus {
-    outline: none;
-  }
-
-  &:disabled {
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    pointer-events: none;
-
-    .SubmitButton--text {
-      color: rgba(255, 255, 255, 0.6);
+    &:focus {
+        outline: none;
     }
-  }
+
+    &:disabled {
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        pointer-events: none;
+
+        .SubmitButton--text {
+            color: rgba(255, 255, 255, 0.6);
+        }
+    }
 }
 
 .SubmitButton--text {
-  color: $spring-green;
-  font-size: $fs-title;
-  text-transform: uppercase;
-  font-family: $font-title;
-  transition: all 0.4s ease;
+    color: $spring-green;
+    font-size: $fs-title;
+    text-transform: uppercase;
+    font-family: $font-title;
+    transition: all 0.4s ease;
 }
 
 .SubmitButton--spinner {
-  display: none;
+    display: none;
 }

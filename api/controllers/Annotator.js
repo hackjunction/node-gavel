@@ -3,76 +3,76 @@ const uuid = require('uuid/v4');
 const { Annotator, validate } = require('../models/Annotator');
 
 const AnnotatorController = {
-  create: (name, email, teamId, eventId) => {
-    const doc = {
-      name,
-      email,
-      team: teamId,
-      event: eventId
-    };
+    create: (name, email, teamId, eventId) => {
+        const doc = {
+            name,
+            email,
+            team: teamId,
+            event: eventId
+        };
 
-    return validate(doc).then(validated => {
-      validated.secret = uuid();
-      return Annotator.create(validated);
-    });
-  },
+        return validate(doc).then(validated => {
+            validated.secret = uuid();
+            return Annotator.create(validated);
+        });
+    },
 
-  createMany: data => {
-    return Promise.map(data, annotator => {
-      return AnnotatorController.create(
-        annotator.name,
-        annotator.email,
-        annotator.team,
-        annotator.event
-      );
-    });
-  },
+    createMany: data => {
+        return Promise.map(data, annotator => {
+            return AnnotatorController.create(annotator.name, annotator.email, annotator.team, annotator.event);
+        });
+    },
 
-  getBySecret: secret => {
-    return Annotator.findOne({ secret })
-      .lean()
-      .then(annotator => {
-        if (!annotator) {
-          return Promise.reject('No annotator found with the secret ' + secret);
-        }
+    getBySecret: secret => {
+        return Annotator.findOne({ secret })
+            .lean()
+            .then(annotator => {
+                if (!annotator) {
+                    return Promise.reject('No annotator found with the secret ' + secret);
+                }
 
-        return annotator;
-      });
-  },
+                return annotator;
+            });
+    },
 
-  getByEmail: email => {
-    return Annotator.findOne({ email })
-      .lean()
-      .then(annotator => {
-        if (!annotator) {
-          return Promise.reject('No annotator found with the email ' + email);
-        }
+    getByEmail: email => {
+        return Annotator.findOne({ email })
+            .lean()
+            .then(annotator => {
+                if (!annotator) {
+                    return Promise.reject('No annotator found with the email ' + email);
+                }
 
-        return annotator;
-      });
-  },
+                return annotator;
+            });
+    },
 
-  getById: (_id, includeSecret = true) => {
-    return Annotator.findById(_id)
-      .lean()
-      .then(annotator => {
-        if (!annotator) {
-          return Promise.reject('No annotator found with _id ' + _id);
-        }
+    getById: (_id, includeSecret = true) => {
+        return Annotator.findById(_id)
+            .lean()
+            .then(annotator => {
+                if (!annotator) {
+                    return Promise.reject('No annotator found with _id ' + _id);
+                }
 
-        if (!includeSecret) {
-          annotator.secret = null;
-        }
+                if (!includeSecret) {
+                    annotator.secret = null;
+                }
 
-        return annotator;
-      });
-  },
+                return annotator;
+            });
+    },
 
-  getManyById: (_ids, includeSecret = false) => {
-    return Promise.map(_ids, _id => {
-      return AnnotatorController.getById(_id, includeSecret);
-    });
-  }
+    getManyById: (_ids, includeSecret = false) => {
+        return Promise.map(_ids, _id => {
+            return AnnotatorController.getById(_id, includeSecret);
+        });
+    },
+
+    deleteById: _id => {
+        console.log('DELETING WITH ID', _id);
+        return Annotator.findByIdAndDelete(_id);
+    }
 };
 
 //TODO: Implement these again as needed
