@@ -103,6 +103,50 @@ const API = {
         return GET(`/api/events/?token=${token}`);
     },
 
+    adminGetProjectsForEvent: (token, eventId) => {
+        return GET(`/api/projects/event/${eventId}/?token=${token}`);
+    },
+
+    adminGetAnnotatorsForEvent: (token, eventId) => {
+        return GET(`/api/annotators/event/${eventId}/?token=${token}`);
+    },
+
+    adminPrioritizeProject: (token, projectId) => {
+        return GET(`/api/projects/prioritize/${projectId}/?token=${token}`);
+    },
+
+    adminDeprioritizeProject: (token, projectId) => {
+        return GET(`/api/projects/deprioritize/${projectId}/?token=${token}`);
+    },
+
+    adminDisableProject: (token, projectId) => {
+        return GET(`/api/projects/disable/${projectId}/?token=${token}`);
+    },
+
+    adminEnableProject: (token, projectId) => {
+        return GET(`/api/projects/enable/${projectId}/?token=${token}`);
+    },
+
+    adminGetProject: (token, projectId) => {
+        return GET(`/api/projects/${projectId}/?token=${token}`);
+    },
+
+    adminEditProject: (token, projectId, data) => {
+        return POST(`/api/projects/edit/${projectId}`, { data, token });
+    },
+
+    adminDisableAnnotator: (token, annotatorId) => {
+        return GET(`/api/annotators/disable/${annotatorId}/?token=${token}`);
+    },
+
+    adminEnableAnnotator: (token, annotatorId) => {
+        return GET(`/api/annotators/enable/${annotatorId}/?=token=${token}`);
+    },
+
+    adminCreateAnnotator: (token, name, email, eventId) => {
+        return POST(`/api/annotators/`, { token, name, email, eventId });
+    },
+
     /* Public routes */
 
     getEventWithCode: code => {

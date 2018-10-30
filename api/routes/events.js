@@ -3,11 +3,22 @@ const status = require('http-status');
 const passport = require('passport');
 
 module.exports = function(app) {
-    /* Requires admin token */
+    /**
+     * Create a new event
+     * -> Requires admin token
+     */
     app.post('/api/events', passport.authenticate('admin', { session: false }), createEvent);
+
+    /**
+     * Get all events
+     * -> Requires admin token
+     */
     app.get('/api/events', passport.authenticate('admin', { session: false }), getAllEvents);
 
-    /* No auth required */
+    /**
+     * Get an event with the secret code
+     * -> No auth required
+     */
     app.get('/api/events/code/:code', getEventWithCode);
 };
 

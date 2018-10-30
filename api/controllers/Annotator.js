@@ -23,6 +23,14 @@ const AnnotatorController = {
         });
     },
 
+    enable: annotatorId => {
+        return Annotator.findByIdAndUpdate(annotatorId, { active: true }, { new: true });
+    },
+
+    disable: annotatorId => {
+        return Annotator.findByIdAndUpdate(annotatorId, { active: false }, { new: true });
+    },
+
     getBySecret: secret => {
         return Annotator.findOne({ secret })
             .lean()
@@ -61,6 +69,10 @@ const AnnotatorController = {
 
                 return annotator;
             });
+    },
+
+    getByEvent: eventId => {
+        return Annotator.find({ event: eventId }).lean();
     },
 
     getManyById: (_ids, includeSecret = false) => {

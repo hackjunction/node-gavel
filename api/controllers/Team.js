@@ -124,6 +124,9 @@ const TeamController = {
             .then(team => {
                 return AnnotatorController.getManyById(team.members);
             });
+    },
+    getByEvent: eventId => {
+        return Team.find({ event: eventId }).lean();
     }
 };
 
