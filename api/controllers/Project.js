@@ -13,14 +13,11 @@ const ProjectController = {
             setDefaultsOnInsert: true
         };
 
-        console.log('DOC', doc);
-
         return validate(doc).then(validatedData => {
-            console.log('VALIDATED', validatedData);
             if (project.hasOwnProperty('_id')) {
                 return Project.findByIdAndUpdate(project._id, validatedData, options);
             } else {
-                return Project.create(validatedData, options);
+                return Project.create(validatedData);
             }
         });
     },

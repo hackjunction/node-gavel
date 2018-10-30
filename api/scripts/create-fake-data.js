@@ -1,132 +1,178 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const Chance = require('chance');
 const chance = new Chance();
+const moment = require('moment-timezone');
+const uuid = require('uuid/v4');
 const _ = require('lodash');
 const Promise = require('bluebird');
-const EventController = require('../controllers/events');
-const TeamController = require('../controllers/teams');
-const AnnotatorController = require('../controllers/annotators');
-const ItemController = require('../controllers/items');
+const loremIpsum = require('lorem-ipsum');
 
-require('../models/Annotator');
-require('../models/Item');
-require('../models/Team');
-require('../models/Event');
+const EventController = require('../controllers/Event');
+const TeamController = require('../controllers/Team');
+const ProjectController = require('../controllers/Project');
 
 const MONGODB_URI = process.env.MONGODB_URI ? process.env.MONGODB_URI : 'mongodb://localhost/nodeGavel';
+
+// How many events to create?
+const EVENT_COUNT = 4;
+
+// What is the min/max team size?
+const PEOPLE_PER_TEAM_MIN = 1;
+const PEOPLE_PER_TEAM_MAX = 5;
+
+// How many teams per event?
+const TEAMS_PER_EVENT_MIN = 10;
+const TEAMS_PER_EVENT_MAX = 50;
 
 const script = function() {
     mongoose.connect(
         MONGODB_URI,
         function(err) {
             if (err) {
-                console.log('Error connecting to database', err);
+                console.log('Failed to connect to database at ', MONGODB_URI);
                 process.exit(1);
             }
 
-            const EVENTS = generateEvents();
+            let _events = [];
 
-            return Promise.map(EVENTS, event => {
-                return EventController.createEvent(event.name, event.secretCode);
-            })
-                .then(events => {
-                    console.log('-> Created ' + events.length + ' events');
-                    const TEAMS = generateTeams(100, events);
+            console.log('=== GENERATING EVENTS ===');
+            Promise.map(generateEvents(EVENT_COUNT), event => {
+                return EventController.create(event);
+            }).then(events => {
+                _events = events;
+                console.log('-> Generated ' + events.length + ' events');
+                console.log('=== GENERATING TEAMS ===');
+                return Promise.map(events, event => {
+                    const teams = generateTeams(TEAMS_PER_EVENT_MIN, TEAMS_PER_EVENT_MAX);
 
-                    return Promise.map(TEAMS, team => {
-                        return TeamController.createTeam(team.eventId);
+                    return Promise.map(teams, team => {
+                        return TeamController.create(event._id.toString(), team.members, team.contactPhone, false);
+                    }).then(teams => {
+                        console.log('-> Generated ' + teams.length + ' teams for event ' + event.name);
+                        return teams;
                     });
                 })
-                .then(teams => {
-                    console.log('-> Created ' + teams.length + ' teams');
+                    .then(teamsByEvent => {
+                        console.log('=== GENERATING PROJECTS ===');
+                        return Promise.map(teamsByEvent, (teams, eventIdx) => {
+                            return Promise.map(teams, team => {
+                                const annotator = {
+                                    event: _events[eventIdx]._id,
+                                    team: team._id
+                                };
 
-                    const PROJECTS = generateProjects(teams);
-                    const ANNOTATORS = generateAnnotators(teams);
-                    return AnnotatorController.createAnnotators(ANNOTATORS).then(annotators => {
-                        return ItemController.createItems(PROJECTS).then(projects => {
-                            return {
-                                annotators,
-                                projects
-                            };
+                                const project = generateProject();
+
+                                return ProjectController.update(project, annotator);
+                            });
+                        }).then(projectsPerEvent => {
+                            return _.flatten(projectsPerEvent);
                         });
+                    })
+                    .then(projects => {
+                        console.log('-> Generated ' + projects.length + ' projects');
+                        process.exit(0);
                     });
-                })
-                .then(data => {
-                    console.log('-> Created ' + data.annotators.length + ' annotators');
-                    console.log('-> Created ' + data.projects.length + ' projects');
-
-                    return process.exit(0);
-                })
-                .catch(error => {
-                    console.error('Script failed', error);
-                    return process.exit(1);
-                });
+            });
         }
     );
 };
 
-function generateTeams(count = 100, events) {
-    if (!events || events.length === 0) {
-        throw new Error('Cannot generate teams without any events!');
-    }
-
-    const teams = [];
+function generateEvents(count) {
+    const events = [];
 
     for (let i = 0; i < count; i++) {
+        events.push({
+            name: 'JUNCTIONx' + chance.city(),
+            hasTracks: true,
+            tracks: generateTracks(10),
+            hasChallenges: true,
+            challenges: generateChallenges(10),
+            timezone: 'Europe/Helsinki',
+            startTime: moment().tz('Europe/Helsinki'),
+            endTime: moment()
+                .tz('Europe/Helsinki')
+                .add(3, 'days'),
+            submissionDeadline: moment()
+                .tz('Europe/Helsinki')
+                .add(60, 'hours'),
+            votingStartTime: moment()
+                .tz('Europe/Helsinki')
+                .add(62, 'hours'),
+            votingEndTime: moment()
+                .tz('Europe/Helsinki')
+                .add(64, 'hours'),
+            participantCode: chance.word({ length: 16 }),
+            apiKey: uuid()
+        });
+    }
+
+    return events;
+}
+
+function generateTracks(count) {
+    const tracks = [];
+
+    for (let i = 0; i < count; i++) {
+        tracks.push('Track ' + i);
+    }
+
+    return tracks;
+}
+
+function generateChallenges(count) {
+    const challenges = [];
+
+    for (let i = 0; i < count; i++) {
+        challenges.push('Challenge ' + chance.company());
+    }
+
+    return challenges;
+}
+
+function generateTeams(min, max) {
+    const teamCount = chance.natural({ min, max });
+    const teams = [];
+
+    for (let i = 0; i < teamCount; i++) {
         teams.push({
-            eventId: events[Math.floor(Math.random() * events.length)]._id.toString()
+            members: generateTeamMembers(PEOPLE_PER_TEAM_MIN, PEOPLE_PER_TEAM_MAX),
+            contactPhone: chance.phone()
         });
     }
 
     return teams;
 }
 
-const TEAM_SIZES = [1, 2, 3, 4, 5];
-function generateAnnotators(teams) {
-    const annotators = [];
+function generateTeamMembers(min, max) {
+    const memberCount = chance.natural({ min, max });
+    const members = [];
 
-    _.each(teams, team => {
-        const TEAM_SIZE = TEAM_SIZES[Math.floor(Math.random() * TEAM_SIZES.length)];
-
-        for (let i = 0; i < TEAM_SIZE; i++) {
-            annotators.push({
-                name: chance.name(),
-                email: chance.email(),
-                teamId: team._id.toString()
-            });
-        }
-    });
-
-    return annotators;
-}
-
-function generateEvents(count) {
-    return [
-        {
-            name: 'JUNCTIONxBUDAPEST',
-            secretCode: 'HACKBUDA123'
-        },
-        {
-            name: 'Junction Main Event',
-            secretCode: 'MAINEVENT123'
-        }
-    ];
-}
-
-const LETTERS = 'ABCDEFGHIJK';
-function generateProjects(teams) {
-    const projects = [];
-
-    _.each(teams, team => {
-        projects.push({
-            name: 'Project ' + chance.animal(),
-            location: LETTERS[Math.floor(Math.random() * LETTERS.length)] + Math.floor(Math.random() * 100),
-            description: 'Description for an awesome project',
-            team: team._id.toString()
+    for (let i = 0; i < memberCount; i++) {
+        members.push({
+            name: chance.name(),
+            email: chance.email()
         });
-    });
+    }
 
-    return projects;
+    return members;
+}
+
+function generateProject() {
+    return {
+        name: 'Project ' + chance.word({ length: 10 }),
+        description: loremIpsum({
+            count: 10,
+            units: 'sentences',
+            sentenceLowerBound: 5,
+            sentenceUpperBound: 15,
+            paragraphLowerBound: 2,
+            paragraphUpperBound: 6,
+            format: 'plain'
+        }),
+        location: chance.letter().toUpperCase() + chance.natural({ min: 1, max: 50 })
+    };
 }
 
 script();
