@@ -169,6 +169,10 @@ const API = {
         return GET(`/api/annotators/?secret=${secret}`);
     },
 
+    getUserEvent: secret => {
+        return GET(`/api/annotators/event/?secret=${secret}`);
+    },
+
     getTeamMembers: secret => {
         return GET(`/api/teams/members/?secret=${secret}`);
     },

@@ -12,3 +12,7 @@ export const EDIT_SUBMISSION = 'user/EDIT_SUBMISSION';
 export const SET_SUBMISSION = 'user/SET_SUBMISSION';
 export const SET_SUBMISSION_LOADING = 'user/SET_SUBMISSION_LOADING';
 export const SET_SUBMISSION_ERROR = 'user/SET_SUBMISSION_ERROR';
+
+export const SET_EVENT = 'user/SET_EVENT';
+export const SET_EVENT_LOADING = 'user/SET_EVENT_LOADING';
+export const SET_EVENT_ERROR = 'user/SET_EVENT_ERROR';

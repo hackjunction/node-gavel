@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import moment from 'moment-timezone';
 import './style.scss';
 
 import Table from '../../../components/Table';
@@ -27,7 +28,10 @@ class TeamDashboard extends Component {
         teamMembers: PropTypes.array,
         submissionLoading: PropTypes.bool,
         submissionError: PropTypes.bool,
-        submission: PropTypes.object
+        submission: PropTypes.object,
+        eventLoading: PropTypes.bool,
+        eventError: PropTypes.bool,
+        event: PropTypes.object
     };
 
     constructor(props) {
@@ -45,10 +49,11 @@ class TeamDashboard extends Component {
     }
 
     componentDidMount() {
-        const { fetchTeamMembers, fetchSubmission, user } = this.props;
+        const { fetchTeamMembers, fetchSubmission, fetchEvent, user } = this.props;
 
         fetchTeamMembers(user.secret);
         fetchSubmission(user.secret);
+        fetchEvent(user.secret);
     }
 
     saveSubmission() {
@@ -204,7 +209,15 @@ class TeamDashboard extends Component {
         );
     }
 
+    renderVotingTime() {
+        const { event } = this.props;
+        const now = moment().tz(event.timezone);
+
+        return null;
+    }
+
     render() {
+        console.log('EVENT', this.props.event);
         return (
             <div className="TeamDashboard">
                 <SectionTitle title="Team" showLoading={this.props.teamMembersLoading} />
@@ -263,8 +276,9 @@ class TeamDashboard extends Component {
                     onClick={this.saveSubmission}
                     noMarginTop
                 />
-                <SectionTitle title="Voting" />
-                <SectionWrapper label="">
+                <SectionTitle title="Voting" loading={this.props.eventLoading} />
+                <SectionWrapper label="Voting time">
+                    {this.renderVotingTime()}
                     <Link to="/vote">Start Voting</Link>
                 </SectionWrapper>
             </div>
@@ -281,13 +295,17 @@ const mapStateToProps = state => ({
     teamMembers: user.getTeamMembers(state),
     submissionLoading: user.isSubmissionLoading(state),
     submissionError: user.isSubmissionError(state),
-    submission: user.getSubmission(state)
+    submission: user.getSubmission(state),
+    eventLoading: user.isEventLoading(state),
+    eventError: user.isEventError(state),
+    event: user.getEvent(state)
 });
 
 const mapDispatchToProps = dispatch => ({
     fetchUser: secret => dispatch(UserActions.fetchUser(secret)),
     fetchTeamMembers: secret => dispatch(UserActions.fetchTeamMembers(secret)),
     fetchSubmission: secret => dispatch(UserActions.fetchSubmission(secret)),
+    fetchEvent: secret => dispatch(UserActions.fetchEvent(secret)),
     editSubmission: (field, value) => dispatch(UserActions.editSubmission(field, value)),
     saveSubmission: (submission, secret) => dispatch(UserActions.saveSubmission(submission, secret)),
     addTeamMember: (name, email, secret) => dispatch(UserActions.addTeamMember(name, email, secret)),

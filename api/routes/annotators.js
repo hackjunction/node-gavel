@@ -4,6 +4,7 @@ const status = require('http-status');
 const passport = require('passport');
 
 const AnnotatorController = require('../controllers/Annotator');
+const EventController = require('../controllers/Event');
 
 module.exports = function(app) {
     /**
@@ -44,7 +45,17 @@ module.exports = function(app) {
      */
     app.get('/api/annotators/', passport.authenticate('annotator', { session: false }), getAnnotator);
 
+    /**
+     * Set an annotator as having read the welcome message (which allows them to begin voting)
+     * -> Requires annotator secret
+     */
     app.get('/api/annotators/welcome', passport.authenticate('annotator', { session: false }), setHasReadWelcome);
+
+    /**
+     * Get an annotator's event
+     * -> Requires annotator secret
+     */
+    app.get('/api/annotators/event', passport.authenticate('annotator', { session: false }), getEventForAnnotator);
 };
 
 function getAnnotator(req, res) {
@@ -64,6 +75,26 @@ function setHasReadWelcome(req, res) {
             });
         })
         .catch(error => {
+            console.log('setHasReadWelcome', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
+}
+
+function getEventForAnnotator(req, res) {
+    return EventController.getEventWithId(req.user.event)
+        .then(event => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data: {
+                    ...event,
+                    apiKey: null
+                }
+            });
+        })
+        .catch(error => {
+            console.log('getEventForAnnotator', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });

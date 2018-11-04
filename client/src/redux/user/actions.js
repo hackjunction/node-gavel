@@ -49,6 +49,37 @@ export const setHasReadWelcome = secret => dispatch => {
         });
 };
 
+export const setEvent = event => dispatch => {
+    dispatch({
+        type: ActionTypes.SET_EVENT,
+        payload: event
+    });
+};
+
+export const setEventLoading = () => dispatch => {
+    dispatch({
+        type: ActionTypes.SET_EVENT_LOADING
+    });
+};
+
+export const setEventError = () => dispatch => {
+    dispatch({
+        type: ActionTypes.SET_EVENT_ERROR
+    });
+};
+
+export const fetchEvent = secret => dispatch => {
+    dispatch(setEventLoading());
+
+    return API.getUserEvent(secret)
+        .then(event => {
+            dispatch(setEvent(event));
+        })
+        .catch(error => {
+            dispatch(setEventError());
+        });
+};
+
 export const setTeamMembers = teamMembers => dispatch => {
     dispatch({
         type: ActionTypes.SET_TEAM_MEMBERS,
