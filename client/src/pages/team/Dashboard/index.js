@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import './style.scss';
 
 import Table from '../../../components/Table';
@@ -264,7 +265,7 @@ class TeamDashboard extends Component {
                 />
                 <SectionTitle title="Voting" />
                 <SectionWrapper label="">
-                    <p>Voting stuff here</p>
+                    <Link to="/vote">Start Voting</Link>
                 </SectionWrapper>
             </div>
         );

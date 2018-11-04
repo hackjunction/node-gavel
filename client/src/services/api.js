@@ -189,6 +189,10 @@ const API = {
 
     getSubmission: secret => {
         return GET(`/api/teams/submission/?secret=${secret}`);
+    },
+
+    setHasReadWelcome: secret => {
+        return GET(`/api/annotators/welcome/?secret=${secret}`);
     }
 };
 

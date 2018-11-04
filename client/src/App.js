@@ -17,7 +17,7 @@ import AdminEventList from './pages/admin/EventList';
 import AdminCreateEvent from './pages/admin/CreateEvent';
 
 import TeamDashboard from './pages/team/Dashboard';
-import TeamSubmission from './pages/team/Submission';
+import Vote from './pages/team/Vote';
 
 import { Switch, Route } from 'react-router-dom';
 
@@ -42,16 +42,8 @@ class App extends Component {
                 {/* TODO: Team dashboard */}
                 <AnnotatorRoute exact path="/dashboard" component={TeamDashboard} headerSubtitle="Team Dashboard" />
 
-                {/* TODO: Team submission (create/edit) */}
-                <DefaultLayout
-                    exact
-                    path="/teams/:secret/submission"
-                    component={TeamSubmission}
-                    headerSubtitle="Your submission"
-                />
-
                 {/* TODO: Voting frontend */}
-                <AnnotatorRoute exact path="/vote/:secret" component={null} />
+                <AnnotatorRoute exact path="/vote" component={Vote} headerSubtitle="Voting" />
 
                 {/* Admin Routes */}
 

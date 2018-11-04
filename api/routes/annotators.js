@@ -43,6 +43,8 @@ module.exports = function(app) {
      * -> Requires annotator secret
      */
     app.get('/api/annotators/', passport.authenticate('annotator', { session: false }), getAnnotator);
+
+    app.get('/api/annotators/welcome', passport.authenticate('annotator', { session: false }), setHasReadWelcome);
 };
 
 function getAnnotator(req, res) {
@@ -51,6 +53,21 @@ function getAnnotator(req, res) {
         status: 'success',
         data: req.user
     });
+}
+
+function setHasReadWelcome(req, res) {
+    return AnnotatorController.setHasReadWelcome(req.user.secret)
+        .then(annotator => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data: annotator
+            });
+        })
+        .catch(error => {
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
 }
 
 function getAnnotatorsForEvent(req, res) {

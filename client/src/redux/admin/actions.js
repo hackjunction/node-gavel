@@ -26,3 +26,37 @@ export const fetchEvents = token => async dispatch => {
         dispatch(setEvents(events));
     });
 };
+
+export const setAnnotatorsForEvent = (eventId, annotators) => dispatch => {
+    dispatch({
+        type: ActionTypes.SET_ANNOTATORS_FOR_EVENT,
+        payload: {
+            eventId,
+            annotators
+        }
+    });
+};
+
+export const setAnnotatorsLoadingForEvent = eventId => dispatch => {
+    dispatch({
+        type: ActionTypes.SET_ANNOTATORS_LOADING_FOR_EVENT
+    });
+};
+
+export const setAnnotatorsErrorForEvent = eventId => dispatch => {
+    dispatch({
+        type: ActionTypes.SET_ANNOTATORS_ERROR_FOR_EVENT
+    });
+};
+
+export const fetchAnnotatorsForEvent = (token, eventId) => async dispatch => {
+    dispatch(setAnnotatorsLoadingForEvent(eventId));
+    return API.adminGetAnnotatorsForEvent(token, eventId)
+        .then(annotators => {
+            dispatch(setAnnotatorsForEvent(eventId, annotators));
+        })
+        .catch(error => {
+            console.log('fetchAnnotatorsForEvent', error);
+            dispatch(setAnnotatorsErrorForEvent(eventId));
+        });
+};

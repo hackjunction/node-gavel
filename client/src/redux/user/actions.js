@@ -37,6 +37,18 @@ export const fetchUser = secret => dispatch => {
         });
 };
 
+export const setHasReadWelcome = secret => dispatch => {
+    dispatch(setUserLoading());
+
+    return API.setHasReadWelcome(secret)
+        .then(user => {
+            dispatch(setUser(user));
+        })
+        .catch(() => {
+            dispatch(setUserError());
+        });
+};
+
 export const setTeamMembers = teamMembers => dispatch => {
     dispatch({
         type: ActionTypes.SET_TEAM_MEMBERS,

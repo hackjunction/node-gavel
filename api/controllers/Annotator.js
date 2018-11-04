@@ -23,6 +23,10 @@ const AnnotatorController = {
         });
     },
 
+    setHasReadWelcome: secret => {
+        return Annotator.findOneAndUpdate({ secret }, { read_welcome: true }, { new: true });
+    },
+
     enable: annotatorId => {
         return Annotator.findByIdAndUpdate(annotatorId, { active: true }, { new: true });
     },
