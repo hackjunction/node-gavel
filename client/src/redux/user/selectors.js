@@ -12,6 +12,7 @@ export const isTeamMembersError = state => state.user.teamMembersError;
 export const getSubmission = state => state.user.submission;
 export const isSubmissionLoading = state => state.user.submissionLoading;
 export const isSubmissionError = state => state.user.submissionError;
+export const hasSubmitted = state => state.user.submission && state.user.submission.hasOwnProperty('_id');
 
 export const getEvent = state => state.user.event || {};
 export const isEventLoading = state => state.user.eventLoading;

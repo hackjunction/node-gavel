@@ -211,34 +211,38 @@ class TeamDashboard extends Component {
                         )
                     }
                 />
-                <DropDown
-                    ref={ref => (this.submissionTrack = ref)}
-                    label="Track"
-                    placeholder="Choose your track"
-                    hint="Which track are you participating on?"
-                    value={this.props.submission ? this.props.submission.track : ''}
-                    onChange={track => {
-                        this.props.editSubmission('track', track);
-                    }}
-                    required={true}
-                    isMulti={false}
-                    options={this.props.event.tracks}
-                    validate={Validators.noValidate}
-                />
-                <DropDown
-                    ref={ref => (this.submissionChallenges = ref)}
-                    label="Challenges"
-                    placeholder="Choose your challenges"
-                    hint="Which challenges did you do? Choose up to 5."
-                    value={this.props.submission ? this.props.submission.challenges : []}
-                    onChange={challenges => {
-                        this.props.editSubmission('challenges', challenges);
-                    }}
-                    required={true}
-                    isMulti={true}
-                    options={this.props.event.challenges}
-                    validate={Validators.noValidate}
-                />
+                {this.props.event.hasTracks ? (
+                    <DropDown
+                        ref={ref => (this.submissionTrack = ref)}
+                        label="Track"
+                        placeholder="Choose your track"
+                        hint="Which track are you participating on?"
+                        value={this.props.submission ? this.props.submission.track : ''}
+                        onChange={track => {
+                            this.props.editSubmission('track', track);
+                        }}
+                        required={true}
+                        isMulti={false}
+                        options={this.props.event.tracks}
+                        validate={Validators.noValidate}
+                    />
+                ) : null}
+                {this.props.event.hasChallenges ? (
+                    <DropDown
+                        ref={ref => (this.submissionChallenges = ref)}
+                        label="Challenges"
+                        placeholder="Choose your challenges"
+                        hint="Which challenges did you do? Choose up to 5."
+                        value={this.props.submission ? this.props.submission.challenges : []}
+                        onChange={challenges => {
+                            this.props.editSubmission('challenges', challenges);
+                        }}
+                        required={true}
+                        isMulti={true}
+                        options={this.props.event.challenges}
+                        validate={Validators.noValidate}
+                    />
+                ) : null}
             </div>
         );
     }
