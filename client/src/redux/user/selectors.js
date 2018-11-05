@@ -28,7 +28,7 @@ export const isVotingOpen = state =>
 export const getEventStartTime = state =>
     state.user.event ? moment(state.user.event.startTime).tz(state.user.event.timezone) : null;
 export const getSubmissionDeadline = state =>
-    state.user.event ? moment(state.user.event.submissionDeadline).tz(state.user.event.submissionDeadline) : null;
+    state.user.event ? moment(state.user.event.submissionDeadline).tz(state.user.event.timezone) : null;
 export const isSubmissionsOpen = state =>
     state.user.event
         ? getNowInEventTime(state).isBetween(getEventStartTime(state), getSubmissionDeadline(state))

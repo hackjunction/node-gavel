@@ -14,6 +14,7 @@ import TextField from '../../../components/forms/TextField';
 import TextArea from '../../../components/forms/TextArea';
 import SubmitButton from '../../../components/forms/SubmitButton';
 import ErrorsBox from '../../../components/forms/ErrorsBox';
+import DropDown from '../../../components/forms/DropDown';
 
 import * as user from '../../../redux/user/selectors';
 import * as UserActions from '../../../redux/user/actions';
@@ -155,7 +156,7 @@ class TeamDashboard extends Component {
             <div>
                 <TextField
                     ref={ref => (this.submissionName = ref)}
-                    label="Project name"
+                    label={'Project name'}
                     placeholder="A catchy name for your project"
                     value={this.props.submission ? this.props.submission.name : ''}
                     onChange={name => {
@@ -210,6 +211,34 @@ class TeamDashboard extends Component {
                         )
                     }
                 />
+                <DropDown
+                    ref={ref => (this.submissionTrack = ref)}
+                    label="Track"
+                    placeholder="Choose your track"
+                    hint="Which track are you participating on?"
+                    value={this.props.submission ? this.props.submission.track : ''}
+                    onChange={track => {
+                        this.props.editSubmission('track', track);
+                    }}
+                    required={true}
+                    isMulti={false}
+                    options={this.props.event.tracks}
+                    validate={Validators.noValidate}
+                />
+                <DropDown
+                    ref={ref => (this.submissionChallenges = ref)}
+                    label="Challenges"
+                    placeholder="Choose your challenges"
+                    hint="Which challenges did you do? Choose up to 5."
+                    value={this.props.submission ? this.props.submission.challenges : []}
+                    onChange={challenges => {
+                        this.props.editSubmission('challenges', challenges);
+                    }}
+                    required={true}
+                    isMulti={true}
+                    options={this.props.event.challenges}
+                    validate={Validators.noValidate}
+                />
             </div>
         );
     }
@@ -234,6 +263,27 @@ class TeamDashboard extends Component {
                 <p>
                     Voting is open! Click <Link to="/vote">here</Link> to vote. Voting closes in{' '}
                     <TimeAgo className="VotingTime" date={votingEndTime} />
+                </p>
+            );
+        }
+    }
+
+    renderSubmissionDeadline() {
+        const { submissionDeadline, isSubmissionsOpen } = this.props;
+
+        if (!isSubmissionsOpen) {
+            return (
+                <p>
+                    The submission deadline has passed! You'll still be able to edit some fields of your submission, but
+                    the ones marked with a <i class="fas fa-lock" /> symbol are now locked.
+                </p>
+            );
+        } else {
+            return (
+                <p>
+                    Submissions are open! Please submit your project now - you'll still be able to edit your submission
+                    later. Once the submission deadline passes, you will only be able to edit the fields not marked with
+                    a <i class="fas fa-lock" /> symbol.
                 </p>
             );
         }
@@ -290,6 +340,7 @@ class TeamDashboard extends Component {
                 </SectionWrapper>
 
                 <SectionTitle title="Submission" showLoading={this.props.submissionLoading} />
+                <SectionWrapper label="Submission Deadline">{this.renderSubmissionDeadline()}</SectionWrapper>
                 {this.renderSubmission()}
                 <SubmitButton
                     text="Update submission"
@@ -320,7 +371,9 @@ const mapStateToProps = state => ({
     event: user.getEvent(state),
     votingStartTime: user.getVotingStartTime(state),
     votingEndTime: user.getVotingEndTime(state),
-    isVotingOpen: user.isVotingOpen(state)
+    isVotingOpen: user.isVotingOpen(state),
+    submissionDeadline: user.getSubmissionDeadline(state),
+    isSubmissionsOpen: user.isSubmissionsOpen(state)
 });
 
 const mapDispatchToProps = dispatch => ({

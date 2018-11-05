@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Joi = require('joi');
+const EventController = require('../controllers/Event');
 
 const ProjectSchema = new Schema({
     name: {
@@ -17,6 +18,8 @@ const ProjectSchema = new Schema({
 
     image: String,
     github: String,
+    track: String,
+    challenges: [String],
     team: {
         type: Schema.Types.ObjectId,
         ref: 'Team'
@@ -56,7 +59,7 @@ ProjectSchema.index({ active: 1, viewed: 1, prioritized: 1, team: 1 });
 const Project = mongoose.model('Project', ProjectSchema);
 
 const validate = function(item) {
-    const schema = Joi.object().keys({
+    const keys = {
         name: Joi.string()
             .min(1)
             .max(120)
@@ -69,6 +72,8 @@ const validate = function(item) {
             .min(1)
             .max(5)
             .required(),
+        track: Joi.string(),
+        challenges: Joi.array().items(Joi.string()),
         image: Joi.string()
             .uri()
             .optional()
@@ -78,9 +83,26 @@ const validate = function(item) {
             .optional()
             .trim(),
         team: Joi.string().required()
-    });
+    };
 
-    return schema.validate(item, { allowUnknown: true });
+    return EventController.getEventWithId(item.event).then(event => {
+        if (event.hasChallenges) {
+            keys.challenges = Joi.array()
+                .items(Joi.string().valid(event.challenges))
+                .min(1)
+                .max(5)
+                .required();
+        }
+
+        if (event.hasTracks) {
+            keys.track = Joi.string()
+                .valid(event.tracks)
+                .required();
+        }
+
+        const schema = Joi.object().keys(keys);
+        return schema.validate(item, { stripUnknown: true });
+    });
 };
 
 module.exports = {

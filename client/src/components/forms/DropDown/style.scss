@@ -1,0 +1,53 @@
+@import '../../../styles/base.scss';
+
+.DropDown--wrapper {
+    flex: 1;
+}
+
+.FormField--DropDown {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+
+    .FormField--input {
+        color: transparent;
+        text-shadow: 0 0 0 $snow;
+        cursor: pointer;
+    }
+
+    &.active {
+        .DropDown--options {
+            max-height: none;
+        }
+    }
+}
+
+.DropDown--options {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    max-height: 0;
+    overflow: hidden;
+    background: $snow;
+}
+
+.DropDown--options_item {
+    padding: 0 $base-margin;
+    cursor: pointer;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: $base-margin;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    background: $snow;
+}
+
+.DropDown--options_item-name {
+    color: $black;
+    margin: 0;
+}

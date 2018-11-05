@@ -11,7 +11,8 @@ const ProjectController = {
         };
 
         const options = {
-            setDefaultsOnInsert: true
+            setDefaultsOnInsert: true,
+            new: true
         };
 
         return validate(doc).then(validatedData => {
