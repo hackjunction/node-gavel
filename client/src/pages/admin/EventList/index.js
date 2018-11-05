@@ -42,7 +42,12 @@ class AdminEventList extends Component {
                         {
                             key: 'options',
                             title: 'Options',
-                            render: item => <a href={'/admin/event/' + item._id}>Admin</a>
+                            render: item => (
+                                <div>
+                                    <a href={'/admin/event/' + item._id}>Admin</a>
+                                    <a href={'/admin/edit/' + item._id}>Edit</a>
+                                </div>
+                            )
                         }
                     ]}
                     items={this.props.events}

@@ -18,11 +18,14 @@ import SubmitButton from '../../../components/forms/SubmitButton';
 import ErrorsBox from '../../../components/forms/ErrorsBox';
 
 import API from '../../../services/api';
+import moment from 'moment-timezone';
+
+const DATE_FORMAT = 'DD.MM.YYYY HH:mm';
 
 const FIELDS = [
     {
         name: 'name',
-        default: 'JUNCTIONxBudapest'
+        default: ''
     },
     {
         name: 'hasTracks',
@@ -34,39 +37,39 @@ const FIELDS = [
     },
     {
         name: 'hasChallenges',
-        default: true
+        default: false
     },
     {
         name: 'challenges',
-        default: ['Challenge 1', 'Challenge 2', 'Challenge 3']
+        default: []
     },
     {
         name: 'timezone',
-        default: 'Europe/Helsinki'
+        default: ''
     },
     {
         name: 'startTime',
-        default: '01.11.2018 16:00'
+        default: ''
     },
     {
         name: 'endTime',
-        default: '01.11.2018 23:00'
+        default: ''
     },
     {
         name: 'submissionDeadline',
-        default: '01.11.2018 18:00'
+        default: ''
     },
     {
         name: 'votingStartTime',
-        default: '01.11.2018 19:00'
+        default: ''
     },
     {
         name: 'votingEndTime',
-        default: '01.11.2018 20:00'
+        default: ''
     },
     {
         name: 'participantCode',
-        default: 'super-secret-budapest'
+        default: ''
     },
     {
         name: 'apiKey',
@@ -84,19 +87,63 @@ class AdminCreateEvent extends Component {
 
         const eventData = {};
 
-        _.each(FIELDS, field => {
-            eventData[field.name] = field.default;
-        });
+        if (this.props.match && this.props.match.params.id) {
+            eventData._id = this.props.match.params.id;
+        }
 
         this.state = {
             eventData,
             loading: false,
             error: false,
             submittedEvent: null,
-            errors: []
+            errors: [],
+            eventLoadError: false,
+            eventLoading: false
         };
 
         this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.state.eventData.hasOwnProperty('_id')) {
+            this.setState(
+                {
+                    eventLoading: true
+                },
+                () => {
+                    API.adminGetEvent(this.props.adminToken, this.state.eventData._id)
+                        .then(event => {
+                            this.setState({
+                                eventData: {
+                                    ...this.state.eventData,
+                                    ...event,
+                                    startTime: moment(event.startTime).format(DATE_FORMAT),
+                                    endTime: moment(event.endTime).format(DATE_FORMAT),
+                                    submissionDeadline: moment(event.submissionDeadline).format(DATE_FORMAT),
+                                    votingStartTime: moment(event.votingStartTime).format(DATE_FORMAT),
+                                    votingEndTime: moment(event.votingEndTime).format(DATE_FORMAT)
+                                },
+                                eventLoading: false
+                            });
+                        })
+                        .catch(error => {
+                            this.setState({
+                                eventLoading: false,
+                                eventLoadError: true
+                            });
+                        });
+                }
+            );
+        } else {
+            const eventData = {};
+            _.each(FIELDS, field => {
+                eventData[field.name] = field.default;
+            });
+
+            this.setState({
+                eventData
+            });
+        }
     }
 
     onSubmit() {
@@ -155,9 +202,23 @@ class AdminCreateEvent extends Component {
         );
     }
 
+    renderError() {
+        return (
+            <div className="Event--submitted">
+                <h3 className="Event--submitted-title">Unable to get event</h3>
+                <p>Unable to get the event with the id {this.state.eventData._id}. Reload this page to try again.</p>
+                <Link to="/admin">Back to event list</Link>
+            </div>
+        );
+    }
+
     render() {
         if (this.state.submittedEvent) {
             return this.renderSubmitted();
+        }
+
+        if (this.state.eventLoadError) {
+            return this.renderError();
         }
 
         return (
@@ -270,7 +331,7 @@ class AdminCreateEvent extends Component {
                     <TextField
                         ref={ref => (this.startTime = ref)}
                         label="Event start time"
-                        placeholder="dd.mm.yyyy HH:mm"
+                        placeholder={DATE_FORMAT}
                         value={this.state.eventData.startTime}
                         hint="When does the event begin?"
                         onChange={startTime => this.setState({ eventData: { ...this.state.eventData, startTime } })}
@@ -280,7 +341,7 @@ class AdminCreateEvent extends Component {
                     <TextField
                         ref={ref => (this.endTime = ref)}
                         label="Event end time"
-                        placeholder="dd.mm.yyyy HH:mm"
+                        placeholder={DATE_FORMAT}
                         value={this.state.eventData.endTime}
                         hint="When does the event end?"
                         onChange={endTime => this.setState({ eventData: { ...this.state.eventData, endTime } })}
@@ -298,7 +359,7 @@ class AdminCreateEvent extends Component {
                     <TextField
                         ref={ref => (this.submissionDeadline = ref)}
                         label="Submission deadline"
-                        placeholder="dd.mm.yyyy HH:mm"
+                        placeholder={DATE_FORMAT}
                         value={this.state.eventData.submissionDeadline}
                         hint="When does the platform no longer accept project submissions?"
                         onChange={submissionDeadline =>
@@ -318,7 +379,7 @@ class AdminCreateEvent extends Component {
                     <TextField
                         ref={ref => (this.votingStartTime = ref)}
                         label="Voting begins"
-                        placeholder="dd.mm.yyyy HH:mm"
+                        placeholder={DATE_FORMAT}
                         value={this.state.eventData.votingStartTime}
                         hint="When does the judging period begin?"
                         onChange={votingStartTime =>
@@ -338,7 +399,7 @@ class AdminCreateEvent extends Component {
                     <TextField
                         ref={ref => (this.votingEndTime = ref)}
                         label="Voting ends"
-                        placeholder="dd.mm.yyyy HH:mm"
+                        placeholder={DATE_FORMAT}
                         value={this.state.eventData.votingEndTime}
                         hint="When does the judging period end?"
                         onChange={votingEndTime =>
@@ -400,7 +461,7 @@ class AdminCreateEvent extends Component {
                 </div>
                 <ErrorsBox errors={this.state.errors} />
                 <div style={{ height: '100px' }} />
-                <SubmitButton text="Create Event" loading={this.state.loading} onClick={this.onSubmit} />
+                <SubmitButton text={this.state.eventData._id ? 'Update Event' : 'Create Event'} loading={this.state.loading} onClick={this.onSubmit} />
                 <div style={{ height: '50px' }} />
                 {this.state.error ? <p className="CreateEvent--error">Oops, something went wrong</p> : null}
             </div>

@@ -99,7 +99,7 @@ const validate = data => {
         apiKey: Joi.string()
     });
 
-    return schema.validate(cleaned);
+    return schema.validate(cleaned, { allowUnknown: true });
 };
 
 //TODO: set up indexes

@@ -4,7 +4,7 @@ const passport = require('passport');
 
 module.exports = function(app) {
     /**
-     * Create a new event
+     * Create a new event, or update an existing one
      * -> Requires admin token
      */
     app.post('/api/events', passport.authenticate('admin', { session: false }), createEvent);
@@ -14,6 +14,12 @@ module.exports = function(app) {
      * -> Requires admin token
      */
     app.get('/api/events', passport.authenticate('admin', { session: false }), getAllEvents);
+
+    /**
+     * Get an event by id
+     * -> Requires admin token
+     */
+    app.get('/api/events/:eventId', passport.authenticate('admin', { session: false }), getEventWithId);
 
     /**
      * Get an event with the secret code
@@ -31,7 +37,7 @@ function createEvent(req, res) {
             });
         })
         .catch(error => {
-            console.log('EventController.create', error);
+            console.log('createEvent', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });
@@ -47,7 +53,23 @@ function getAllEvents(req, res) {
             });
         })
         .catch(error => {
-            console.log('EventController.getAllEvents', error);
+            console.log('getAllEvents', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
+}
+
+function getEventWithId(req, res) {
+    EventController.getEventWithId(req.params.eventId)
+        .then(data => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data
+            });
+        })
+        .catch(error => {
+            console.log('getEventWithId', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });
@@ -63,7 +85,7 @@ function getEventWithCode(req, res) {
             });
         })
         .catch(error => {
-            console.log('EventController.getEventWithCode', error);
+            console.log('getEventWithCode', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });

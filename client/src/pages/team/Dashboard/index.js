@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import TimeAgo from 'react-timeago';
 import moment from 'moment-timezone';
 import './style.scss';
 
@@ -43,6 +44,10 @@ class TeamDashboard extends Component {
             addMemberErrors: [],
             removingTeamMember: null
         };
+
+        this.dateTest = moment()
+            .tz('Europe/Helsinki')
+            .add(10, 'minutes');
 
         this.addTeamMember = this.addTeamMember.bind(this);
         this.saveSubmission = this.saveSubmission.bind(this);
@@ -210,14 +215,31 @@ class TeamDashboard extends Component {
     }
 
     renderVotingTime() {
-        const { event } = this.props;
-        const now = moment().tz(event.timezone);
+        const { votingStartTime, isVotingOpen, votingEndTime } = this.props;
 
-        return null;
+        if (!isVotingOpen) {
+            if (votingStartTime.isAfter())
+                return (
+                    <p>
+                        Voting is not yet open. Voting begins {votingStartTime.format('dddd MMMM Do, HH:mm A')} (
+                        <TimeAgo className="VotingTime" date={votingStartTime} />
+                        ).
+                    </p>
+                );
+            else {
+                return <p>Voting is now closed. Thank you for participating!</p>;
+            }
+        } else {
+            return (
+                <p>
+                    Voting is open! Click <Link to="/vote">here</Link> to vote. Voting closes in{' '}
+                    <TimeAgo className="VotingTime" date={votingEndTime} />
+                </p>
+            );
+        }
     }
 
     render() {
-        console.log('EVENT', this.props.event);
         return (
             <div className="TeamDashboard">
                 <SectionTitle title="Team" showLoading={this.props.teamMembersLoading} />
@@ -277,10 +299,7 @@ class TeamDashboard extends Component {
                     noMarginTop
                 />
                 <SectionTitle title="Voting" loading={this.props.eventLoading} />
-                <SectionWrapper label="Voting time">
-                    {this.renderVotingTime()}
-                    <Link to="/vote">Start Voting</Link>
-                </SectionWrapper>
+                <SectionWrapper label="Voting time">{this.renderVotingTime()}</SectionWrapper>
             </div>
         );
     }
@@ -298,7 +317,10 @@ const mapStateToProps = state => ({
     submission: user.getSubmission(state),
     eventLoading: user.isEventLoading(state),
     eventError: user.isEventError(state),
-    event: user.getEvent(state)
+    event: user.getEvent(state),
+    votingStartTime: user.getVotingStartTime(state),
+    votingEndTime: user.getVotingEndTime(state),
+    isVotingOpen: user.isVotingOpen(state)
 });
 
 const mapDispatchToProps = dispatch => ({
