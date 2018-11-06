@@ -1,13 +1,13 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const AnnotatorController = require('../controllers/Annotator');
-const EventController = require('../controllers/Event');
+const Settings = require('../settings');
 
 //Admin token authentication
 passport.use(
     'admin',
     new LocalStrategy({ usernameField: 'token', passwordField: 'token' }, function(username, token, done) {
-        if (token === process.env.ADMIN_TOKEN) {
+        if (token === Settings.ADMIN_TOKEN) {
             return done(null, {
                 isAdmin: true
             });

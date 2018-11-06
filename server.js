@@ -1,12 +1,14 @@
-require('dotenv').config();
-
 var express = require('express'),
     app = express(),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     bluebird = require('bluebird'),
     passport = require('passport'),
+    Settings = require('./api/settings'),
     port = process.env.PORT || 3000;
+
+/* Check env settigns */
+Settings.check();
 
 /* Set mongoose  & global to use Bluebird promises */
 global.Promise = bluebird;

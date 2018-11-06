@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Joi = require('joi');
 const EventController = require('../controllers/Event');
+const Settings = require('../settings');
 
 const ProjectSchema = new Schema({
     name: {
@@ -17,7 +18,7 @@ const ProjectSchema = new Schema({
     /** TODO: Add Generic details here, such as long description, tech used, image, etc...*/
 
     image: String,
-    github: String,
+    source: String,
     track: String,
     challenges: [String],
     team: {
@@ -46,11 +47,11 @@ const ProjectSchema = new Schema({
     ],
     mu: {
         type: Number,
-        default: 0.0
+        default: Settings.MATH.MU_PRIOR
     },
     sigma_sq: {
         type: Number,
-        default: 0.0
+        default: Settings.MATH.SIGMA_SQ_PRIOR
     }
 });
 
@@ -78,11 +79,12 @@ const validate = function(item) {
             .uri()
             .optional()
             .trim(),
-        github: Joi.string()
+        source: Joi.string()
             .uri()
             .optional()
             .trim(),
-        team: Joi.string().required()
+        team: Joi.string().required(),
+        event: Joi.string().required()
     };
 
     return EventController.getEventWithId(item.event).then(event => {

@@ -3,14 +3,16 @@ const path = require('path');
 const sgMail = require('@sendgrid/mail');
 const Promise = require('bluebird');
 
+const Settings = require('../settings');
+
 const EventController = require('../controllers/Event');
 const AnnotatorController = require('../controllers/Annotator');
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(Settings.SENDGRID_API_KEY);
 
 const email = new Email({
     message: {
-        from: process.env.EMAILSERVICE_FROM
+        from: Settings.EMAILSERVICE_FROM
     },
     transport: {
         jsonTransport: true
@@ -21,10 +23,10 @@ const email = new Email({
 });
 
 const sendEmail = msg => {
-    if (process.env.DISABLE_EMAIL == 'true') {
+    if (Settings.DISABLE_EMAIL == 'true') {
         console.log('=== Email: set DISABLE_EMAIL to false in .env to send emails');
         console.log('MESSAGE', msg);
-    } else if (!process.env.SENDGRID_API_KEY || !process.env.EMAILSERVICE_FROM) {
+    } else if (!Settings.SENDGRID_API_KEY || !Settings.EMAILSERVICE_FROM) {
         console.log('Email: Missing SENDGRID_API_KEY or EMAILSERVICE_FROM from .env');
         console.log('MESSAGE', msg);
     } else {
@@ -51,7 +53,7 @@ const prepareMessage = (template, user, context) =>
             .then(data => {
                 let message = {
                     to: user.email,
-                    from: process.env.EMAILSERVICE_FROM || '',
+                    from: Settings.EMAILSERVICE_FROM || '',
                     ...data
                 };
 
@@ -96,7 +98,7 @@ const teamMemberAddedEmail = (annotatorId, eventId) => {
             const context = {
                 userName: annotator.name,
                 eventName: event.name,
-                loginLink: process.env.BASE_URL + '/login/' + annotator.secret
+                loginLink: Settings.BASE_URL + '/login/' + annotator.secret
             };
 
             return sendOne('create-team', annotator, context);

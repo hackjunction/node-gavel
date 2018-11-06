@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Joi = require('joi');
+const Settings = require('../settings');
 
 const AnnotatorSchema = new Schema({
     name: {
@@ -49,13 +50,14 @@ const AnnotatorSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Event'
     },
+    assigned_track: String,
     alpha: {
         type: Number,
-        default: 10.0
+        default: Settings.MATH.ALPHA_PRIOR
     },
     beta: {
         type: Number,
-        default: 1.0
+        default: Settings.MATH.BETA_PRIOR
     }
 });
 

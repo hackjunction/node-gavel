@@ -37,10 +37,10 @@ export const fetchUser = secret => dispatch => {
         });
 };
 
-export const setHasReadWelcome = secret => dispatch => {
+export const initAnnotator = secret => dispatch => {
     dispatch(setUserLoading());
 
-    return API.setHasReadWelcome(secret)
+    return API.initAnnotator(secret)
         .then(user => {
             dispatch(setUser(user));
         })

@@ -7,6 +7,10 @@ import * as UserActions from '../../../redux/user/actions';
 import VoteWelcome from './Welcome';
 
 class Vote extends Component {
+    componentDidMount() {
+        this.props.updateUser(this.props.user.secret);
+    }
+
     setHasReadWelcome() {
         this.props.setHasReadWelcome();
     }
@@ -19,7 +23,7 @@ class Vote extends Component {
                 <VoteWelcome
                     user={user}
                     loading={userLoading}
-                    onContinue={() => this.props.setHasReadWelcome(user.secret)}
+                    onContinue={() => this.props.initAnnotator(user.secret)}
                 />
             );
         }
@@ -71,7 +75,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    setHasReadWelcome: secret => dispatch(UserActions.setHasReadWelcome(secret))
+    initAnnotator: secret => dispatch(UserActions.initAnnotator(secret)),
+    updateUser: secret => dispatch(UserActions.fetchUser(secret))
 });
 
 export default connect(

@@ -1,5 +1,7 @@
 const Promise = require('bluebird');
 const uuid = require('uuid/v4');
+const _ = require('lodash');
+const moment = require('moment-timezone');
 const { Annotator, validate } = require('../models/Annotator');
 
 const AnnotatorController = {
@@ -23,8 +25,45 @@ const AnnotatorController = {
         });
     },
 
-    setHasReadWelcome: secret => {
-        return Annotator.findOneAndUpdate({ secret }, { read_welcome: true }, { new: true });
+    init: (annotatorId, trackName) => {
+        return Annotator.findByIdAndUpdate(
+            annotatorId,
+            { assigned_track: trackName, read_welcome: true },
+            { new: true }
+        );
+    },
+
+    updateNext: (annotatorId, nextId) => {
+        return Annotator.findById(annotatorId).then(annotator => {
+            if (!annotator.next) {
+                annotator.next = nextId;
+            } else {
+                annotator.prev = annotator.next;
+                annotator.ignore.push(annotator.next);
+                annotator.next = nextId;
+            }
+
+            annotator.updated = moment().toDate();
+            return annotator.save();
+        });
+    },
+
+    skipCurrent: (annotatorId, nextId) => {
+        return Annotator.findById(annotatorId).then(annotator => {
+            if (!annotator.next) {
+                return Promise.reject('Annotator has no assigned project, cannot skip');
+            } else {
+                annotator.ignore.push(annotator.next);
+                annotator.next = nextId;
+                annotator.updated = moment().toDate();
+            }
+
+            return annotator.save();
+        });
+    },
+
+    setReadWelcome: annotatorId => {
+        return Annotator.findByIdAndUpdate(annotatorId, { read_welcome: true }, { new: true });
     },
 
     enable: annotatorId => {
@@ -82,6 +121,19 @@ const AnnotatorController = {
     getManyById: (_ids, includeSecret = false) => {
         return Promise.map(_ids, _id => {
             return AnnotatorController.getById(_id, includeSecret);
+        });
+    },
+
+    getActiveAnnotators: eventId => {
+        return Annotator.find({
+            event: eventId,
+            active: true,
+            next: {
+                $exists: true
+            },
+            updated: {
+                $exists: true
+            }
         });
     },
 

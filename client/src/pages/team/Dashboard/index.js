@@ -211,6 +211,25 @@ class TeamDashboard extends Component {
                         )
                     }
                 />
+                <TextField
+                    ref={ref => (this.submissionSource = ref)}
+                    label="Source"
+                    placeholder="A link to your source code on GitHub, BitBucket, etc."
+                    value={this.props.submission ? this.props.submission.source : ''}
+                    onChange={source => {
+                        this.props.editSubmission('source', source);
+                    }}
+                    required={false}
+                    validate={value =>
+                        Validators.stringMinMax(
+                            value,
+                            1,
+                            500,
+                            'The link must be at least 1 character',
+                            'The link cannot be over 500 characters'
+                        )
+                    }
+                />
                 {this.props.event.hasTracks ? (
                     <DropDown
                         ref={ref => (this.submissionTrack = ref)}

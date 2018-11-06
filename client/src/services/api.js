@@ -199,8 +199,8 @@ const API = {
         return GET(`/api/teams/submission/?secret=${secret}`);
     },
 
-    setHasReadWelcome: secret => {
-        return GET(`/api/annotators/welcome/?secret=${secret}`);
+    initAnnotator: secret => {
+        return GET(`/api/annotators/init/?secret=${secret}`);
     }
 };
 

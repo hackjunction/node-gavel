@@ -49,7 +49,7 @@ module.exports = function(app) {
      * Set an annotator as having read the welcome message (which allows them to begin voting)
      * -> Requires annotator secret
      */
-    app.get('/api/annotators/welcome', passport.authenticate('annotator', { session: false }), setHasReadWelcome);
+    app.get('/api/annotators/init', passport.authenticate('annotator', { session: false }), initAnnotator);
 
     /**
      * Get an annotator's event
@@ -66,8 +66,8 @@ function getAnnotator(req, res) {
     });
 }
 
-function setHasReadWelcome(req, res) {
-    return AnnotatorController.setHasReadWelcome(req.user.secret)
+function initAnnotator(req, res) {
+    return AnnotatorController.init(req.user)
         .then(annotator => {
             return res.status(status.OK).send({
                 status: 'success',

@@ -10,14 +10,7 @@ const exp = require('../../node_modules/@stdlib/stdlib/lib/node_modules/@stdlib/
 //Should be equivalent to numpy.log
 const log = require('../../node_modules/@stdlib/stdlib/lib/node_modules/@stdlib/math/base/special/ln');
 
-const GAMMA = 0.1;
-const LAMBDA = 1.0;
-const KAPPA = 0.0001;
-const MU_PRIOR = 0.0;
-const SIGMA_SQ_PRIOR = 1.0;
-const ALPHA_PRIOR = 10.0;
-const BETA_PRIOR = 1.0;
-const EPSILON = 0.25;
+const { MATH } = require('../settings');
 
 // Some QUICK MATHS
 // Port of gavel/crowd_bt.py in original Gavel.
@@ -45,9 +38,6 @@ const Maths = {
     },
 
     update: (alpha, beta, mu_winner, sigma_sq_winner, mu_loser, sigma_sq_loser) => {
-        console.log('mu_winner', mu_winner);
-        console.log;
-
         const updated_annotator = Maths.updatedAnnotator(
             alpha,
             beta,
@@ -65,10 +55,6 @@ const Maths = {
             mu_loser,
             sigma_sq_loser
         );
-
-        console.log('Annotator', updated_annotator);
-        console.log('Mus', updated_mus);
-        console.log('Sigmas', updated_sigma_sqs);
 
         return {
             updated_alpha: updated_annotator.updated_alpha,
@@ -107,11 +93,11 @@ const Maths = {
             prob_a_ranked_above *
                 (Maths.divergenceGaussian(mu_a_1, sigma_sq_a_1, mu_a, sigma_sq_a) +
                     Maths.divergenceGaussian(mu_b_1, sigma_sq_b_1, mu_b, sigma_sq_b) +
-                    GAMMA * Maths.divergenceBeta(alpha_1, beta_1, alpha, beta)) +
+                    MATH.GAMMA * Maths.divergenceBeta(alpha_1, beta_1, alpha, beta)) +
             (1 - prob_a_ranked_above) *
                 (Maths.divergenceGaussian(mu_a_2, sigma_sq_a_2, mu_a, sigma_sq_a) +
                     Maths.divergenceGaussian(mu_b_2, sigma_sq_b_2, mu_b, sigma_sq_b) +
-                    GAMMA * Maths.divergenceBeta(alpha_2, beta_2, alpha, beta))
+                    MATH.GAMMA * Maths.divergenceBeta(alpha_2, beta_2, alpha, beta))
         );
     },
 
@@ -135,8 +121,8 @@ const Maths = {
                 Math.pow(alpha * exp(mu_winner) + beta * exp(mu_loser), 2) -
             (exp(mu_winner) * exp(mu_loser)) / Math.pow(exp(mu_winner) + exp(mu_loser), 2);
 
-        const updated_sigma_sq_winner = sigma_sq_winner * Math.max(1 + sigma_sq_winner * mult, KAPPA);
-        const updated_sigma_sq_loser = sigma_sq_loser * Math.max(1 + sigma_sq_loser * mult, KAPPA);
+        const updated_sigma_sq_winner = sigma_sq_winner * Math.max(1 + sigma_sq_winner * mult, Math.KAPPA);
+        const updated_sigma_sq_loser = sigma_sq_loser * Math.max(1 + sigma_sq_loser * mult, Math.KAPPA);
 
         return {
             updated_sigma_sq_winner,
