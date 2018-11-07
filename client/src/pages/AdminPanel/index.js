@@ -29,9 +29,29 @@ class AdminPanel extends Component {
         this.props.updateAnnotators(adminToken, eventId);
     }
 
+    getAnnotators() {
+        const { eventId } = this.props.match.params.id;
+        if (this.props.annotators.hasOwnProperty(eventId)) {
+            return this.props.annotators[eventId];
+        } else {
+            return {
+                data: [],
+                loading: false,
+                error: false
+            };
+        }
+    }
+
     render() {
         const eventId = this.props.match.params.id;
-        const { data, loading, error } = this.props.annotators[eventId];
+        const annotators = this.getAnnotators();
+
+        console.log('ANNOTATORS', annotators);
+
+        //annotators.data
+        //annotators.loading
+        //annotators.error
+
         return (
             <div>
                 <h1>Admin Panel</h1>

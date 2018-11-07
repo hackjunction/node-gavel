@@ -39,13 +39,15 @@ export const setAnnotatorsForEvent = (eventId, annotators) => dispatch => {
 
 export const setAnnotatorsLoadingForEvent = eventId => dispatch => {
     dispatch({
-        type: ActionTypes.SET_ANNOTATORS_LOADING_FOR_EVENT
+        type: ActionTypes.SET_ANNOTATORS_LOADING_FOR_EVENT,
+        payload: eventId
     });
 };
 
 export const setAnnotatorsErrorForEvent = eventId => dispatch => {
     dispatch({
-        type: ActionTypes.SET_ANNOTATORS_ERROR_FOR_EVENT
+        type: ActionTypes.SET_ANNOTATORS_ERROR_FOR_EVENT,
+        payload: eventId
     });
 };
 

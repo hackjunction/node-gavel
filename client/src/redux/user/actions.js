@@ -39,13 +39,13 @@ export const fetchUser = secret => dispatch => {
 };
 
 export const initAnnotator = secret => dispatch => {
-    return new Promise(function(resolve, reject) {
-        reject(null);
-    });
-
-    // return API.initAnnotator(secret).then(user => {
-    //     dispatch(setUser(user));
-    // });
+    return API.initAnnotator(secret)
+        .then(user => {
+            dispatch(setUser(user));
+        })
+        .catch(error => {
+            dispatch(setUserError());
+        });
 };
 
 export const setEvent = event => dispatch => {

@@ -21,41 +21,94 @@ export default function reducer(state = initialState, action) {
                 ...state,
                 events: action.payload
             };
-        case ActionTypes.SET_ANNOTATORS_FOR_EVENT:
-            return {
-                ...state,
-                annotators: {
-                    ...state.annotators,
-                    [action.payload.eventId]: {
-                        data: action.payload.annotators,
-                        loading: false
+        case ActionTypes.SET_ANNOTATORS_FOR_EVENT: {
+            const eventId = action.payload.eventId;
+
+            if (state.annotators.hasOwnProperty(eventId)) {
+                return {
+                    ...state,
+                    annotators: {
+                        ...state.annotators,
+                        [eventId]: {
+                            ...state.annotators[eventId],
+                            data: action.payload.annotators,
+                            loading: false,
+                            error: false
+                        }
                     }
-                }
-            };
-        case ActionTypes.SET_ANNOTATORS_LOADING_FOR_EVENT:
-            return {
-                ...state,
-                annotators: {
-                    ...state.annotators,
-                    [action.payload.eventId]: {
-                        ...state.annotators[action.payload.eventId],
-                        loading: true,
-                        error: false
+                };
+            } else {
+                return {
+                    ...state,
+                    annotators: {
+                        ...state.annotators,
+                        [eventId]: {
+                            data: action.payload.annotators,
+                            loading: false,
+                            error: false
+                        }
                     }
-                }
-            };
-        case ActionTypes.SET_ANNOTATORS_ERROR_FOR_EVENT:
-            return {
-                ...state,
-                annotators: {
-                    ...state.annotators,
-                    [action.payload.eventId]: {
-                        ...state.annotators[action.payload.eventId],
-                        error: true,
-                        loading: false
+                };
+            }
+        }
+        case ActionTypes.SET_ANNOTATORS_LOADING_FOR_EVENT: {
+            const eventId = action.payload.eventId;
+
+            if (state.annotators.hasOwnProperty(eventId)) {
+                return {
+                    ...state,
+                    annotators: {
+                        ...state.annotators,
+                        [eventId]: {
+                            ...state.annotators[eventId],
+                            loading: true,
+                            error: false
+                        }
                     }
-                }
-            };
+                };
+            } else {
+                return {
+                    ...state,
+                    annotators: {
+                        ...state.annotators,
+                        [eventId]: {
+                            ...state.annotators[eventId],
+                            loading: true,
+                            error: false
+                        }
+                    }
+                };
+            }
+        }
+        case ActionTypes.SET_ANNOTATORS_ERROR_FOR_EVENT: {
+            const eventId = action.payload.eventId;
+
+            if (state.annotators.hasOwnProperty(eventId)) {
+                return {
+                    ...state,
+                    annotators: {
+                        ...state.annotators,
+                        [eventId]: {
+                            ...state.annotators[eventId],
+                            loading: false,
+                            error: true
+                        }
+                    }
+                };
+            } else {
+                return {
+                    ...state,
+                    annotators: {
+                        ...state.annotators,
+                        [eventId]: {
+                            data: [],
+                            loading: false,
+                            error: true
+                        }
+                    }
+                };
+            }
+        }
         default:
             return state;
     }

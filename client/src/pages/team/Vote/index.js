@@ -5,14 +5,20 @@ import * as UserSelectors from '../../../redux/user/selectors';
 import * as UserActions from '../../../redux/user/actions';
 
 import VoteWelcome from './Welcome';
+import VoteError from './Error';
+import VoteLoading from './Loading';
+import VoteWait from './Wait';
 
 class Vote extends Component {
-    componentDidMount() {
-        this.props.updateUser(this.props.user.secret);
+    constructor(props) {
+        super(props);
+
+        this.init = this.init.bind(this);
     }
 
-    setHasReadWelcome() {
-        this.props.setHasReadWelcome();
+    componentDidMount() {
+        this.props.updateUser(this.props.user.secret);
+        this.props.updateEvent(this.props.user.secret);
     }
 
     init() {
@@ -23,53 +29,52 @@ class Vote extends Component {
     }
 
     render() {
-        const { user, userLoading, userError } = this.props;
+        const { user, userLoading, userError, eventLoading, eventError } = this.props;
 
-        if (!this.props.user.read_welcome) {
-            return (
-                <VoteWelcome
-                    user={user}
-                    loading={userLoading}
-                    onContinue={() => this.props.initAnnotator(user.secret)}
-                />
-            );
+        if (userLoading || eventLoading) {
+            return <VoteLoading />;
         }
 
-        if (userLoading) {
-            return (
-                <div className="Vote">
-                    <h1 className="Vote--title">Loading...</h1>
-                </div>
-            );
+        if (userError || eventError) {
+            return <VoteError />;
         }
 
-        if (userError) {
-            return (
-                <div className="Vote">
-                    <h1 className="Vote--title">Oops, something went wrong</h1>
-                </div>
-            );
+        if (!user.read_welcome) {
+            return <VoteWelcome user={user} loading={userLoading} onContinue={this.init} />;
         }
 
         if (!user.next) {
-            return (
-                <div className="Vote">
-                    <h1 className="Vote--title">No projects currently available</h1>
-                </div>
-            );
+            return <VoteWait />;
         }
 
         if (!user.prev) {
             return (
                 <div className="Vote">
-                    <h1 className="Vote--title">Take a look at your first project</h1>
+                    <h4>Go see your first project</h4>
+                    <p>
+                        After you've watched their demo, press <strong>DONE</strong>
+                    </p>
+                    <div className="Vote--item previous">
+                        <h4 className="Vote--item_name">Item 1</h4>
+                        <p className="Vote--item_location">Location: A9</p>
+                        <p className="Vote--item_description">asfgoasgobasgbasgbasgasgbasgbsabgasg</p>
+                    </div>
                 </div>
             );
         }
 
         return (
             <div className="Vote">
-                <h1 className="Vote--title">Choose the better one of these projects</h1>
+                <h4>Which project is better?</h4>
+                <p>
+                    Go to the next project and watch their demo. After you've done that, choose if it was better or
+                    worse than the project you saw immediately before it.
+                </p>
+                <div className="Vote--item previous">
+                    <h4 className="Vote--item_name">Item 1</h4>
+                    <p className="Vote--item_location">Location: A9</p>
+                    <p className="Vote--item_description">asfgoasgobasgbasgbasgasgbasgbsabgasg</p>
+                </div>
             </div>
         );
     }
@@ -78,12 +83,16 @@ class Vote extends Component {
 const mapStateToProps = state => ({
     user: UserSelectors.getUser(state),
     userLoading: UserSelectors.isLoading(state),
-    userError: UserSelectors.isError(state)
+    userError: UserSelectors.isError(state),
+    event: UserSelectors.getEvent(state),
+    eventLoading: UserSelectors.isEventLoading(state),
+    eventError: UserSelectors.isEventError(state)
 });
 
 const mapDispatchToProps = dispatch => ({
     initAnnotator: secret => dispatch(UserActions.initAnnotator(secret)),
-    updateUser: secret => dispatch(UserActions.fetchUser(secret))
+    updateUser: secret => dispatch(UserActions.fetchUser(secret)),
+    updateEvent: secret => dispatch(UserActions.fetchEvent(secret))
 });
 
 export default connect(

@@ -36,8 +36,7 @@ export default function reducer(state = initialState, action) {
             return {
                 ...state,
                 userLoading: false,
-                userError: true,
-                user: null
+                userError: true
             };
         case ActionTypes.SET_EVENT:
             return {
