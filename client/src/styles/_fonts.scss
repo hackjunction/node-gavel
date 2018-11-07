@@ -9,53 +9,58 @@ $fs-secondary: 13px;
 
 %text-title,
 .text-title {
-  font-size: $fs-title;
-  font-family: $font-title;
+    font-size: $fs-title;
+    font-family: $font-title;
 }
 
 %text-default,
 .text-default {
-  font-size: $fs-base;
-  font-family: $font-regular;
+    font-size: $fs-base;
+    font-family: $font-regular;
 }
 
 %text-secondary,
 .text-secondary {
-  font-size: $fs-secondary;
-  font-family: $font-title;
+    font-size: $fs-secondary;
+    font-family: $font-title;
 }
 
 h1 {
-  @extend %text-title;
-  color: $snow;
-  font-size: 30px;
+    @extend %text-title;
+    color: $snow;
+    font-size: 30px;
 }
 
 h2,
 h3 {
-  @extend %text-title;
-  color: $snow;
+    @extend %text-title;
+    color: $snow;
 }
 
 h4,
 h5,
 h6 {
-  @extend %text-title;
-  color: $snow;
-  font-size: 18px;
+    @extend %text-title;
+    color: $snow;
+    font-size: 18px;
 }
 
 p,
 label,
 input,
 textarea {
-  @extend %text-default;
-  color: $text-light;
+    @extend %text-default;
+    color: $text-light;
 }
 
 span,
-a,
 small {
-  @extend %text-secondary;
-  color: $text-light;
+    @extend %text-secondary;
+    color: $text-light;
+}
+
+a {
+    @extend %text-default;
+    color: $turquoise;
+    text-decoration: underline;
 }

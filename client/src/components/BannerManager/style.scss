@@ -1,0 +1,26 @@
+@import '../../styles/base.scss';
+
+.BannerManager {
+    display: flex;
+    flex-direction: column;
+}
+
+.BannerManager--item {
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+    max-height: 0;
+
+    &.status-0 {
+        max-height: 0;
+    }
+
+    &.status-1 {
+        max-height: 200px;
+    }
+
+    &.status-2 {
+        max-height: 200px;
+        opacity: 1;
+    }
+}

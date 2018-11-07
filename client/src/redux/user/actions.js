@@ -1,3 +1,4 @@
+import pMinDelay from 'p-min-delay';
 import * as ActionTypes from './actionTypes';
 import API from '../../services/api';
 
@@ -38,15 +39,13 @@ export const fetchUser = secret => dispatch => {
 };
 
 export const initAnnotator = secret => dispatch => {
-    dispatch(setUserLoading());
+    return new Promise(function(resolve, reject) {
+        reject(null);
+    });
 
-    return API.initAnnotator(secret)
-        .then(user => {
-            dispatch(setUser(user));
-        })
-        .catch(() => {
-            dispatch(setUserError());
-        });
+    // return API.initAnnotator(secret).then(user => {
+    //     dispatch(setUser(user));
+    // });
 };
 
 export const setEvent = event => dispatch => {
@@ -172,13 +171,17 @@ export const fetchSubmission = secret => dispatch => {
         });
 };
 
-export const saveSubmission = (project, secret) => dispatch => {
+export const saveSubmission = (project, secret, minDelay = 0) => dispatch => {
     dispatch(setSubmissionLoading());
-    return API.updateSubmission(project, secret)
+
+    return pMinDelay(API.updateSubmission(project, secret), minDelay)
         .then(submission => {
+            console.log('DONE', Date.now());
             dispatch(setSubmission(submission));
+            return Promise.resolve('foofee');
         })
         .catch(() => {
             dispatch(setSubmissionError());
+            return Promise.reject('feefoo');
         });
 };

@@ -1,0 +1,79 @@
+@import '../../styles/base.scss';
+
+.Banner {
+    padding: $base-margin;
+    margin-bottom: $base-margin;
+    background: rgba($snow, 0.05);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-right: 50px;
+    position: relative;
+
+    &--info {
+        .Banner--icon {
+            color: $turquoise;
+        }
+    }
+
+    &--success {
+        .Banner--icon {
+            color: $spring-bud;
+        }
+    }
+
+    &--error {
+        .Banner--icon {
+            color: $error-red;
+        }
+    }
+
+    &--warning {
+        .Banner--icon {
+            color: $warning;
+        }
+    }
+}
+
+.Banner--content {
+    flex: 1;
+}
+
+.Banner--text {
+    margin: 0;
+}
+
+.Banner--icon {
+    margin-right: $base-margin * 2;
+    font-size: 1.5em;
+}
+
+.Banner--close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 40px;
+    align-self: flex-start;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 $base-margin;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: rgba($snow, 0.2);
+
+        .Banner--close-button {
+            opacity: 0.8;
+        }
+    }
+
+    .Banner--close-icon {
+        color: $snow;
+        font-size: 1.3em;
+        opacity: 0.4;
+        transition: all 0.2s ease;
+    }
+}

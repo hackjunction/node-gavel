@@ -15,6 +15,13 @@ class Vote extends Component {
         this.props.setHasReadWelcome();
     }
 
+    init() {
+        const { user, initAnnotator } = this.props;
+        initAnnotator(user.secret).catch(() => {
+            window.alert('Error on init!');
+        });
+    }
+
     render() {
         const { user, userLoading, userError } = this.props;
 

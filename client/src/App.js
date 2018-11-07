@@ -11,6 +11,7 @@ import Test from './pages/Test';
 
 import CreateTeam from './pages/public/CreateTeam';
 import Login from './pages/public/Login';
+import HomePage from './pages/public/Home';
 
 import AdminLogin from './pages/admin/Login';
 import AdminEventList from './pages/admin/EventList';
@@ -27,15 +28,14 @@ class App extends Component {
     render() {
         return (
             <Switch>
+                {/* TODO: (Low priority) Public front page */}
+                <DefaultLayout exact path="/" component={HomePage} />
                 {/* Public Routes */}
                 <DefaultLayout exact path="/login/:secret" component={Login} />
                 <DefaultLayout exact path="/admin/login" component={AdminLogin} />
                 <DefaultLayout exact path="/teams/create" component={CreateTeam} headerSubtitle="Submit your team" />
                 {/* TODO: (Low priority) Public route for viewing submitted projects of event */}
                 <DefaultLayout path="/event/:id" component={null} />
-
-                {/* TODO: (Low priority) Public front page */}
-                <DefaultLayout exact path="/" component={null} />
 
                 {/* Accessible with annotator token */}
 
