@@ -30,7 +30,7 @@ class AdminPanel extends Component {
     }
 
     getAnnotators() {
-        const { eventId } = this.props.match.params.id;
+        const eventId = this.props.match.params.id;
         if (this.props.annotators.hasOwnProperty(eventId)) {
             return this.props.annotators[eventId];
         } else {
@@ -63,8 +63,8 @@ class AdminPanel extends Component {
 }
 
 const mapStateToProps = state => ({
-    adminToken: state => admin.getToken(state),
-    annotators: state => admin.getAnnotators(state)
+    adminToken: admin.getToken(state),
+    annotators: admin.getAnnotators(state)
 });
 
 const mapDispatchToProps = dispatch => ({
