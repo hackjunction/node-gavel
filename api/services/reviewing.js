@@ -76,6 +76,13 @@ const ReviewingService = {
             })
             .then(selectedTrack => {
                 return AnnotatorController.init(annotator._id, selectedTrack);
+            })
+            .then(annotator => {
+                return ProjectController.getPreferredProjects(annotator._id.toString()).then(projects => {
+                    const firstProject = ReviewingService.chooseNextProject(projects, annotator, null);
+
+                    return AnnotatorController.updateNext(annotator._id.toString(), firstProject._id.toString());
+                });
             });
     },
 

@@ -61,6 +61,24 @@ const ProjectController = {
         return Project.findById(projectId).lean();
     },
 
+    getByIdPublic: projectId => {
+        return Project.findById(projectId)
+            .lean()
+            .then(project => {
+                if (!project) {
+                    return Promise.reject('No project found with _id ' + projectId);
+                }
+
+                return {
+                    ...project,
+                    viewed: null,
+                    mu: null,
+                    sigma_sq: null,
+                    prioritized: null
+                };
+            });
+    },
+
     getByAnnotatorId: annotatorId => {
         console.log(AnnotatorController);
         return AnnotatorController.getById(annotatorId).then(annotator => {

@@ -161,6 +161,10 @@ const API = {
         return POST('/api/teams/', { eventId, teamMembers, contactPhone });
     },
 
+    getProjectById: projectId => {
+        return GET('/api/projects/public/' + projectId);
+    },
+
     /* Requires annotator secret */
 
     updateSubmission: (project, secret) => {

@@ -7,6 +7,7 @@ import SubmitButton from '../../../components/forms/SubmitButton';
 class VoteWelcome extends Component {
     static propTypes = {
         user: PropTypes.object.isRequired,
+        event: PropTypes.object.isRequired,
         onContinue: PropTypes.func.isRequired,
         loading: PropTypes.bool
     };
@@ -14,7 +15,7 @@ class VoteWelcome extends Component {
     render() {
         return (
             <div className="Vote">
-                <h1 className="Vote--title">Welcome to voting for event {this.props.user.event}</h1>
+                <h1 className="Vote--title">Welcome to voting for {this.props.event.name}</h1>
                 <p className="Vote--subtitle">
                     <strong>Please read these instructions carefully before continuing. </strong>
                     {loremIpsum({

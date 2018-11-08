@@ -8,6 +8,7 @@ import VoteWelcome from './Welcome';
 import VoteError from './Error';
 import VoteLoading from './Loading';
 import VoteWait from './Wait';
+import ProjectBlock from './ProjectBlock';
 
 class Vote extends Component {
     constructor(props) {
@@ -28,8 +29,77 @@ class Vote extends Component {
         });
     }
 
+    renderTop() {
+        const { user } = this.props;
+
+        if (user.next && user.prev) {
+            return (
+                <div className="Vote--Top">
+                    <h4>Which project is better?</h4>
+                    <p>
+                        Go to the next project and watch their demo. After you've done that, choose if it was better or
+                        worse than the project you saw immediately before it.
+                    </p>
+                </div>
+            );
+        }
+
+        if (user.next) {
+            return (
+                <div className="Vote--Top">
+                    <h4>Go see your first project</h4>
+                    <p>
+                        After you've watched their demo, press <strong>DONE</strong>
+                    </p>
+                </div>
+            );
+        }
+
+        return null;
+    }
+
+    renderButtons() {
+        const { user } = this.props;
+        if (user.next && user.prev) {
+            return (
+                <div className="Vote--Bottom">
+                    <p className="Vote--Bottom_title">Which project was better?</p>
+                    <div className="Vote--Bottom_buttons">
+                        <div className="Vote--Button">
+                            <p className="Vote--Button_text">Previous</p>
+                        </div>
+                        <div className="Vote--Button">
+                            <p className="Vote--Button_text">Current</p>
+                        </div>
+                    </div>
+                    <div className="Vote--Skip">
+                        <p>I can't find this project</p>
+                    </div>
+                </div>
+            );
+        }
+
+        if (user.next) {
+            return (
+                <div className="Vote--Bottom">
+                    <p className="Vote--Bottom_title">After you've seen the demo, click DONE</p>
+                    <div className="Vote--Bottom_buttons">
+                        <div className="Vote--Button">
+                            <p className="Vote--Button_text">Done</p>
+                        </div>
+                    </div>
+                    <div className="Vote--Skip">
+                        <p>I can't find this project</p>
+                    </div>
+                </div>
+            );
+        }
+
+        return null;
+    }
+
     render() {
-        const { user, userLoading, userError, eventLoading, eventError } = this.props;
+        const { user, userLoading, userError, event, eventLoading, eventError } = this.props;
 
         if (userLoading || eventLoading) {
             return <VoteLoading />;
@@ -40,41 +110,19 @@ class Vote extends Component {
         }
 
         if (!user.read_welcome) {
-            return <VoteWelcome user={user} loading={userLoading} onContinue={this.init} />;
+            return <VoteWelcome user={user} event={event} loading={userLoading} onContinue={this.init} />;
         }
 
         if (!user.next) {
             return <VoteWait />;
         }
 
-        if (!user.prev) {
-            return (
-                <div className="Vote">
-                    <h4>Go see your first project</h4>
-                    <p>
-                        After you've watched their demo, press <strong>DONE</strong>
-                    </p>
-                    <div className="Vote--item previous">
-                        <h4 className="Vote--item_name">Item 1</h4>
-                        <p className="Vote--item_location">Location: A9</p>
-                        <p className="Vote--item_description">asfgoasgobasgbasgbasgasgbasgbsabgasg</p>
-                    </div>
-                </div>
-            );
-        }
-
         return (
             <div className="Vote">
-                <h4>Which project is better?</h4>
-                <p>
-                    Go to the next project and watch their demo. After you've done that, choose if it was better or
-                    worse than the project you saw immediately before it.
-                </p>
-                <div className="Vote--item previous">
-                    <h4 className="Vote--item_name">Item 1</h4>
-                    <p className="Vote--item_location">Location: A9</p>
-                    <p className="Vote--item_description">asfgoasgobasgbasgbasgasgbasgbsabgasg</p>
-                </div>
+                {this.renderTop()}
+                {user.prev ? <ProjectBlock projectId={user.prev} isCurrent={false} /> : null}
+                {user.next ? <ProjectBlock projectId={user.next} isCurrent={true} /> : null}
+                {this.renderButtons()}
             </div>
         );
     }

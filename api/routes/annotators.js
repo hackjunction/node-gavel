@@ -2,7 +2,7 @@
 
 const status = require('http-status');
 const passport = require('passport');
-
+const ReviewingService = require('../services/reviewing');
 const AnnotatorController = require('../controllers/Annotator');
 const EventController = require('../controllers/Event');
 
@@ -67,7 +67,7 @@ function getAnnotator(req, res) {
 }
 
 function initAnnotator(req, res) {
-    return AnnotatorController.init(req.user)
+    return ReviewingService.initAnnotator(req.user)
         .then(annotator => {
             return res.status(status.OK).send({
                 status: 'success',
@@ -75,7 +75,7 @@ function initAnnotator(req, res) {
             });
         })
         .catch(error => {
-            console.log('setHasReadWelcome', error);
+            console.log('initAnnotator', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });

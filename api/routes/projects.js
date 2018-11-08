@@ -16,6 +16,12 @@ module.exports = function(app) {
     app.get('/api/projects/:projectId', passport.authenticate('admin', { session: false }), getProjectById);
 
     /**
+     * Get a project by id (only public details)
+     * -> No auth required
+     */
+    app.get('/api/projects/public/:projectId', getProjectByIdPublic);
+
+    /**
      * Set a project as prioritized
      * -> Requires admin token
      */
@@ -114,6 +120,22 @@ function getProjectById(req, res) {
         })
         .catch(error => {
             console.log('getProjectById', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
+}
+
+function getProjectByIdPublic(req, res) {
+    ProjectController.getByIdPublic(req.params.projectId)
+        .then(project => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data: project
+            });
+        })
+        .catch(error => {
+            console.log('getProjectByIdPublic', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });
