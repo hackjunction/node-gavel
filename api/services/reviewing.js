@@ -94,8 +94,11 @@ const ReviewingService = {
                 return AnnotatorController.init(annotator._id, selectedTrack);
             })
             .then(annotator => {
-                return ReviewingService.getNextProject(annotator).then(project => {
-                    return AnnotatorController.updateNext(annotator._id.toString(), project._id.toString());
+                return ReviewingService.getNextProject(annotator).then(nextProject => {
+                    return AnnotatorController.updateNext(
+                        annotator._id.toString(),
+                        nextProject ? nextProject._id.toString() : null
+                    );
                 });
             });
     },

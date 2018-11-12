@@ -11,22 +11,11 @@ import VoteWait from './Wait';
 import ProjectBlock from './ProjectBlock';
 
 class Vote extends Component {
-    constructor(props) {
-        super(props);
-
-        this.init = this.init.bind(this);
-    }
-
     componentDidMount() {
-        this.props.updateUser(this.props.user.secret);
-        this.props.updateEvent(this.props.user.secret);
-    }
+        const { updateUser, updateEvent, user } = this.props;
 
-    init() {
-        const { user, initAnnotator } = this.props;
-        initAnnotator(user.secret).catch(() => {
-            window.alert('Error on init!');
-        });
+        updateUser(user.secret);
+        updateEvent(user.secret);
     }
 
     renderTop() {
@@ -100,7 +89,7 @@ class Vote extends Component {
     }
 
     render() {
-        const { user, userLoading, userError, event, eventLoading, eventError } = this.props;
+        const { user, userLoading, userError, event, eventLoading, eventError, initAnnotator } = this.props;
 
         if (userLoading || eventLoading) {
             return <VoteLoading />;
@@ -111,11 +100,18 @@ class Vote extends Component {
         }
 
         if (!user.read_welcome) {
-            return <VoteWelcome user={user} event={event} loading={userLoading} onContinue={this.init} />;
+            return (
+                <VoteWelcome
+                    user={user}
+                    event={event}
+                    loading={userLoading}
+                    onContinue={() => initAnnotator(user.secret)}
+                />
+            );
         }
 
         if (!user.next) {
-            return <VoteWait />;
+            return <VoteWait user={user} event={event} />;
         }
 
         return (

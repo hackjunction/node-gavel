@@ -22,23 +22,12 @@ app.use(passport.initialize());
 /* Passport auth config */
 require('./api/auth/passport');
 
-/* Old routes */
-//require('./api/routes/teams')(app)
-//require('./api/routes/reviewing')(app)
-//require('./api/routes/items')(app)
-
-/* Refactored routes */
+/* Routes */
 require('./api/routes/login')(app);
 require('./api/routes/events')(app);
 require('./api/routes/annotators')(app);
 require('./api/routes/teams')(app);
 require('./api/routes/projects')(app);
-
-app.get('/api/hello', function(req, res) {
-    res.send({
-        message: 'Hello from the API'
-    });
-});
 
 /* Models */
 require('./api/models/Event');
@@ -46,6 +35,12 @@ require('./api/models/Project');
 require('./api/models/Team');
 require('./api/models/Annotator');
 require('./api/models/Decision');
+
+app.get('/api/hello', function(req, res) {
+    res.send({
+        message: 'Hello from the API'
+    });
+});
 
 // React config for production
 if (process.env.NODE_ENV === 'production') {

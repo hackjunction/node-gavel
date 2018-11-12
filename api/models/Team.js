@@ -36,8 +36,6 @@ const validate = data => {
     return schema.validate(data);
 };
 
-//TODO: Validation of new team
-//TODO: "Class methods";
 module.exports = {
     Team,
     validate
