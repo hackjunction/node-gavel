@@ -46,6 +46,12 @@ module.exports = function(app) {
     app.get('/api/annotators/', passport.authenticate('annotator', { session: false }), getAnnotator);
 
     /**
+     * Get the current decision for an annotator
+     * -> Requires annotator secret
+     */
+    app.get('/api/annotators/decision', passport.authenticate('annotator', { session: false }), getNextDecision);
+
+    /**
      * Set an annotator as having read the welcome message (which allows them to begin voting)
      * -> Requires annotator secret
      */
@@ -82,6 +88,22 @@ function initAnnotator(req, res) {
         })
         .catch(error => {
             console.log('initAnnotator', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
+}
+
+function getNextDecision(req, res) {
+    return ReviewingService.getNextDecision(req.user)
+        .then(data => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data
+            });
+        })
+        .catch(error => {
+            console.log('getNextDecision', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });

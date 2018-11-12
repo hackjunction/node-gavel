@@ -207,6 +207,10 @@ const API = {
         return GET(`/api/annotators/init/?secret=${secret}`);
     },
 
+    getNextDecision: secret => {
+        return GET(`/api/annotators/decision/?secret=${secret}`);
+    },
+
     submitVote: (secret, choice) => {
         return GET(`/api/annotators/vote/${choice}/?secret=${secret}`);
     }

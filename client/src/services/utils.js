@@ -1,8 +1,11 @@
 const Utils = {
     sleep: (ms = 1) => {
+        console.log('SLEEP FOR', ms);
         return new Promise(function(resolve, reject) {
-            resolve();
-        }, ms);
+            setTimeout(function() {
+                resolve();
+            }, ms);
+        });
     }
 };
 

@@ -1,131 +1,206 @@
 @import '../../../styles/base.scss';
 
-.Vote--Project {
+.Vote--Wrapper {
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: stretch;
+    justify-content: center;
 }
 
-.Vote--Project_header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    background: $vote-previous;
-    padding: $base-margin;
+.Vote--Top {
+    &_title {
+        text-align: center;
+    }
+
+    &_text {
+        text-align: center;
+    }
 }
 
-.Vote--Project_header-label {
-    font-weight: bold;
-    text-transform: uppercase;
-    margin: 0;
-    margin-right: $base-margin;
-}
-
-.Vote--Project_header-name {
+.Vote--Content {
     flex: 1;
-    margin: 0;
+    padding: $base-margin 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    .Vote--Previous {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.5s ease;
+        max-height: 50%;
+    }
+
+    .Vote--Current {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.5s ease;
+        max-height: 50%;
+    }
+
+    &.hide-previous {
+        .Vote--Previous {
+            max-height: 0;
+            opacity: 0;
+        }
+    }
+
+    &.current-to-previous {
+        .Vote--Previous {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .Vote--Current {
+            .Vote--Project_header {
+                background: $vote-previous;
+            }
+
+            .Vote--Project_description {
+                background: rgba($vote-previous, 0.4);
+            }
+        }
+    }
+
+    &.add-new-current {
+        .Vote--Previous {
+            transition: none;
+        }
+
+        .Vote--Current {
+            opacity: 0;
+            transition: none;
+        }
+    }
+
+    &.show-new-current {
+        .Vote--Current {
+            opacity: 1;
+            transition: all 0.5s ease;
+        }
+    }
 }
 
-.Vote--Project_location {
-    text-transform: uppercase;
-    font-weight: bold;
-    margin: 0;
-    margin-left: $base-margin;
-}
+.Vote--Project {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: $base-margin;
 
-.Vote--Project_description {
-    padding: $base-margin;
-    border: 2px solid $vote-previous;
-}
+    &_header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background: $vote-previous;
+        padding: $base-margin;
+        transition: all 0.5s ease;
+    }
 
-.Vote--Project_description-expand {
-    color: $turquoise;
-    cursor: pointer;
-    margin-left: $base-margin;
-    text-decoration: underline;
-}
-
-.Vote--Project.current {
-    .Vote--Project_header {
+    &.current &_header {
         background: $vote-current;
     }
 
-    .Vote--Project_description {
-        border-color: $vote-current;
+    &_header-label {
+        font-weight: bold;
+        text-transform: uppercase;
+        margin: 0;
+        margin-right: $base-margin;
     }
-}
 
-.Vote--Button {
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    padding: $base-margin;
-    display: flex;
-    border: 3px solid rgba($vote-current, 0.4);
-    background: rgba($vote-current, 0.2);
-    cursor: pointer;
-    transition: all 0.2s ease;
+    &_header-name {
+        flex: 1;
+        margin: 0;
+    }
 
-    &:hover {
+    &_location {
+        text-transform: uppercase;
+        font-weight: bold;
+        margin: 0;
+        margin-left: $base-margin;
+    }
+
+    &_description {
+        flex: 1;
+        padding: $base-margin;
+        background: rgba($vote-previous, 0.4);
+        transition: all 0.5s ease;
+    }
+
+    &.current &_description {
         background: rgba($vote-current, 0.4);
     }
+}
 
-    &.previous {
-        background: rgba($vote-previous, 0.2);
-        border-color: rgba($vote-previous, 0.4);
+.Vote--Bottom {
+    &_title {
+        text-align: center;
+    }
+
+    &_buttons {
+        display: flex;
+        flex-direction: row;
+        margin: $base-margin 0;
+
+        @include up-to-tablet {
+            flex-direction: column;
+        }
+    }
+
+    &_separator {
+        width: $base-margin;
+        height: $base-margin;
+    }
+
+    &_button {
+        flex: 1;
+        justify-content: center;
+        align-items: center;
+        padding: $base-margin;
+        display: flex;
+        border: 3px solid rgba($vote-current, 0.4);
+        background: rgba($vote-current, 0.2);
+        cursor: pointer;
+        transition: all 0.2s ease;
 
         &:hover {
-            background: rgba($vote-previous, 0.4);
-        }
-    }
-
-    &.skip {
-        background: transparent;
-        border: none;
-
-        &:hover {
-            background: none;
+            background: rgba($vote-current, 0.4);
         }
 
-        .Vote--Button_text {
-            font-weight: normal;
-            text-transform: none;
-            text-decoration: underline;
+        &.previous {
+            background: rgba($vote-previous, 0.2);
+            border-color: rgba($vote-previous, 0.4);
+
+            &:hover {
+                background: rgba($vote-previous, 0.4);
+            }
+        }
+
+        &-text {
+            margin: 0;
+        }
+
+        &.skip {
+            background: transparent;
+            border: none;
+
+            &:hover {
+                background: none;
+            }
+
+            &-text {
+                font-weight: normal;
+                text-transform: none;
+                text-decoration: underline;
+            }
         }
     }
 }
 
-.Vote--Bottom_buttons {
-    display: flex;
-    flex-direction: row;
-    margin-top: 30px;
-    margin-bottom: 30px;
-
-    @include up-to-tablet {
-        flex-direction: column;
-    }
-}
-
-.Vote--Button_text {
-    text-align: center;
-    margin: 0;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.Vote--Buttons_separator {
-    width: $base-margin;
-    height: $base-margin;
-}
-
-.Vote--loading {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 200px;
-}
-
-.Vote--spinner {
+.Vote--Spinner {
     color: $turquoise;
 }

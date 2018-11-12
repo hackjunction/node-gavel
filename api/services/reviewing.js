@@ -103,6 +103,42 @@ const ReviewingService = {
             });
     },
 
+    getNextDecision(annotator) {
+        return new Promise(function(resolve, reject) {
+            if (!annotator.next) {
+                return ReviewingService.assignNextProject(annotator).then(annotator => {
+                    resolve(annotator);
+                });
+            }
+            resolve(annotator);
+        }).then(updatedAnnotator => {
+            if (!updatedAnnotator.next) {
+                return ProjectController.getUnseenProjects(annotator._id).then(unseen => {
+                    if (unseen.length === 0) {
+                        return {
+                            previous: null,
+                            current: null,
+                            viewed_all: true
+                        };
+                    }
+                });
+            } else {
+                const previous = updatedAnnotator.prev
+                    ? ProjectController.getById(updatedAnnotator.prev)
+                    : Promise.resolve(null);
+                const current = ProjectController.getById(updatedAnnotator.next);
+
+                return Promise.all([previous, current]).then(data => {
+                    return {
+                        previous: data[0],
+                        current: data[1],
+                        viewed_all: false
+                    };
+                });
+            }
+        });
+    },
+
     assignNextProject(annotator) {
         return ReviewingService.getNextProject(annotator).then(project => {
             const updateProject = ProjectController.setViewedBy(annotator.next, annotator._id.toString());

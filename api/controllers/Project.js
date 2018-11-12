@@ -104,7 +104,6 @@ const ProjectController = {
     },
 
     getByAnnotatorId: annotatorId => {
-        console.log(AnnotatorController);
         return AnnotatorController.getById(annotatorId).then(annotator => {
             if (annotator.hasOwnProperty('team')) {
                 return ProjectController.getByTeamId(annotator.team);
@@ -168,6 +167,22 @@ const ProjectController = {
                     return less_seen.length > 0 ? less_seen : preferred;
                 });
             });
+    },
+
+    getUnseenProjects(annotatorId) {
+        return AnnotatorController.getById(annotatorId).then(annotator => {
+            return Project.find({
+                active: true,
+                event: annotator.event,
+                _id: {
+                    $nin: annotator.ignore
+                },
+                track: annotator.assigned_track,
+                team: {
+                    $ne: annotator.team
+                }
+            });
+        });
     }
 };
 
