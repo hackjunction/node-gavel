@@ -49,6 +49,30 @@ const ProjectController = {
         return Project.findByIdAndUpdate(projectId, { active: true }, { new: true });
     },
 
+    setViewedBy: (projectId, annotatorId) => {
+        return Project.findByIdAndUpdate(
+            projectId,
+            {
+                $addToSet: {
+                    viewed_by: annotatorId
+                }
+            },
+            { new: true }
+        );
+    },
+
+    setSkippedBy: (projectId, annotatorId) => {
+        return Project.findByIdAndUpdate(
+            projectId,
+            {
+                $addToSet: {
+                    skipped_by: annotatorId
+                }
+            },
+            { new: true }
+        );
+    },
+
     getByTeamId: teamId => {
         return Project.findOne({ team: teamId }).lean();
     },
@@ -125,18 +149,20 @@ const ProjectController = {
 
                 return AnnotatorController.getActiveAnnotators(_event).then(annotators => {
                     const cutoff = moment().subtract(Settings.ANNOTATOR_TIMEOUT_MINS, 'minutes');
-                    const nonbusy = _.filter(annotators, a => {
-                        const lastUpdated = moment(a.updated);
+                    const nonbusy = _.filter(items, item => {
+                        const annotator = _.find(annotators, a => {
+                            return a.next === item._id.toString();
+                        });
 
-                        if (lastUpdated.isBefore(cutoff)) {
-                            return a.next;
+                        if (!annotator || moment(annotator.updated).isBefore(cutoff)) {
+                            return true;
                         }
                     });
 
                     const preferred = nonbusy.length > 0 ? nonbusy : items;
 
                     const less_seen = _.filter(preferred, item => {
-                        return item.viewed.length < Settings.ITEM_MIN_VIEWS;
+                        return Array.isArray(item.viewed) && item.viewed.length < Settings.ITEM_MIN_VIEWS;
                     });
 
                     return less_seen.length > 0 ? less_seen : preferred;

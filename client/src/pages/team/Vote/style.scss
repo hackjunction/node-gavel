@@ -1,0 +1,131 @@
+@import '../../../styles/base.scss';
+
+.Vote--Project {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.Vote--Project_header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: $vote-previous;
+    padding: $base-margin;
+}
+
+.Vote--Project_header-label {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 0;
+    margin-right: $base-margin;
+}
+
+.Vote--Project_header-name {
+    flex: 1;
+    margin: 0;
+}
+
+.Vote--Project_location {
+    text-transform: uppercase;
+    font-weight: bold;
+    margin: 0;
+    margin-left: $base-margin;
+}
+
+.Vote--Project_description {
+    padding: $base-margin;
+    border: 2px solid $vote-previous;
+}
+
+.Vote--Project_description-expand {
+    color: $turquoise;
+    cursor: pointer;
+    margin-left: $base-margin;
+    text-decoration: underline;
+}
+
+.Vote--Project.current {
+    .Vote--Project_header {
+        background: $vote-current;
+    }
+
+    .Vote--Project_description {
+        border-color: $vote-current;
+    }
+}
+
+.Vote--Button {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    padding: $base-margin;
+    display: flex;
+    border: 3px solid rgba($vote-current, 0.4);
+    background: rgba($vote-current, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: rgba($vote-current, 0.4);
+    }
+
+    &.previous {
+        background: rgba($vote-previous, 0.2);
+        border-color: rgba($vote-previous, 0.4);
+
+        &:hover {
+            background: rgba($vote-previous, 0.4);
+        }
+    }
+
+    &.skip {
+        background: transparent;
+        border: none;
+
+        &:hover {
+            background: none;
+        }
+
+        .Vote--Button_text {
+            font-weight: normal;
+            text-transform: none;
+            text-decoration: underline;
+        }
+    }
+}
+
+.Vote--Bottom_buttons {
+    display: flex;
+    flex-direction: row;
+    margin-top: 30px;
+    margin-bottom: 30px;
+
+    @include up-to-tablet {
+        flex-direction: column;
+    }
+}
+
+.Vote--Button_text {
+    text-align: center;
+    margin: 0;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.Vote--Buttons_separator {
+    width: $base-margin;
+    height: $base-margin;
+}
+
+.Vote--loading {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.Vote--spinner {
+    color: $turquoise;
+}

@@ -15,7 +15,7 @@ export const setUser = user => dispatch => {
     });
 };
 
-export const setUserLoading = user => dispatch => {
+export const setUserLoading = () => dispatch => {
     dispatch({
         type: ActionTypes.SET_USER_LOADING
     });
@@ -39,7 +39,19 @@ export const fetchUser = secret => dispatch => {
 };
 
 export const initAnnotator = secret => dispatch => {
+    dispatch(setUserLoading());
     return API.initAnnotator(secret)
+        .then(user => {
+            dispatch(setUser(user));
+        })
+        .catch(error => {
+            dispatch(setUserError());
+        });
+};
+
+export const submitVote = (secret, choice, minDelay = 0) => dispatch => {
+    dispatch(setUserLoading());
+    return pMinDelay(API.submitVote(secret, choice), minDelay)
         .then(user => {
             dispatch(setUser(user));
         })

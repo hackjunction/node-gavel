@@ -1,6 +1,7 @@
 'use strict';
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Joi = require('joi');
 
 const DecisionSchema = new Schema({
     annotator: {
@@ -27,7 +28,7 @@ const DecisionSchema = new Schema({
         required: true
     },
 
-    time: {
+    timestamp: {
         type: Date,
         default: Date.now
     }
@@ -35,19 +36,24 @@ const DecisionSchema = new Schema({
 
 const Decision = mongoose.model('Decision', DecisionSchema);
 
-// Creates a new decision, returns promise
-// No validation needed, all fields are references
-const create = function(annotator, winner, loser) {
-    const decision = new Decision({
-        annotator,
-        winner,
-        loser
+/** Validates decision
+ *
+ * Returns: Promise resolved with cleaned decision data,
+ * or Promise rejected with error details
+ */
+const validate = function(decision) {
+    const schema = Joi.object().keys({
+        annotator: Joi.string().required(),
+        winner: Joi.string().required(),
+        loser: Joi.string().required(),
+        timestamp: Joi.date().required(),
+        event: Joi.string().required()
     });
 
-    return decision.save();
+    return schema.validate(decision);
 };
 
 module.exports = {
     Decision,
-    create
+    validate
 };

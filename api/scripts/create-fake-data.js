@@ -33,6 +33,57 @@ const TIMEZONE = 'Europe/Helsinki';
 // Generate some natural deviation between how many teams choose which track, to better simulate real world situation;
 const TRACK_WEIGHTS = [1, 2, 1.1, 2.4, 1.3, 1.1, 0.7, 1.4, 2, 2];
 
+const EVENTS = [
+    //Starts in 1 hour from generating
+    {
+        name: 'JUNCTIONxBudapest',
+        timezone: TIMEZONE,
+        startTimeOffset: 1,
+        endTimeOffset: 73,
+        submissionDeadlineOffset: 60,
+        votingStartTimeOffset: 61,
+        votingEndTimeOffset: 63,
+        trackCount: 10,
+        challengeCount: 30
+    },
+    //Already running
+    {
+        name: 'JUNCTIONxHelsinki',
+        timezone: TIMEZONE,
+        startTimeOffset: 0,
+        endTimeOffset: 72,
+        submissionDeadlineOffset: 60,
+        votingStartTimeOffset: 61,
+        votingEndTimeOffset: 63,
+        trackCount: 10,
+        challengeCount: 30
+    },
+    //Voting active
+    {
+        name: 'JUNCTIONxEspoo',
+        timezone: TIMEZONE,
+        startTimeOffset: -60,
+        endTimeOffset: 12,
+        submissionDeadlineOffset: -1,
+        votingStartTimeOffset: 0,
+        votingEndTimeOffset: 2,
+        trackCount: 10,
+        challengeCount: 30
+    },
+    //Voting ended
+    {
+        name: 'JUNCTIONxVantaa',
+        timezone: TIMEZONE,
+        startTimeOffset: -62,
+        endTimeOffset: 10,
+        submissionDeadlineOffset: -3,
+        votingStartTimeOffset: -2,
+        votingEndTimeOffset: 0,
+        trackCount: 10,
+        challengeCount: 30
+    }
+];
+
 const script = function() {
     Settings.check();
     mongoose.connect(
@@ -84,14 +135,23 @@ const script = function() {
                     .then(projects => {
                         console.log('-> Generated ' + projects.length + ' projects');
 
-                        return AnnotatorController.getById(_annotator).then(annotator => {
-                            console.log('-> Sample annotator: ' + annotator.name + ' / ' + annotator._id);
-                            console.log(
-                                '-> Event: ' +
-                                    _.find(_events, e => e._id.toString() === annotator.event.toString()).name
-                            );
-                            console.log('-> Login link: ' + Settings.BASE_URL + '/login/' + annotator.secret);
-                            return;
+                        console.log('=== SAMPLE USERS ===');
+                        return Promise.each(_events, event => {
+                            return AnnotatorController.getByEvent(event._id).then(annotators => {
+                                console.log(event.name);
+                                console.log('-> Start time: ' + moment(event.startTime).fromNow());
+                                console.log(
+                                    '-> Submissions open: ' +
+                                        (moment().isBetween(event.startTime, event.submissionDeadline) ? 'YES' : 'NO')
+                                );
+                                console.log(
+                                    '-> Voting open: ' +
+                                        (moment().isBetween(event.votingStartTime, event.votingEndTime) ? 'YES' : 'NO')
+                                );
+                                console.log('-> Annotator: ' + annotators[0].name + ' / ' + annotators[0]._id);
+                                console.log('-> Login link: ' + Settings.BASE_URL + '/login/' + annotators[0].secret);
+                                return;
+                            });
                         });
                     })
                     .then(() => {
@@ -104,35 +164,33 @@ const script = function() {
 };
 
 function generateEvents(count) {
-    const events = [];
-
-    for (let i = 0; i < count; i++) {
-        events.push({
-            name: 'JUNCTIONx' + chance.city(),
+    return _.map(EVENTS, event => {
+        return {
+            name: event.name,
             hasTracks: true,
-            tracks: generateTracks(10),
+            tracks: generateTracks(event.trackCount),
             hasChallenges: true,
-            challenges: generateChallenges(10),
-            timezone: 'Europe/Helsinki',
-            startTime: moment().tz('Europe/Helsinki'),
+            challenges: generateChallenges(event.challengeCount),
+            timezone: event.timezone,
+            startTime: moment()
+                .tz(event.timezone)
+                .add(event.startTimeOffset, 'hours'),
             endTime: moment()
-                .tz('Europe/Helsinki')
-                .add(7, 'days'),
+                .tz(event.timezone)
+                .add(event.endTimeOffset, 'hours'),
             submissionDeadline: moment()
-                .tz('Europe/Helsinki')
-                .add(60, 'hours'),
+                .tz(event.timezone)
+                .add(event.submissionDeadlineOffset, 'hours'),
             votingStartTime: moment()
-                .tz('Europe/Helsinki')
-                .add(62, 'hours'),
+                .tz(event.timezone)
+                .add(event.votingStartTimeOffset, 'hours'),
             votingEndTime: moment()
-                .tz('Europe/Helsinki')
-                .add(64, 'hours'),
+                .tz(event.timezone)
+                .add(event.votingEndTimeOffset, 'hours'),
             participantCode: chance.word({ length: 16 }),
             apiKey: uuid()
-        });
-    }
-
-    return events;
+        };
+    });
 }
 
 function generateTracks(count) {

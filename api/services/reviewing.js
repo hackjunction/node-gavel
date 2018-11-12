@@ -6,6 +6,7 @@ const Maths = require('./maths');
 
 const AnnotatorController = require('../controllers/Annotator');
 const ProjectController = require('../controllers/Project');
+const DecisionController = require('../controllers/Decision');
 
 const ReviewingService = {
     chooseNextProject: (items, annotator, current) => {
@@ -29,6 +30,21 @@ const ReviewingService = {
         } else {
             return null;
         }
+    },
+
+    getNextProject(annotator) {
+        const promises = [];
+        promises.push(ProjectController.getPreferredProjects(annotator._id.toString()));
+
+        if (annotator.next) {
+            promises.push(ProjectController.getById(annotator.next));
+        }
+        return Promise.all(promises).then(data => {
+            const items = data[0];
+            const current = data.length > 1 ? data[1] : null;
+
+            return ReviewingService.chooseNextProject(items, annotator, current);
+        });
     },
 
     initAnnotator: annotator => {
@@ -78,49 +94,138 @@ const ReviewingService = {
                 return AnnotatorController.init(annotator._id, selectedTrack);
             })
             .then(annotator => {
-                return ProjectController.getPreferredProjects(annotator._id.toString()).then(projects => {
-                    const firstProject = ReviewingService.chooseNextProject(projects, annotator, null);
-
-                    return AnnotatorController.updateNext(annotator._id.toString(), firstProject._id.toString());
+                return ReviewingService.getNextProject(annotator).then(project => {
+                    return AnnotatorController.updateNext(annotator._id.toString(), project._id.toString());
                 });
             });
     },
 
-    performVote: (annotator, next, prev, next_won) => {
-        let winner = next_won ? next : prev;
-        let loser = next_won ? prev : next;
+    assignNextProject(annotator) {
+        return ReviewingService.getNextProject(annotator).then(project => {
+            const updateProject = ProjectController.setViewedBy(annotator.next, annotator._id.toString());
+            const updateAnnotator = AnnotatorController.updateNext(
+                annotator._id.toString(),
+                project ? project._id.toString() : null
+            );
 
-        console.log(winner);
-        console.log(loser);
+            return Promise.all([updateProject, updateAnnotator]).then(data => {
+                //Return the updated annotator
+                return data[1];
+            });
+        });
+    },
 
-        const {
-            updated_alpha,
-            updated_beta,
-            updated_mu_winner,
-            updated_mu_loser,
-            updated_sigma_sq_winner,
-            updated_sigma_sq_loser
-        } = Maths.update(annotator.alpha, annotator.beta, winner.mu, winner.sigma_sq, loser.mu, loser.sigma_sq);
+    skipCurrentProject(annotator) {
+        return ReviewingService.getNextProject(annotator).then(project => {
+            const updateProject = ProjectController.setSkippedBy(annotator.next, annotator._id.toString());
+            const updateAnnotator = AnnotatorController.skipCurrent(
+                annotator._id.toString(),
+                project ? project._id.toString() : null
+            );
 
-        console.log('Updated alpha', updated_alpha);
-        console.log('Updated beta', updated_beta);
-        console.log('updated_mu_winner', updated_mu_winner);
-        console.log('updated_sigma_sq_winner', updated_sigma_sq_winner);
-        console.log('updated_mu_loser', updated_mu_loser);
-        console.log('updated_sigma_sq_loser', updated_sigma_sq_loser);
+            return Promise.all([updateProject, updateAnnotator]).then(data => {
+                //Return the updated annotator
+                return data[1];
+            });
+        });
+    },
 
-        annotator.alpha = updated_alpha;
-        annotator.beta = updated_beta;
-        winner.mu = updated_mu_winner;
-        winner.sigma_sq = updated_sigma_sq_winner;
-        loser.mu = updated_mu_loser;
-        loser.sigma_sq = updated_sigma_sq_loser;
+    submitVote: (annotator, choice) => {
+        if (!annotator.next) {
+            throw new Error('Cannot submit a vote with no next project');
+        }
 
-        return {
-            annotator,
-            winner,
-            loser
-        };
+        const VALID_CHOICES = ['done', 'skip'];
+
+        if (annotator.prev) {
+            VALID_CHOICES.push('current');
+            VALID_CHOICES.push('previous');
+        }
+
+        if (!_.includes(VALID_CHOICES, choice)) {
+            throw new Error('Invalid choice ' + choice + ', must be one of ' + VALID_CHOICES.join(', '));
+        }
+
+        switch (choice) {
+            //Set the annotator's first project as seen, and assign them another project
+            case 'done': {
+                return ReviewingService.assignNextProject(annotator);
+            }
+            //Switch the annotator's current project to another one
+            case 'skip': {
+                return ReviewingService.skipCurrentProject(annotator);
+            }
+            //Submit a vote where the annotator's previous project is the winner, and assign them a new project
+            case 'previous': {
+                return ReviewingService.performVote(annotator, false);
+            }
+            //Submit a vote where the annotator's current project is the winner, and assign them a new project
+            case 'current': {
+                return ReviewingService.performVote(annotator, true);
+            }
+        }
+    },
+
+    performVote: (annotator, current_won) => {
+        let winner = current_won ? annotator.next : annotator.prev;
+        let loser = current_won ? annotator.prev : annotator.next;
+
+        return Promise.all([ProjectController.getById(loser), ProjectController.getById(winner)]).then(data => {
+            loser = data[0];
+            winner = data[1];
+
+            const {
+                updated_alpha,
+                updated_beta,
+                updated_mu_winner,
+                updated_mu_loser,
+                updated_sigma_sq_winner,
+                updated_sigma_sq_loser
+            } = Maths.update(annotator.alpha, annotator.beta, winner.mu, winner.sigma_sq, loser.mu, loser.sigma_sq);
+
+            const updateAnnotator = AnnotatorController.update(annotator._id.toString(), {
+                alpha: updated_alpha,
+                beta: updated_beta
+            });
+
+            const updateNext = ProjectController.edit(
+                {
+                    mu: current_won ? updated_mu_winner : updated_mu_loser,
+                    sigma_sq: current_won ? updated_sigma_sq_winner : updated_sigma_sq_loser,
+                    $addToSet: {
+                        viewed_by: annotator._id.toString()
+                    }
+                },
+                annotator.next
+            );
+
+            const updatePrev = ProjectController.edit(
+                {
+                    mu: current_won ? updated_mu_loser : updated_mu_winner,
+                    sigma_sq: current_won ? updated_sigma_sq_loser : updated_sigma_sq_winner
+                },
+                annotator.prev
+            );
+
+            const createDecision = DecisionController.create(
+                annotator._id.toString(),
+                annotator.event.toString(),
+                winner._id.toString(),
+                loser._id.toString()
+            );
+
+            return Promise.all([updatePrev, updateNext, createDecision, updateAnnotator]).then(data => {
+                const updatedAnnotator = data[3];
+
+                //After submitting the vote, assign the next project for the annotator;
+                return ReviewingService.getNextProject(updatedAnnotator).then(nextProject => {
+                    return AnnotatorController.updateNext(
+                        annotator._id.toString(),
+                        nextProject ? nextProject._id.toString() : null
+                    );
+                });
+            });
+        });
     }
 };
 

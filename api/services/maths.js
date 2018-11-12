@@ -12,15 +12,7 @@ const log = require('../../node_modules/@stdlib/stdlib/lib/node_modules/@stdlib/
 
 const { MATH } = require('../settings');
 
-// Some QUICK MATHS
-// Port of gavel/crowd_bt.py in original Gavel.
-//TODO: I would NOT be surprised if there is an error in here somewhere, needs to be thoroughly tested
-
 const Maths = {
-    argmax: (f, xs) => {
-        return Math.max(xs, f);
-    },
-
     divergenceGaussian: (mu_1, sigma_sq_1, mu_2, sigma_sq_2) => {
         const ratio = sigma_sq_1 / sigma_sq_2;
 
@@ -67,12 +59,12 @@ const Maths = {
     },
 
     expectedInformationGain: (alpha, beta, mu_a, sigma_sq_a, mu_b, sigma_sq_b) => {
-        const updated_annotator = updatedAnnotator(alpha, beta, mu_a, sigma_sq_a, mu_b, sigma_sq_b);
-        const updated_mus = updatedMus(alpha, beta, mu_a, sigma_sq_a, mu_b, sigma_sq_b);
-        const updated_sigma_sqs = updatedSigmaSqs(alpha, beta, mu_a, sigma_sq_a, mu_b, sigma_sq_b);
-        const updated_annotator_2 = updatedAnnotator(alpha, beta, mu_b, sigma_sq_b, mu_a, sigma_sq_a);
-        const updated_mus_2 = updatedMus(alpha, beta, mu_b, sigma_sq_b, mu_a, sigma_sq_a);
-        const updated_sigma_sqs_2 = updatedSigmaSqs(alpha, beta, mu_b, sigma_sq_b, mu_a, sigma_sq_a);
+        const updated_annotator = Maths.updatedAnnotator(alpha, beta, mu_a, sigma_sq_a, mu_b, sigma_sq_b);
+        const updated_mus = Maths.updatedMus(alpha, beta, mu_a, sigma_sq_a, mu_b, sigma_sq_b);
+        const updated_sigma_sqs = Maths.updatedSigmaSqs(alpha, beta, mu_a, sigma_sq_a, mu_b, sigma_sq_b);
+        const updated_annotator_2 = Maths.updatedAnnotator(alpha, beta, mu_b, sigma_sq_b, mu_a, sigma_sq_a);
+        const updated_mus_2 = Maths.updatedMus(alpha, beta, mu_b, sigma_sq_b, mu_a, sigma_sq_a);
+        const updated_sigma_sqs_2 = Maths.updatedSigmaSqs(alpha, beta, mu_b, sigma_sq_b, mu_a, sigma_sq_a);
 
         const alpha_1 = updated_annotator.updated_alpha;
         const beta_1 = updated_annotator.updated_beta;
@@ -121,8 +113,8 @@ const Maths = {
                 Math.pow(alpha * exp(mu_winner) + beta * exp(mu_loser), 2) -
             (exp(mu_winner) * exp(mu_loser)) / Math.pow(exp(mu_winner) + exp(mu_loser), 2);
 
-        const updated_sigma_sq_winner = sigma_sq_winner * Math.max(1 + sigma_sq_winner * mult, Math.KAPPA);
-        const updated_sigma_sq_loser = sigma_sq_loser * Math.max(1 + sigma_sq_loser * mult, Math.KAPPA);
+        const updated_sigma_sq_winner = sigma_sq_winner * Math.max(1 + sigma_sq_winner * mult, MATH.KAPPA);
+        const updated_sigma_sq_loser = sigma_sq_loser * Math.max(1 + sigma_sq_loser * mult, MATH.KAPPA);
 
         return {
             updated_sigma_sq_winner,

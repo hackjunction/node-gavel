@@ -5,7 +5,9 @@ class VoteLoading extends Component {
     render() {
         return (
             <div className="Vote">
-                <i className="Vote--spinner fas fa-2x fa-spinner fa-spin" />
+                <div className="Vote--loading">
+                    <i className="Vote--spinner fas fa-2x fa-spinner fa-spin" />
+                </div>
             </div>
         );
     }

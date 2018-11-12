@@ -39,7 +39,13 @@ const ProjectSchema = new Schema({
         required: true,
         default: false
     },
-    viewed: [
+    viewed_by: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Annotator'
+        }
+    ],
+    skipped_by: [
         {
             type: Schema.Types.ObjectId,
             ref: 'Annotator'

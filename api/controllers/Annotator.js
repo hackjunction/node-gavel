@@ -25,6 +25,10 @@ const AnnotatorController = {
         });
     },
 
+    update: (annotatorId, updates) => {
+        return Annotator.findByIdAndUpdate(annotatorId, updates, { new: true });
+    },
+
     init: (annotatorId, trackName) => {
         return Annotator.findByIdAndUpdate(
             annotatorId,

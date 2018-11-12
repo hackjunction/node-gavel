@@ -59,21 +59,22 @@ class Vote extends Component {
     }
 
     renderButtons() {
-        const { user } = this.props;
+        const { user, submitDone, submitSkip, submitNext, submitPrevious } = this.props;
         if (user.next && user.prev) {
             return (
                 <div className="Vote--Bottom">
                     <p className="Vote--Bottom_title">Which project was better?</p>
                     <div className="Vote--Bottom_buttons">
-                        <div className="Vote--Button">
+                        <div className="Vote--Button previous" onClick={() => submitPrevious(user.secret)}>
                             <p className="Vote--Button_text">Previous</p>
                         </div>
-                        <div className="Vote--Button">
+                        <div className="Vote--Buttons_separator" />
+                        <div className="Vote--Button" onClick={() => submitNext(user.secret)}>
                             <p className="Vote--Button_text">Current</p>
                         </div>
                     </div>
-                    <div className="Vote--Skip">
-                        <p>I can't find this project</p>
+                    <div className="Vote--Button skip" onClick={() => submitSkip(user.secret)}>
+                        <p className="Vote--Button_text">I can't find this project</p>
                     </div>
                 </div>
             );
@@ -82,14 +83,14 @@ class Vote extends Component {
         if (user.next) {
             return (
                 <div className="Vote--Bottom">
-                    <p className="Vote--Bottom_title">After you've seen the demo, click DONE</p>
+                    <p className="Vote--Bottom_title">After you've seen the demo, click DONE.</p>
                     <div className="Vote--Bottom_buttons">
-                        <div className="Vote--Button">
+                        <div className="Vote--Button" onClick={() => submitDone(user.secret)}>
                             <p className="Vote--Button_text">Done</p>
                         </div>
                     </div>
-                    <div className="Vote--Skip">
-                        <p>I can't find this project</p>
+                    <div className="Vote--Button skip" onClick={() => submitSkip(user.secret)}>
+                        <p className="Vote--Button_text">I can't find this project</p>
                     </div>
                 </div>
             );
@@ -139,6 +140,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     initAnnotator: secret => dispatch(UserActions.initAnnotator(secret)),
+    submitDone: secret => dispatch(UserActions.submitVote(secret, 'done', 1000)),
+    submitSkip: secret => dispatch(UserActions.submitVote(secret, 'skip', 1000)),
+    submitNext: secret => dispatch(UserActions.submitVote(secret, 'current', 1000)),
+    submitPrevious: secret => dispatch(UserActions.submitVote(secret, 'previous', 1000)),
     updateUser: secret => dispatch(UserActions.fetchUser(secret)),
     updateEvent: secret => dispatch(UserActions.fetchEvent(secret))
 });

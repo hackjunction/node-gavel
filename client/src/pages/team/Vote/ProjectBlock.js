@@ -15,8 +15,11 @@ class ProjectBlock extends Component {
         this.state = {
             loading: true,
             error: false,
-            project: null
+            project: null,
+            expanded: this.props.isCurrent
         };
+
+        this.toggleExpand = this.toggleExpand.bind(this);
     }
 
     componentDidMount() {
@@ -27,6 +30,12 @@ class ProjectBlock extends Component {
         if (nextProps.projectId !== this.props.projectId) {
             this.updateProject();
         }
+    }
+
+    toggleExpand() {
+        this.setState({
+            expanded: !this.state.expanded
+        });
     }
 
     updateProject() {
@@ -56,6 +65,30 @@ class ProjectBlock extends Component {
         );
     }
 
+    renderDescription() {
+        const { expanded, project } = this.state;
+        if (expanded) {
+            return (
+                <p className="Vote--Project_description">
+                    {project.description}
+                    <span className="Vote--Project_description-expand" onClick={this.toggleExpand}>
+                        Collapse
+                    </span>
+                </p>
+            );
+        } else {
+            return (
+                <p className="Vote--Project_description">
+                    {project.description.slice(0, 60)}
+                    {'...'}
+                    <span className="Vote--Project_description-expand" onClick={this.toggleExpand}>
+                        Expand
+                    </span>
+                </p>
+            );
+        }
+    }
+
     render() {
         const { loading, error, project } = this.state;
         const { isCurrent } = this.props;
@@ -77,13 +110,17 @@ class ProjectBlock extends Component {
         }
 
         return (
-            <div className={this.props.isCurrent ? 'Vote--Project' : 'Vote--Project current'}>
+            <div className={isCurrent ? 'Vote--Project current' : 'Vote--Project'}>
                 <div className="Vote--Project_header">
-                    <p className="Vote--Proejct_header-label">{isCurrent ? 'Current:' : 'Previous:'}</p>
+                    <p className="Vote--Project_header-label">{isCurrent ? 'Current:' : 'Previous:'}</p>
                     <p className="Vote--Project_header-name">{project.name}</p>
+                    <p className="Vote--Project_location">
+                        {'('}
+                        {project.location}
+                        {')'}
+                    </p>
                 </div>
-                <p className="Vote--Project_location">{project.location}</p>
-                <p className="Vote--Project_description">{project.description}</p>
+                {this.renderDescription()}
             </div>
         );
     }
