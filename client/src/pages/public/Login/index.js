@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import './style.scss';
 
+import API from '../../../services/api';
+
 import * as UserActions from '../../../redux/user/actions';
-import * as user from '../../../redux/user/selectors';
 
 class Login extends Component {
     static propTypes = {
@@ -16,16 +17,49 @@ class Login extends Component {
         user: PropTypes.object
     };
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            ready: false,
+            error: false,
+            loading: true
+        };
+    }
+
     componentDidMount() {
-        this.props.updateUser(this.props.match.params.secret);
+        this.props.logout();
+        API.getUser(this.props.match.params.secret)
+            .then(user => {
+                this.props.setUser(user);
+
+                this.setState({
+                    ready: true,
+                    loading: false,
+                    error: false
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    ready: false,
+                    loading: false,
+                    error: true
+                });
+            });
     }
 
     render() {
-        if (this.props.user && !this.props.userLoading && !this.props.userError) {
-            return <Redirect to="/dashboard" />;
+        const { ready, error, loading } = this.state;
+
+        if (loading) {
+            return (
+                <div className="Login--wrapper">
+                    <i className="fas fa-2x fa-spinner fa-spin" />
+                </div>
+            );
         }
 
-        if (this.props.userError) {
+        if (error) {
             return (
                 <div className="Login--wrapper">
                     <h2>Invalid link</h2>
@@ -37,24 +71,20 @@ class Login extends Component {
             );
         }
 
-        return (
-            <div className="Login--wrapper">
-                <i className="fas fa-2x fa-spinner fa-spin" />
-            </div>
-        );
+        if (ready) {
+            return <Redirect to="/dashboard" />;
+        }
+
+        return null;
     }
 }
 
 const mapDispatchToProps = dispatch => ({
-    updateUser: secret => dispatch(UserActions.fetchUser(secret)),
+    setUser: user => dispatch(UserActions.setUser(user)),
     logout: () => dispatch(UserActions.logout())
 });
 
-const mapStateToProps = state => ({
-    userLoading: user.isLoading(state),
-    userError: user.isError(state),
-    user: user.getUser(state)
-});
+const mapStateToProps = state => ({});
 
 export default connect(
     mapStateToProps,

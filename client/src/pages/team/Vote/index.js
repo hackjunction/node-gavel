@@ -18,6 +18,13 @@ class Vote extends Component {
         updateEvent(user.secret);
     }
 
+    renderTimeBanner() {
+        const { event } = this.props;
+
+        //TODO: show time left for voting
+        return null;
+    }
+
     renderTop() {
         const { user } = this.props;
 
@@ -116,6 +123,7 @@ class Vote extends Component {
 
         return (
             <div className="Vote">
+                {this.renderTimeBanner()}
                 {this.renderTop()}
                 {user.prev ? <ProjectBlock projectId={user.prev} isCurrent={false} /> : null}
                 {user.next ? <ProjectBlock projectId={user.next} isCurrent={true} /> : null}

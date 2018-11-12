@@ -25,14 +25,20 @@ passport.use(
             return done(null, false, { message: 'Annotator secret is required' });
         }
 
-        AnnotatorController.getBySecret(secret).then(annotator => {
-            if (!annotator) {
+        AnnotatorController.getBySecret(secret)
+            .then(annotator => {
+                if (!annotator) {
+                    return done(null, false, {
+                        message: 'No annotator found with secret ' + secret
+                    });
+                }
+
+                return done(null, annotator);
+            })
+            .catch(() => {
                 return done(null, false, {
                     message: 'No annotator found with secret ' + secret
                 });
-            }
-
-            return done(null, annotator);
-        });
+            });
     })
 );
