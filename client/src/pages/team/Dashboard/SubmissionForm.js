@@ -63,12 +63,12 @@ class SubmissionForm extends Component {
 
     renderTopText() {
         const { isSubmissionsOpen, submissionDeadline } = this.props;
-        if (isSubmissionsOpen) {
+        if (isSubmissionsOpen()) {
             return (
                 <p>
                     You should submit a draft of your project as soon as you have a rough idea of what you're working on
-                    - you can always edit your submission until the submission deadline on{' '}
-                    <strong>{submissionDeadline.format('MMMM Do HH:mm a')}</strong>
+                    - you can always edit your submission until the submission deadline,{' '}
+                    <strong>{submissionDeadline.format('dddd HH:mm A')}</strong>
                 </p>
             );
         } else {
@@ -82,7 +82,7 @@ class SubmissionForm extends Component {
     }
 
     render() {
-        const { submission, editSubmission, event, submissionDeadline } = this.props;
+        const { submission, editSubmission, event } = this.props;
 
         return (
             <div className="SubmissionForm">

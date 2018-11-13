@@ -1,5 +1,7 @@
 @import '../../../styles/base.scss';
 
+$animation-time: 0.5s;
+
 .Vote--Wrapper {
     display: flex;
     flex: 1;
@@ -9,29 +11,48 @@
 }
 
 .Vote--Top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    opacity: 1;
+    transition: all 0.3s ease;
+
     &_title {
         text-align: center;
+        margin: 0;
     }
 
     &_text {
         text-align: center;
+    }
+
+    &.loading {
+        opacity: 0;
     }
 }
 
 .Vote--Content {
     flex: 1;
     padding: $base-margin 0;
-
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
+    overflow: hidden;
+
+    .Vote--Message {
+        flex: 1;
+        text-align: center;
+        padding: $base-margin;
+    }
 
     .Vote--Previous {
         flex: 1;
         display: flex;
         flex-direction: column;
-        transition: all 0.5s ease;
+        transition: all $animation-time ease;
         max-height: 50%;
     }
 
@@ -39,8 +60,20 @@
         flex: 1;
         display: flex;
         flex-direction: column;
-        transition: all 0.5s ease;
+        transition: all $animation-time ease;
         max-height: 50%;
+    }
+
+    &.hide-both {
+        .Vote--Previous {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        .Vote--Current {
+            transform: translateY(100%);
+            opacity: 0;
+        }
     }
 
     &.hide-previous {
@@ -75,13 +108,15 @@
         .Vote--Current {
             opacity: 0;
             transition: none;
+            transform: translateX(100%);
         }
     }
 
     &.show-new-current {
         .Vote--Current {
             opacity: 1;
-            transition: all 0.5s ease;
+            transition: all $animation-time ease;
+            transform: translateX(0);
         }
     }
 }
@@ -90,7 +125,9 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    align-self: stretch;
     padding-bottom: $base-margin;
+    min-height: 150px;
 
     &_header {
         display: flex;
@@ -98,7 +135,7 @@
         align-items: center;
         background: $vote-previous;
         padding: $base-margin;
-        transition: all 0.5s ease;
+        transition: all $animation-time ease;
     }
 
     &.current &_header {
@@ -128,7 +165,7 @@
         flex: 1;
         padding: $base-margin;
         background: rgba($vote-previous, 0.4);
-        transition: all 0.5s ease;
+        transition: all $animation-time ease;
     }
 
     &.current &_description {
@@ -137,18 +174,21 @@
 }
 
 .Vote--Bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    height: 100px;
+
     &_title {
         text-align: center;
+        margin: 0;
     }
 
     &_buttons {
         display: flex;
         flex-direction: row;
         margin: $base-margin 0;
-
-        @include up-to-tablet {
-            flex-direction: column;
-        }
     }
 
     &_separator {
@@ -165,7 +205,7 @@
         border: 3px solid rgba($vote-current, 0.4);
         background: rgba($vote-current, 0.2);
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
 
         &:hover {
             background: rgba($vote-current, 0.4);
@@ -197,6 +237,13 @@
                 text-transform: none;
                 text-decoration: underline;
             }
+        }
+    }
+
+    &.loading {
+        align-items: center;
+
+        .Vote--Spinner {
         }
     }
 }

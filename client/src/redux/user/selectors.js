@@ -22,15 +22,32 @@ export const getVotingStartTime = state =>
     state.user.event ? moment(state.user.event.votingStartTime).tz(state.user.event.timezone) : null;
 export const getVotingEndTime = state =>
     state.user.event ? moment(state.user.event.votingEndTime).tz(state.user.event.timezone) : null;
-export const getNowInEventTime = state => (state.user.event ? moment().tz(state.user.event.timezone) : null);
-export const isVotingOpen = state =>
-    state.user.event ? getNowInEventTime(state).isBetween(getVotingStartTime(state), getVotingEndTime(state)) : false;
+export const getTimezone = state => (state.user.event ? state.user.event.timezone : null);
+
+export const getNowInEventTime = state => () => {
+    if (!state.user.event) {
+        return moment();
+    }
+    return moment().tz(state.user.event.timezone);
+};
+
+export const isVotingOpen = state => () => {
+    if (!state.user.event) {
+        return false;
+    }
+    const now = getNowInEventTime(state);
+    return now().isBetween(getVotingStartTime(state), getVotingEndTime(state));
+};
 
 export const getEventStartTime = state =>
     state.user.event ? moment(state.user.event.startTime).tz(state.user.event.timezone) : null;
 export const getSubmissionDeadline = state =>
     state.user.event ? moment(state.user.event.submissionDeadline).tz(state.user.event.timezone) : null;
-export const isSubmissionsOpen = state =>
-    state.user.event
-        ? getNowInEventTime(state).isBetween(getEventStartTime(state), getSubmissionDeadline(state))
-        : false;
+
+export const isSubmissionsOpen = state => () => {
+    if (!state.user.event) {
+        return false;
+    }
+    const now = getNowInEventTime(state);
+    return now().isBetween(getEventStartTime(state), getSubmissionDeadline(state));
+};

@@ -159,7 +159,7 @@ class TeamDashboard extends Component {
         const { isVotingOpen, isSubmissionsOpen, submission, submissionDeadline } = this.props;
 
         const banners = [];
-        if (isSubmissionsOpen) {
+        if (isSubmissionsOpen()) {
             if (!submission.hasOwnProperty('_id')) {
                 banners.push({
                     type: 'warning',
@@ -171,7 +171,7 @@ class TeamDashboard extends Component {
             }
         }
 
-        if (isVotingOpen) {
+        if (isVotingOpen()) {
             banners.push({
                 type: 'info',
                 text:
@@ -184,17 +184,17 @@ class TeamDashboard extends Component {
     }
 
     renderVoting() {
-        const { votingStartTime, votingEndTime, isVotingOpen, user, event } = this.props;
+        const { votingStartTime, votingEndTime, isVotingOpen, user, event, getEventTime } = this.props;
 
         let content = null;
-        if (isVotingOpen) {
+        if (isVotingOpen()) {
             if (user.read_welcome) {
                 content = (
                     <div>
                         <h4>Voting is open!</h4>
                         <p>
                             Click the link below to access the voting page and continue voting where you left off.
-                            Voting ends at {votingEndTime.format('MMMM Do HH:mm a')}.
+                            Voting ends at {votingEndTime.format('HH:mm A')} sharp.
                         </p>
                         <Link to="/vote">Continue voting</Link>
                     </div>
@@ -205,20 +205,23 @@ class TeamDashboard extends Component {
                         <h4>Voting is open!</h4>
                         <p>
                             Click the button below to access the voting page. You will be shown a short tutorial on how
-                            the voting system works before you begin. Voting ends at{' '}
-                            {votingEndTime.format('MMMM Do HH:mm a')}.
+                            the voting system works before you begin. Voting ends at {votingEndTime.format('HH:mm A')}{' '}
+                            sharp.
                         </p>
                         <Link to="/vote">Start voting</Link>
                     </div>
                 );
             }
         } else {
-            if (votingStartTime.isAfter()) {
+            if (votingStartTime.isAfter(getEventTime())) {
                 content = (
                     <div>
                         <h4>Voting has not yet begun</h4>
                         <p>
-                            The voting platform will open <strong>{votingStartTime.format('MMMM Do HH:mm a')}</strong>{' '}
+                            The voting page will be accessible from{' '}
+                            <strong>
+                                {votingStartTime.format('HH:mm A')} to {votingEndTime.format('HH:mm A')}
+                            </strong>{' '}
                             and you will be able to access it from this page.
                         </p>
                     </div>
@@ -298,6 +301,7 @@ const mapStateToProps = state => ({
     eventLoading: user.isEventLoading(state),
     eventError: user.isEventError(state),
     event: user.getEvent(state),
+    getEventTime: user.getNowInEventTime(state),
     votingStartTime: user.getVotingStartTime(state),
     votingEndTime: user.getVotingEndTime(state),
     isVotingOpen: user.isVotingOpen(state),
