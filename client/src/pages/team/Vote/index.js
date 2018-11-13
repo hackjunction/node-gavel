@@ -30,13 +30,13 @@ class Vote extends Component {
             current: null,
             previous: null,
             viewed_all: false,
-            loading: false,
+            loading: true,
             error: false
         };
 
         this.initAnnotator = this.initAnnotator.bind(this);
         this.getNextDecision = this.getNextDecision.bind(this);
-        this.submitVote = this.submitVote.bind(this);
+        this.vote = this.vote.bind(this);
     }
 
     componentDidMount() {
@@ -54,6 +54,9 @@ class Vote extends Component {
         const { user } = this.props;
 
         if (!user.read_welcome || !user.active) {
+            this.setState({
+                loading: false
+            });
             return;
         }
 
@@ -93,7 +96,7 @@ class Vote extends Component {
                         this.getNextDecision();
                     })
                     .catch(error => {
-                        this.setState({
+                        this.animateState({
                             error: true,
                             loading: false
                         });
@@ -102,7 +105,7 @@ class Vote extends Component {
         );
     }
 
-    submitVote(choice) {
+    vote(choice) {
         const { submitVote, user } = this.props;
 
         this.setState(
@@ -111,11 +114,11 @@ class Vote extends Component {
             },
             () => {
                 submitVote(user.secret, choice)
-                    .then(() => {
+                    .then(data => {
                         this.getNextDecision();
                     })
                     .catch(error => {
-                        this.setState({
+                        this.animateState({
                             error: true,
                             loading: false
                         });
@@ -133,7 +136,14 @@ class Vote extends Component {
     }
 
     async animateState(data) {
-        if (data.viewed_all || !data.current) {
+        if (data.error) {
+            await this.setStateAsync({ animationPhase: 'hide-both' });
+            await Utils.sleep(ANIMATION_TIME);
+            this.setState({
+                ...data,
+                animationPhase: ''
+            });
+        } else if (data.viewed_all || !data.current) {
             await this.setStateAsync({ animationPhase: 'hide-both' });
             await Utils.sleep(ANIMATION_TIME);
             this.setState({
@@ -309,7 +319,7 @@ class Vote extends Component {
                     <div className="Vote--Bottom">
                         <p className="Vote--Bottom_title">After you've seen the demo, click DONE</p>
                         <div className="Vote--Bottom_buttons">
-                            <div className="Vote--Bottom_button" onClick={() => this.submitVote('done')}>
+                            <div className="Vote--Bottom_button" onClick={() => this.vote('done')}>
                                 <p className="Vote--Bottom_button-text">Done</p>
                             </div>
                         </div>
@@ -321,11 +331,11 @@ class Vote extends Component {
                     <div className="Vote--Bottom">
                         <p className="Vote--Bottom_title">Which project was better?</p>
                         <div className="Vote--Bottom_buttons">
-                            <div className="Vote--Bottom_button previous" onClick={() => this.submitVote('previous')}>
+                            <div className="Vote--Bottom_button previous" onClick={() => this.vote('previous')}>
                                 <p className="Vote--Bottom_button-text">Previous</p>
                             </div>
                             <div className="Vote--Bottom_separator" />
-                            <div className="Vote--Bottom_button" onClick={() => this.submitVote('current')}>
+                            <div className="Vote--Bottom_button" onClick={() => this.vote('current')}>
                                 <p className="Vote--Bottom_button-text">Current</p>
                             </div>
                         </div>
@@ -346,7 +356,7 @@ class Vote extends Component {
                         <p className="Vote--Message">
                             Sorry about that - please reload the page to try again. You might need to submit your
                             previous vote again. <br /> <br /> If the problem persists, please close the browser window,
-                            and open your personal login link from your email to log in again.
+                            and open the app via your personal login link which you received by email.
                         </p>
                     </div>
                 );

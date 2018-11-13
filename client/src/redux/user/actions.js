@@ -40,24 +40,16 @@ export const fetchUser = secret => dispatch => {
 
 export const initAnnotator = secret => dispatch => {
     dispatch(setUserLoading());
-    return API.initAnnotator(secret)
-        .then(user => {
-            dispatch(setUser(user));
-        })
-        .catch(error => {
-            dispatch(setUserError());
-        });
+    return API.initAnnotator(secret).then(user => {
+        dispatch(setUser(user));
+    });
 };
 
 export const submitVote = (secret, choice, minDelay = 0) => dispatch => {
     dispatch(setUserLoading());
-    return pMinDelay(API.submitVote(secret, choice), minDelay)
-        .then(user => {
-            dispatch(setUser(user));
-        })
-        .catch(error => {
-            dispatch(setUserError());
-        });
+    return pMinDelay(API.submitVote(secret, choice), minDelay).then(user => {
+        dispatch(setUser(user));
+    });
 };
 
 export const setEvent = event => dispatch => {

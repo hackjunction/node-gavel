@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const _ = require('lodash');
+const moment = require('moment-timezone');
 const Settings = require('../settings');
 const Maths = require('./maths');
 
 const AnnotatorController = require('../controllers/Annotator');
 const ProjectController = require('../controllers/Project');
 const DecisionController = require('../controllers/Decision');
+const EventController = require('../controllers/Event');
 
 const ReviewingService = {
     chooseNextProject: (items, annotator, current) => {
@@ -30,6 +32,39 @@ const ReviewingService = {
         } else {
             return null;
         }
+    },
+
+    canVote: async annotator => {
+        if (!annotator.next) {
+            throw new Error('Cannot submit a vote with no project assigned');
+        }
+
+        if (!annotator.active) {
+            throw new Error('Cannot submit votes when annotator is not active');
+        }
+
+        if (!annotator.read_welcome) {
+            throw new Error('Cannot submit votes before reading welcome message');
+        }
+
+        let event;
+
+        try {
+            event = await EventController.getEventWithId(annotator.event);
+        } catch (error) {
+            console.log('ERROR', error);
+            throw new Error('Error getting user event details');
+        }
+
+        const now = moment().tz(event.timezone);
+        const endTime = moment(event.endTime).tz(event.timezone);
+        const startTime = moment(event.startTime).tz(event.timezone);
+
+        if (!now.isBetween(startTime, endTime)) {
+            throw new Error('Voting is currently closed');
+        }
+
+        return;
     },
 
     getNextProject(annotator) {
@@ -169,10 +204,9 @@ const ReviewingService = {
         });
     },
 
-    submitVote: (annotator, choice) => {
-        if (!annotator.next) {
-            throw new Error('Cannot submit a vote with no next project');
-        }
+    submitVote: async (annotator, choice) => {
+        //Throws error if conditions fail
+        await ReviewingService.canVote(annotator);
 
         const VALID_CHOICES = ['done', 'skip'];
 
