@@ -13,10 +13,7 @@ const TeamSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Annotator'
         }
-    ],
-    contactPhone: {
-        type: String
-    }
+    ]
 });
 
 const Team = mongoose.model('Team', TeamSchema);
@@ -29,8 +26,7 @@ const validate = data => {
                 name: Joi.string().trim(),
                 email: Joi.string().trim()
             })
-        ),
-        contactPhone: Joi.string().trim()
+        )
     });
 
     return schema.validate(data);

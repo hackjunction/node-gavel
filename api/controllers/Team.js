@@ -6,13 +6,11 @@ const EmailService = require('../services/email');
 const ObjectId = require('mongodb').ObjectId;
 
 const TeamController = {
-    create: (eventId, teamMembers, contactPhone, sendEmail = true) => {
+    create: (eventId, teamMembers, sendEmail = true) => {
         const teamData = {
             event: eventId,
-            members: teamMembers,
-            contactPhone
+            members: teamMembers
         };
-        let teamId = null;
         return validate(teamData).then(validated => {
             let teamId = null;
             return Team.create({
