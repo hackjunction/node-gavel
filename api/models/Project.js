@@ -14,13 +14,15 @@ const ProjectSchema = new Schema({
         type: String,
         required: true
     },
+    punchline: String,
+    /** Additional project info */
     description: String,
-    /** TODO: Add Generic details here, such as long description, tech used, image, etc...*/
-
     image: String,
     source: String,
     track: String,
     challenges: [String],
+    contactPhone: String,
+    /** END project info*/
     team: {
         type: Schema.Types.ObjectId,
         ref: 'Team'
@@ -72,13 +74,17 @@ const validate = function(item) {
             .max(120)
             .required(),
         description: Joi.string()
-            .max(1000)
+            .max(3000)
+            .optional(),
+        punchline: Joi.string()
+            .max(100)
             .required(),
         location: Joi.string()
             .alphanum()
             .min(1)
             .max(5)
             .required(),
+        contactPhone: Joi.string().optional(),
         track: Joi.string(),
         challenges: Joi.array().items(Joi.string()),
         image: Joi.string()

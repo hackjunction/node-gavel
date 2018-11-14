@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment-timezone';
+import _ from 'lodash';
 
 import TextField from '../../../components/forms/TextField';
 import TextArea from '../../../components/forms/TextArea';
@@ -61,6 +61,19 @@ class SubmissionForm extends Component {
             });
     }
 
+    tableOptions() {
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J', 'K', 'X'];
+        const options = [];
+
+        _.each(letters, letter => {
+            for (let i = 0; i < 30; i++) {
+                options.push(letter + (i + 1));
+            }
+        });
+
+        return options;
+    }
+
     renderTopText() {
         const { isSubmissionsOpen, submissionDeadline } = this.props;
         if (isSubmissionsOpen()) {
@@ -108,6 +121,25 @@ class SubmissionForm extends Component {
                         )
                     }
                 />
+                <TextField
+                    ref={ref => (this.submissionPunchline = ref)}
+                    label="Punchline"
+                    placeholder="A short punchline about your project"
+                    value={submission.punchline || ''}
+                    onChange={punchline => {
+                        editSubmission('punchline', punchline);
+                    }}
+                    required={true}
+                    validate={value =>
+                        Validators.stringMinMax(
+                            value,
+                            1,
+                            100,
+                            'Your punchline must be at least 1 character',
+                            'Your punchline cannot be over 100 characters'
+                        )
+                    }
+                />
                 <TextArea
                     ref={ref => (this.submissionDescription = ref)}
                     label="Description"
@@ -124,25 +156,6 @@ class SubmissionForm extends Component {
                             1000,
                             'Project description must be at least 1 character',
                             'Project description cannot be over 1000 characters'
-                        )
-                    }
-                />
-                <TextField
-                    ref={ref => (this.submissionLocation = ref)}
-                    label="Table Location"
-                    placeholder="E.g. A7"
-                    value={submission.location || ''}
-                    onChange={location => {
-                        editSubmission('location', location);
-                    }}
-                    required={true}
-                    validate={value =>
-                        Validators.stringMinMax(
-                            value,
-                            1,
-                            50,
-                            'Table location must be at least 2 characters',
-                            'Table location cannot be over 50 characters'
                         )
                     }
                 />
@@ -164,6 +177,20 @@ class SubmissionForm extends Component {
                             'The link cannot be over 500 characters'
                         )
                     }
+                />
+                <DropDown
+                    ref={ref => (this.submissionLocation = ref)}
+                    label="Table Location"
+                    placeholder="Select a table location"
+                    hint="Select the nearest table location to where you are sitting"
+                    value={submission.location || ''}
+                    onChange={location => {
+                        editSubmission('location', location);
+                    }}
+                    required={true}
+                    isMulti={false}
+                    options={this.tableOptions()}
+                    validate={Validators.noValidate}
                 />
                 {event.hasTracks ? (
                     <DropDown
@@ -197,6 +224,17 @@ class SubmissionForm extends Component {
                         validate={Validators.noValidate}
                     />
                 ) : null}
+                <TextField
+                    ref={ref => (this.submissionPhone = ref)}
+                    label="Contact phone"
+                    placeholder="International format (e.g. +358 0123456)"
+                    value={submission.contactPhone || ''}
+                    onChange={contactPhone => {
+                        editSubmission('contactPhone', contactPhone);
+                    }}
+                    required={true}
+                    validate={Validators.phoneNumber}
+                />
                 <SubmitButton
                     text="Update submission"
                     align="right"

@@ -108,7 +108,7 @@ const script = function() {
                     const teams = generateTeams(TEAMS_PER_EVENT_MIN, TEAMS_PER_EVENT_MAX);
 
                     return Promise.map(teams, team => {
-                        return TeamController.create(event._id.toString(), team.members, team.contactPhone, false);
+                        return TeamController.create(event._id.toString(), team.members, false);
                     }).then(teams => {
                         _annotator = teams[0].members[0];
                         console.log('-> Generated ' + teams.length + ' teams for event ' + event.name);
@@ -219,8 +219,7 @@ function generateTeams(min, max) {
 
     for (let i = 0; i < teamCount; i++) {
         teams.push({
-            members: generateTeamMembers(PEOPLE_PER_TEAM_MIN, PEOPLE_PER_TEAM_MAX),
-            contactPhone: chance.phone()
+            members: generateTeamMembers(PEOPLE_PER_TEAM_MIN, PEOPLE_PER_TEAM_MAX)
         });
     }
 
@@ -244,6 +243,7 @@ function generateTeamMembers(min, max) {
 function generateProject(event) {
     return {
         name: 'Project ' + chance.word({ length: 10 }),
+        punchline: 'My amazing elevator pitch',
         description: loremIpsum({
             count: 10,
             units: 'sentences',
@@ -253,6 +253,7 @@ function generateProject(event) {
             paragraphUpperBound: 6,
             format: 'plain'
         }),
+        contactPhone: chance.phone(),
         location: chance.letter().toUpperCase() + chance.natural({ min: 1, max: 50 }),
         track: chance.weighted(event.tracks, TRACK_WEIGHTS),
         challenges: chance.pickset(event.challenges, Math.floor(Math.random() * 5) + 1),
