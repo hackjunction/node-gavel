@@ -2,8 +2,8 @@ An expo judging system based on the original Gavel: https://github.com/anishatha
 
 **Prerequisites**
 
-- [Node.js LTS-version](https://nodejs.org/en/)
-- [MongoDB Community version](https://docs.mongodb.com/manual/administration/install-community/)
+-   [Node.js LTS-version](https://nodejs.org/en/)
+-   [MongoDB Community version](https://docs.mongodb.com/manual/administration/install-community/)
 
 **Clone the repo**
 
@@ -18,14 +18,9 @@ Run `npm run setup`. Only needs to be run again whenever dependencies change.
 
 **Add ENV files** You need to add two .env files:
 
-First, at the root of the project add an `.env` file with the contents:
+First, check out the configuration options in `/api/settings.js`
 
-```
-MONGODB_URI=mongodb://localhost/nodeGavel
-ADMIN_USER=admin
-ADMIN_PASS=admin
-ADMIN_TOKEN=some-token
-```
+If you want to override some of the default configuration options, place an `.env` file at the root of the project with your overrides.
 
 Then, at the root of `client` add an `.env` file with the contents:
 
