@@ -14,19 +14,18 @@ git clone git@github.com:hackjunction/node-gavel.git
 
 **Install dependencies**
 
-Run `npm run setup`. Only needs to be run again whenever dependencies change.
+Run `npm run setup` at the root of the project. Only needs to be run again whenever dependencies change.
 
-**Add ENV files** You need to add two .env files:
+**Add ENV files** 
 
-First, check out the configuration options in `/api/settings.js`
-
-If you want to override some of the default configuration options, place an `.env` file at the root of the project with your overrides.
-
-Then, at the root of `client` add an `.env` file with the contents:
-
+First, for the app to run at all, you need to add an `.env` file with the following contents at the root of `/client`:
 ```
 PORT=5000
 ```
+
+Then, check out the configuration options in `/api/settings.js`
+
+If you want to override some of the default configuration options, place an `.env` file at the root of the project with your overrides (same level as server.js).
 
 **Starting the development server**
 
