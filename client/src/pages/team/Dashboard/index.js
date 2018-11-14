@@ -41,6 +41,7 @@ class TeamDashboard extends Component {
 
         this.saveSubmission = this.saveSubmission.bind(this);
         this.renderVoting = this.renderVoting.bind(this);
+        this.renderTeam = this.renderTeam.bind(this);
     }
 
     componentDidMount() {
@@ -56,31 +57,6 @@ class TeamDashboard extends Component {
         const { secret } = this.props.user;
 
         saveSubmission(submission, secret);
-    }
-
-    renderTeamMembers() {
-        const { teamMembers } = this.props;
-
-        return (
-            <div className="Voting-Tab">
-                <h4>Your team</h4>
-                <p>
-                    Here you can see all of the members of your team. All team members are able to edit your team's
-                    submission. If you wish to add/remove team members, you can do so in the registration platform, and
-                    any changes will be updated here.
-                </p>
-                {_.map(teamMembers, member => {
-                    return (
-                        <div className="TeamDashboard--team-member">
-                            <div className="TeamDashboard--team-member-details">
-                                <p className="TeamDashboard--team-member-details__name">{member.name}</p>
-                                <p className="TeamDashboard--team-member-details__email">{member.email}</p>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-        );
     }
 
     getBanners() {
@@ -180,7 +156,30 @@ class TeamDashboard extends Component {
     }
 
     renderTeam() {
-        return <h1>Team</h1>;
+        const { teamMembers, user } = this.props;
+
+        return (
+            <div className="Voting-Tab">
+                <h4>Your team</h4>
+                <p>
+                    Here you can see all of the members of your team. All team members are able to edit your team's
+                    submission. If you wish to add/remove team members, you can do so in the registration platform, and
+                    any changes will be updated here.
+                </p>
+                {_.map(teamMembers, member => {
+                    const className =
+                        member._id === user._id ? 'TeamDashboard--team-member is-self' : 'TeamDashboard--team-member';
+                    return (
+                        <div className={className}>
+                            <div className="TeamDashboard--team-member-details">
+                                <p className="TeamDashboard--team-member-details__name">{member.name}</p>
+                                <p className="TeamDashboard--team-member-details__email">{member.email}</p>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        );
     }
 
     render() {
