@@ -63,6 +63,18 @@ const TeamController = {
             });
     },
 
+    getByIdPopulated: teamId => {
+        return Team.findById(teamId)
+            .populate('members')
+            .then(team => {
+                if (!team) {
+                    return Promise.reject('No team found with _id ' + teamId);
+                }
+
+                return team;
+            });
+    },
+
     getAll: () => {
         return Team.find({}).lean();
     },
@@ -97,18 +109,14 @@ const TeamController = {
             });
     },
 
-    //TODO: Would it be necessary to send an email about this?
     deleteMember: (annotatorId, teamId) => {
         return TeamController.getById(teamId)
             .then(team => {
-                console.log('faafee');
                 return TeamController.removeMembers(teamId, [annotatorId]).then(team => {
-                    console.log('feebar', team);
                     return AnnotatorController.deleteById(annotatorId);
                 });
             })
             .then(() => {
-                console.log('feefoo');
                 return TeamController.getMembersById(teamId);
             });
     },

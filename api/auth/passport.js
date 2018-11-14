@@ -1,6 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const AnnotatorController = require('../controllers/Annotator');
+const EventController = require('../controllers/Event');
 const Settings = require('../settings');
 
 //Admin token authentication
@@ -38,6 +39,32 @@ passport.use(
             .catch(() => {
                 return done(null, false, {
                     message: 'No annotator found with secret ' + secret
+                });
+            });
+    })
+);
+
+//External API Key authentication
+passport.use(
+    'apiKey',
+    new LocalStrategy({ usernameField: 'key', passwordField: 'key' }, function(username, key, done) {
+        if (!key) {
+            return done(null, false, { message: 'API Key is required' });
+        }
+
+        EventController.getEventWithApiKey(key)
+            .then(event => {
+                if (!event) {
+                    return done(null, false, {
+                        message: 'No event found with API Key ' + key
+                    });
+                }
+
+                return done(null, event);
+            })
+            .catch(() => {
+                return done(null, false, {
+                    message: 'No event found with API Key ' + key
                 });
             });
     })

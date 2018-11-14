@@ -39,6 +39,20 @@ const EventController = {
             });
     },
 
+    getEventWithApiKey: apiKey => {
+        return Event.findOne({
+            apiKey
+        })
+            .lean()
+            .then(event => {
+                if (!event) {
+                    return Promise.reject('No event found with api key ' + apiKey);
+                }
+
+                return event;
+            });
+    },
+
     removeNonPublicFields: event => {
         return {
             ...event,

@@ -28,6 +28,7 @@ require('./api/routes/events')(app);
 require('./api/routes/annotators')(app);
 require('./api/routes/teams')(app);
 require('./api/routes/projects')(app);
+require('./api/routes/external')(app);
 
 /* Models */
 require('./api/models/Event');
