@@ -3,25 +3,15 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import TimeAgo from 'react-timeago';
-import moment from 'moment-timezone';
 import './style.scss';
 
 import SubmissionForm from './SubmissionForm';
 
 import TabView from '../../../components/TabView';
 import BannerManager from '../../../components/BannerManager';
-import SectionWrapper from '../../../components/forms/SectionWrapper';
-import SectionTitle from '../../../components/forms/SectionTitle';
-import TextField from '../../../components/forms/TextField';
-import TextArea from '../../../components/forms/TextArea';
-import SubmitButton from '../../../components/forms/SubmitButton';
-import ErrorsBox from '../../../components/forms/ErrorsBox';
-import DropDown from '../../../components/forms/DropDown';
 
 import * as user from '../../../redux/user/selectors';
 import * as UserActions from '../../../redux/user/actions';
-import Validators from '../../../services/validators';
 
 class TeamDashboard extends Component {
     static propTypes = {
@@ -49,11 +39,6 @@ class TeamDashboard extends Component {
             removingTeamMember: null
         };
 
-        this.dateTest = moment()
-            .tz('Europe/Helsinki')
-            .add(10, 'minutes');
-
-        this.addTeamMember = this.addTeamMember.bind(this);
         this.saveSubmission = this.saveSubmission.bind(this);
         this.renderVoting = this.renderVoting.bind(this);
     }
@@ -73,86 +58,29 @@ class TeamDashboard extends Component {
         saveSubmission(submission, secret);
     }
 
-    addTeamMember() {
-        const name = this.state.addMemberName;
-        const email = this.state.addMemberEmail;
-
-        const nameValidation = this.addMemberName.isValid();
-
-        if (nameValidation.error) {
-            window.alert('Please enter a valid name');
-            return;
-        }
-
-        const emailValidation = this.addMemberEmail.isValid();
-
-        if (emailValidation.error) {
-            window.alert('Please enter a valid email address');
-            return;
-        }
-
-        if (_.findIndex(this.props.teamMembers, t => t.email === email) !== -1) {
-            window.alert('You already have a team member with that email');
-            return;
-        }
-
-        this.props.addTeamMember(name, email, this.props.user.secret);
-    }
-
-    removeTeamMember(_id) {
-        this.props.removeTeamMember(_id, this.props.user.secret);
-    }
-
     renderTeamMembers() {
         const { teamMembers } = this.props;
 
-        return _.map(teamMembers, member => {
-            const isRemove = this.state.removingTeamMember === member._id;
-            return (
-                <div className="TeamDashboard--team-member">
-                    <div className="TeamDashboard--team-member-details">
-                        <p className="TeamDashboard--team-member-details__name">{member.name}</p>
-                        <p className="TeamDashboard--team-member-details__email">{member.email}</p>
-                    </div>
-                    <div
-                        className={
-                            isRemove ? 'TeamDashboard--team-member-remove active' : 'TeamDashboard--team-member-remove'
-                        }
-                    >
-                        <div
-                            className="TeamDashboard--team-member-remove__button"
-                            onClick={() => {
-                                this.setState({
-                                    removingTeamMember: member._id
-                                });
-                            }}
-                        >
-                            <span>{'Remove'}</span>
+        return (
+            <div className="Voting-Tab">
+                <h4>Your team</h4>
+                <p>
+                    Here you can see all of the members of your team. All team members are able to edit your team's
+                    submission. If you wish to add/remove team members, you can do so in the registration platform, and
+                    any changes will be updated here.
+                </p>
+                {_.map(teamMembers, member => {
+                    return (
+                        <div className="TeamDashboard--team-member">
+                            <div className="TeamDashboard--team-member-details">
+                                <p className="TeamDashboard--team-member-details__name">{member.name}</p>
+                                <p className="TeamDashboard--team-member-details__email">{member.email}</p>
+                            </div>
                         </div>
-                        <div
-                            className="TeamDashboard--team-member-remove__confirm"
-                            onClick={() => this.removeTeamMember(member._id)}
-                        >
-                            <span>{'Confirm'}</span>
-                        </div>
-                        <div
-                            className="TeamDashboard--team-member-remove__cancel"
-                            onClick={() =>
-                                this.setState({
-                                    removingTeamMember: null
-                                })
-                            }
-                        >
-                            <span>{'Cancel'}</span>
-                        </div>
-                    </div>
-                </div>
-            );
-        });
-    }
-
-    renderAddMemberForm() {
-        return <div className="TeamDashboard--add-member-form" />;
+                    );
+                })}
+            </div>
+        );
     }
 
     getBanners() {
