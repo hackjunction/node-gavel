@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 class ProjectBlock extends Component {
     static propTypes = {
         project: PropTypes.object.isRequired,
-        isCurrent: PropTypes.bool.isRequired
+        isCurrent: PropTypes.bool.isRequired,
+        onSkip: PropTypes.func
     };
 
     render() {
@@ -18,6 +19,11 @@ class ProjectBlock extends Component {
                     <p className="Vote--Project_location">{project.location}</p>
                 </div>
                 <p className="Vote--Project_description">{project.description.slice(0, 100)}</p>
+                {isCurrent ? (
+                    <span className="Vote--Project_skip" onClick={this.props.onSkip}>
+                        I can't find this project
+                    </span>
+                ) : null}
             </div>
         );
     }

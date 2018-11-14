@@ -45,6 +45,13 @@ export const initAnnotator = secret => dispatch => {
     });
 };
 
+export const setOnboarded = secret => dispatch => {
+    dispatch(setUserLoading());
+    return API.setAnnotatorOnboarded(secret).then(user => {
+        dispatch(setUser(user));
+    });
+};
+
 export const submitVote = (secret, choice, minDelay = 0) => dispatch => {
     dispatch(setUserLoading());
     return pMinDelay(API.submitVote(secret, choice), minDelay).then(user => {

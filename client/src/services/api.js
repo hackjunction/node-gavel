@@ -207,6 +207,10 @@ const API = {
         return GET(`/api/annotators/init/?secret=${secret}`);
     },
 
+    setAnnotatorOnboarded: secret => {
+        return GET(`/api/annotators/onboarded/?secret=${secret}`);
+    },
+
     getNextDecision: secret => {
         return GET(`/api/annotators/decision/?secret=${secret}`);
     },

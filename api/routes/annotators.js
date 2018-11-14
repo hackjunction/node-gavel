@@ -58,6 +58,12 @@ module.exports = function(app) {
     app.get('/api/annotators/init', passport.authenticate('annotator', { session: false }), initAnnotator);
 
     /**
+     * Set an annotator as onboarded (they will no longer be shown a tutorial)
+     * -> Requires annotator secret
+     */
+    app.get('/api/annotators/onboarded', passport.authenticate('annotator', { session: false }), setOnboarded);
+
+    /**
      * Submit a vote for an annotator, based on their current next and prev projects
      * -> Requires annotator secret
      */
@@ -88,6 +94,22 @@ function initAnnotator(req, res) {
         })
         .catch(error => {
             console.log('initAnnotator', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
+}
+
+function setOnboarded(req, res) {
+    return AnnotatorController.setOnboarded(req.user._id.toString())
+        .then(annotator => {
+            return res.status(status.OK).send({
+                status: 'succes',
+                data: annotator
+            });
+        })
+        .catch(error => {
+            console.log('setOnboarded', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });

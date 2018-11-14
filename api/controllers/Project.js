@@ -128,7 +128,7 @@ const ProjectController = {
                     active: true,
                     event: annotator.event,
                     _id: {
-                        $nin: annotator.ignore
+                        $nin: _.concat(annotator.ignore, annotator.next || [])
                     },
                     track: annotator.assigned_track,
                     team: {

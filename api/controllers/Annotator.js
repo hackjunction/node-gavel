@@ -70,6 +70,10 @@ const AnnotatorController = {
         return Annotator.findByIdAndUpdate(annotatorId, { read_welcome: true }, { new: true });
     },
 
+    setOnboarded: annotatorId => {
+        return Annotator.findByIdAndUpdate(annotatorId, { onboarded: true }, { new: true });
+    },
+
     enable: annotatorId => {
         return Annotator.findByIdAndUpdate(annotatorId, { active: true }, { new: true });
     },

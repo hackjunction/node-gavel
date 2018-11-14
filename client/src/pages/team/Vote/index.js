@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Joyride from 'react-joyride';
+
 import './style.scss';
 
 import API from '../../../services/api';
@@ -21,6 +23,73 @@ const STATES = {
     VOTE_COMPARE: 'vote-compare'
 };
 const ANIMATION_TIME = 500;
+
+const JOYRIDE_STEPS_SINGLE = [
+    {
+        disableBeacon: true,
+        target: '#root',
+        content: 'Before you begin voting, let us show you a really quick tutorial on how it all works.',
+        placement: 'center'
+    },
+    {
+        disableBeacon: true,
+        target: '.Vote--Current',
+        spotlightPadding: 0,
+        content:
+            "First up, you'll be assigned a single project. Your task is to find that project, and ask them to show you a short demo of what they've created!"
+    },
+    {
+        disableBeacon: true,
+        target: '.Vote--Current .Vote--Project_location',
+        content: 'You can see the table location of the project here.'
+    },
+    {
+        disableBeacon: true,
+        target: '.Vote--Current .Vote--Project_skip',
+        content:
+            "If, for some reason, you're unable to find the project currently assigned to you, you can skip it. You'll be assigned a new project, but please don't do this unless absolutely necessary."
+    },
+    {
+        disableBeacon: true,
+        target: '#root',
+        content: "Alright, go see the demo of your first project! After you've done that, click Done to continue.",
+        placement: 'center'
+    }
+];
+
+const JOYRIDE_STEPS_COMPARE = [
+    {
+        disableBeacon: true,
+        target: '#root',
+        content: 'OK, time to compare the previous project to another one.',
+        placement: 'center'
+    },
+    {
+        disableBeacon: true,
+        target: '.Vote--Previous',
+        spotlightPadding: 0,
+        content:
+            "First, an important thing to remember: you'll always be comparing your current project to the *one you saw immediately before* it, not whichever project won your previous comparison."
+    },
+    {
+        disableBeacon: true,
+        target: '.Vote--Current',
+        spotlightPadding: 0,
+        content:
+            'As before, you can see the details of your current project here. You should find their table, and ask to see a demo of their project.'
+    },
+    {
+        disableBeacon: true,
+        target: '.Vote--Bottom',
+        content: "Once you've seen that demo, it's time to make a choice. Which project do you think was better?"
+    },
+    {
+        disableBeacon: true,
+        target: '#root',
+        content: "That's it! You can continue submitting votes until the end of the voting period. Happy voting!",
+        placement: 'center'
+    }
+];
 
 class Vote extends Component {
     constructor(props) {
@@ -151,7 +220,6 @@ class Vote extends Component {
                 previous: null,
                 viewed_all: data.viewed_all,
                 loading: false,
-                error: false,
                 animationPhase: ''
             });
         } else if (!data.previous) {
@@ -159,8 +227,23 @@ class Vote extends Component {
                 current: data.current,
                 previous: null,
                 viewed_all: false,
+                loading: false
+            });
+        } else if (this.state.previous && data.previous._id === this.state.previous._id) {
+            await this.setStateAsync({ animationPhase: 'switch-current-leave' });
+            await Utils.sleep(ANIMATION_TIME);
+            await this.setStateAsync({
+                animationPhase: 'switch-current-prepare-enter'
+            });
+            await Utils.sleep(100);
+            await this.setStateAsync({
+                current: data.current,
+                animationPhase: 'switch-current-enter'
+            });
+            await Utils.sleep(ANIMATION_TIME);
+            await this.setStateAsync({
                 loading: false,
-                error: false
+                animationPhase: ''
             });
         } else {
             await this.setStateAsync({ animationPhase: 'hide-previous' });
@@ -172,7 +255,7 @@ class Vote extends Component {
                 current: data.current,
                 animationPhase: 'add-new-current'
             });
-            await Utils.sleep(100);
+            await Utils.sleep(ANIMATION_TIME);
             await this.setStateAsync({
                 animationPhase: '',
                 loading: false
@@ -443,7 +526,9 @@ class Vote extends Component {
                             {previous ? <ProjectBlock project={previous} isCurrent={false} /> : null}
                         </div>
                         <div className="Vote--Current">
-                            {current ? <ProjectBlock project={current} isCurrent={true} /> : null}
+                            {current ? (
+                                <ProjectBlock project={current} isCurrent={true} onSkip={() => this.vote('skip')} />
+                            ) : null}
                         </div>
                     </div>
                 );
@@ -451,10 +536,54 @@ class Vote extends Component {
         }
     }
 
+    renderTutorial(componentState) {
+        //Show tutorials if user has not yet been onboarded.
+
+        const { user, setOnboarded } = this.props;
+        const { loading, animationPhase, previous } = this.state;
+
+        if (user.onboarded) {
+            return null;
+        }
+
+        if (loading) {
+            return null;
+        }
+
+        if (animationPhase && animationPhase.length > 0) {
+            return null;
+        }
+
+        if (componentState !== STATES.VOTE_SINGLE && componentState !== STATES.VOTE_COMPARE) {
+            return null;
+        }
+
+        const isSingle = !previous;
+
+        return (
+            <Joyride
+                steps={isSingle ? JOYRIDE_STEPS_SINGLE : JOYRIDE_STEPS_COMPARE}
+                run={true}
+                continuous={true}
+                showProgress={true}
+                disableOverlayClose={true}
+                disableCloseOnEsc={true}
+                spotlightClicks={false}
+                floaterProps={{ disableAnimation: true }}
+                callback={data => {
+                    if (data.type === 'tour:end' && !isSingle) {
+                        setOnboarded(user.secret);
+                    }
+                }}
+            />
+        );
+    }
+
     render() {
         const componentState = this.getComponentState();
         return (
             <div className="Vote--Wrapper">
+                {this.renderTutorial(componentState)}
                 {this.renderTop(componentState)}
                 {this.renderMid(componentState)}
                 {this.renderBottom(componentState)}
@@ -474,6 +603,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     initAnnotator: secret => dispatch(UserActions.initAnnotator(secret)),
+    setOnboarded: secret => dispatch(UserActions.setOnboarded(secret)),
     submitVote: (secret, choice) => dispatch(UserActions.submitVote(secret, choice, 1000)),
     updateUser: secret => dispatch(UserActions.fetchUser(secret)),
     updateEvent: secret => dispatch(UserActions.fetchEvent(secret))

@@ -21,6 +21,10 @@ const AnnotatorSchema = new Schema({
         type: Boolean,
         default: false
     },
+    onboarded: {
+        type: Boolean,
+        default: false
+    },
     secret: {
         type: String,
         required: true
