@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-
-import Banner from '../../../components/Banner';
-import BannerManager from '../../../components/BannerManager';
+import './style.scss';
 
 class Home extends Component {
     addBanner() {
@@ -17,10 +15,19 @@ class Home extends Component {
 
     render() {
         return (
-            <div>
-                <h1 onClick={() => this.addBanner()}>Add</h1>
-                <BannerManager ref={ref => (this.bannerManager = ref)} />
-                <h1>Test</h1>
+            <div className="Home">
+                <img
+                    alt="Junction logo"
+                    className="Home--logo"
+                    src={require('../../../assets/logo_emblem_white.png')}
+                />
+                <h1 className="Home--title">Welcome to the Junction project platform</h1>
+                <p className="Home--body">
+                    When participating at a Junction event, this is where you'll submit your project, and participate in
+                    peer-reviewing. If you haven't already received your personal login link, please register your team
+                    in the registration platform. If you've already done that, you can access your team dashboard via
+                    the registration platform, or by opening your personal login link that we sent you by email.
+                </p>
             </div>
         );
     }

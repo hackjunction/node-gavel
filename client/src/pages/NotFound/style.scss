@@ -1,18 +1,13 @@
-.Home {
+.NotFound {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.Home--logo {
-    width: 80%;
-    max-width: 300px;
-}
-
-.Home--title {
+.NotFound--title {
     text-align: center;
 }
 
-.Home--body {
+.NotFound--body {
     text-align: center;
 }
