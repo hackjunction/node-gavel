@@ -136,6 +136,8 @@ export default function reducer(state = initialState, action) {
             const eventId = action.payload.eventId;
 
             if (state.projects.hasOwnProperty(eventId)) {
+                console.log('SET FOOFOO', action.payload.projects);
+                console.log('STATE', state);
                 return {
                     ...state,
                     projects: {
@@ -149,6 +151,8 @@ export default function reducer(state = initialState, action) {
                     }
                 };
             } else {
+                console.log('SET BOOBOO', action.payload.projects);
+                console.log('STATE', state);
                 return {
                     ...state,
                     projects: {

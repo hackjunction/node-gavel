@@ -1,0 +1,97 @@
+@import '../../../styles/base.scss';
+
+.EventDetail {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.EventDetail--Tabs {
+    display: flex;
+    flex-direction: row;
+
+    @include up-to-tablet {
+        flex-direction: column;
+    }
+}
+
+.EventDetail--Tab {
+    padding: $base-margin;
+    margin: 0 1px;
+    background: rgba($snow, 0.05);
+    cursor: pointer;
+
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid transparent;
+
+    &.active {
+        border-bottom-color: $turquoise;
+        .EventDetail--Tab_text {
+            opacity: 1;
+        }
+
+        @include up-to-tablet {
+            background: $turquoise;
+            .EventDetail--Tab_text {
+                color: $black;
+            }
+        }
+    }
+}
+
+.EventDetail--Tab_text {
+    color: $snow;
+    font-size: $fs-base;
+    opacity: 0.75;
+}
+
+.EventDetail--Content {
+    margin-top: $base-margin;
+    margin-bottom: $base-margin;
+}
+
+.EventDetail--Loading {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+
+    &_title {
+        text-align: center;
+    }
+
+    &_subtitle {
+        text-align: center;
+    }
+
+    &_spinner {
+        color: $turquoise;
+        margin-bottom: 30px;
+    }
+}
+
+.EventDetail--Error {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+
+    &_title {
+        text-align: center;
+    }
+
+    &_subtitle {
+        text-align: center;
+    }
+
+    &_icon {
+        color: $warning;
+        margin-bottom: 30px;
+    }
+}
