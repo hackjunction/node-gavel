@@ -34,19 +34,6 @@ class AdminEventDetail extends Component {
         updateEvent(adminToken, eventId);
     }
 
-    getAnnotators() {
-        const eventId = this.props.match.params.id;
-        if (this.props.annotators.hasOwnProperty(eventId)) {
-            return this.props.annotators[eventId];
-        } else {
-            return {
-                data: [],
-                loading: false,
-                error: false
-            };
-        }
-    }
-
     renderError(title, subtitle) {
         return (
             <div className="EventDetail--Error">
