@@ -111,3 +111,91 @@ export const fetchProjectsForEvent = (token, eventId) => dispatch => {
             dispatch(setProjectsErrorForEvent(eventId));
         });
 };
+
+export const enableProject = (token, project, eventId) => dispatch => {
+    dispatch({
+        type: ActionTypes.UPDATE_PROJECT_FOR_EVENT,
+        payload: {
+            project: {
+                ...project,
+                active: true
+            },
+            eventId
+        }
+    });
+    return API.adminEnableProject(token, project._id).then(result => {
+        dispatch({
+            type: ActionTypes.UPDATE_PROJECT_FOR_EVENT,
+            payload: {
+                project: result,
+                eventId
+            }
+        });
+    });
+};
+
+export const disableProject = (token, project, eventId) => dispatch => {
+    dispatch({
+        type: ActionTypes.UPDATE_PROJECT_FOR_EVENT,
+        payload: {
+            project: {
+                ...project,
+                active: false
+            },
+            eventId
+        }
+    });
+    return API.adminDisableProject(token, project._id).then(result => {
+        dispatch({
+            type: ActionTypes.UPDATE_PROJECT_FOR_EVENT,
+            payload: {
+                project: result,
+                eventId
+            }
+        });
+    });
+};
+
+export const prioritiseProject = (token, project, eventId) => dispatch => {
+    dispatch({
+        type: ActionTypes.UPDATE_PROJECT_FOR_EVENT,
+        payload: {
+            project: {
+                ...project,
+                prioritized: true
+            },
+            eventId
+        }
+    });
+    return API.adminPrioritizeProject(token, project._id).then(result => {
+        dispatch({
+            type: ActionTypes.UPDATE_PROJECT_FOR_EVENT,
+            payload: {
+                project: result,
+                eventId
+            }
+        });
+    });
+};
+
+export const deprioritiseProject = (token, project, eventId) => dispatch => {
+    dispatch({
+        type: ActionTypes.UPDATE_PROJECT_FOR_EVENT,
+        payload: {
+            project: {
+                ...project,
+                prioritized: false
+            },
+            eventId
+        }
+    });
+    return API.adminDeprioritizeProject(token, project._id).then(result => {
+        dispatch({
+            type: ActionTypes.UPDATE_PROJECT_FOR_EVENT,
+            payload: {
+                project: result,
+                eventId
+            }
+        });
+    });
+};

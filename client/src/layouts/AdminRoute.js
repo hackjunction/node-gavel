@@ -22,7 +22,7 @@ class AdminRoute extends Component {
         if (this.props.isAuthenticated) {
             return <DefaultLayout {...this.props} />;
         }
-        return <Redirect to={{ pathname: '/admin/login', state: { onSuccess: this.props.path } }} />;
+        return <Redirect to={{ pathname: '/admin/login', state: { onSuccess: '/admin' } }} />;
     }
 }
 

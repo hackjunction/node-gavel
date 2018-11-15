@@ -66,12 +66,13 @@ class AdminEventDetail extends Component {
         } = this.props;
 
         const { eventId } = this.state;
+        const event = getEvent(eventId);
 
         if (isProjectsError(eventId) || isAnnotatorsError(eventId)) {
             return this.renderError('Unable to get event data', 'Please reload the page to try again');
         }
 
-        if (isProjectsLoading(eventId) || isAnnotatorsLoading(eventId)) {
+        if (!event || isProjectsLoading(eventId) || isAnnotatorsLoading(eventId)) {
             return this.renderLoading('Loading event data', 'Hold on...');
         }
 
@@ -79,7 +80,7 @@ class AdminEventDetail extends Component {
             <OverviewTab
                 projects={getProjects(eventId)}
                 annotators={getAnnotators(eventId)}
-                event={getEvent(eventId)}
+                event={event}
                 loading={isProjectsLoading(eventId) || isAnnotatorsLoading(eventId)}
                 error={isProjectsError(eventId) || isAnnotatorsError(eventId)}
             />
@@ -103,6 +104,7 @@ class AdminEventDetail extends Component {
                 projects={getProjects(eventId)}
                 loading={isProjectsLoading(eventId)}
                 error={isProjectsError(eventId)}
+                eventId={eventId}
             />
         );
     }
@@ -142,8 +144,16 @@ class AdminEventDetail extends Component {
     }
 
     render() {
+        const { eventId } = this.state;
+        const { getEvent } = this.props;
+
+        const event = getEvent(eventId);
+        const eventName = event ? event.name : '';
         return (
             <div className="EventDetail">
+                <div className="EventDetail--Header">
+                    <h1 className="EventDetail--Header_title">{eventName}</h1>
+                </div>
                 <div className="EventDetail--Tabs">
                     <div
                         className={this.state.activeTab === 0 ? 'EventDetail--Tab active' : 'EventDetail--Tab'}

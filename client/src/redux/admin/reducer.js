@@ -136,8 +136,6 @@ export default function reducer(state = initialState, action) {
             const eventId = action.payload.eventId;
 
             if (state.projects.hasOwnProperty(eventId)) {
-                console.log('SET FOOFOO', action.payload.projects);
-                console.log('STATE', state);
                 return {
                     ...state,
                     projects: {
@@ -151,8 +149,6 @@ export default function reducer(state = initialState, action) {
                     }
                 };
             } else {
-                console.log('SET BOOBOO', action.payload.projects);
-                console.log('STATE', state);
                 return {
                     ...state,
                     projects: {
@@ -223,6 +219,30 @@ export default function reducer(state = initialState, action) {
                     }
                 };
             }
+        }
+        case ActionTypes.UPDATE_PROJECT_FOR_EVENT: {
+            const { project, eventId } = action.payload;
+
+            if (state.projects.hasOwnProperty(eventId)) {
+                return {
+                    ...state,
+                    projects: {
+                        ...state.projects,
+                        [eventId]: {
+                            ...state.projects[eventId],
+                            data: _.map(state.projects[eventId].data, p => {
+                                if (p._id === project._id) {
+                                    return project;
+                                }
+                                return p;
+                            })
+                        }
+                    }
+                };
+            }
+
+            //If state does not have projects for this event, doesn't make sense to update...
+            return state;
         }
         default:
             return state;

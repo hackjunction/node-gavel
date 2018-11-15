@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment-timezone';
 
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
@@ -28,24 +29,33 @@ class AnnotatorsTab extends Component {
                         },
                         {
                             Header: 'Track',
-                            accessor: 'assigned_track'
+                            id: 'track',
+                            accessor: d => d.assigned_track || 'None',
+                            className: 'center'
                         },
                         {
                             Header: 'Updated',
-                            accessor: 'updated'
+                            id: 'updated',
+                            accessor: d => (d.updated ? moment(d.updated).fromNow() : 'N/A'),
+                            className: 'center'
                         },
                         {
                             Header: 'Alpha',
-                            accessor: 'alpha'
+                            id: 'alpha',
+                            accessor: d => Math.round(10000 * d.alpha) / 10000,
+                            className: 'center'
                         },
                         {
                             Header: 'Beta',
-                            accessor: 'beta'
+                            id: 'beta',
+                            accessor: d => Math.round(10000 * d.beta) / 10000,
+                            className: 'center'
                         },
                         {
                             Header: 'Seen',
                             id: 'seen',
-                            accessor: d => d.ignore.length
+                            accessor: d => d.ignore.length,
+                            className: 'center'
                         }
                     ]}
                     defaultPageSize={100}

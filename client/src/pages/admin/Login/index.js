@@ -44,9 +44,11 @@ class AdminLogin extends Component {
         if (this.props.isAuthenticated) {
             if (this.props.location && this.props.location.state) {
                 if (this.props.location.state.hasOwnProperty('onSuccess')) {
+                    console.log('REDIRECT TO', this.props.location.state.onSuccess);
                     return <Redirect to={{ pathname: this.props.location.state.onSuccess }} />;
                 }
             }
+            console.log('REDIRECT TO DEFAULT');
             return <Redirect to={{ pathname: '/admin' }} />;
         }
 

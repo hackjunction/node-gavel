@@ -6,6 +6,14 @@
     align-items: stretch;
 }
 
+.EventDetail--Header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: $base-margin;
+}
+
 .EventDetail--Tabs {
     display: flex;
     flex-direction: row;

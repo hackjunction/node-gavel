@@ -1,3 +1,5 @@
+@import '../../../../styles/base.scss';
+
 .ProjectsTab--Track {
     margin-top: 30px;
     display: flex;
@@ -8,6 +10,32 @@
 .ProjectsTab--Track_header {
     display: flex;
     flex: 1;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+}
+
+.ProjectsTab--Track_header-left {
+    display: flex;
+    flex: 2;
+    flex-direction: column;
+}
+
+.ProjectsTab--Track_header-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba($snow, 0.2);
+    padding-left: $base-margin;
+    padding-right: $base-margin;
+
+    &:focus {
+        background: rgba($snow, 0.05);
+        outline: none;
+    }
+}
+
+.ProjectsTable--centered-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
