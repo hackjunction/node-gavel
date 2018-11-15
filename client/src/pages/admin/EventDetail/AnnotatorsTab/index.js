@@ -1,23 +1,75 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment-timezone';
+import FuzzySearch from 'fuzzy-search';
+import Switch from 'react-switch';
+import { connect } from 'react-redux';
 
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import './style.scss';
 
+import * as AdminActions from '../../../../redux/admin/actions';
+import * as AdminSelectors from '../../../../redux/admin/selectors';
+
 class AnnotatorsTab extends Component {
     static propTypes = {
         annotators: PropTypes.array,
         loading: PropTypes.bool,
-        error: PropTypes.bool
+        error: PropTypes.bool,
+        onRefresh: PropTypes.func,
+        onToggleActive: PropTypes.func
     };
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            filter: ''
+        };
+    }
+
+    filter(annotators) {
+        if (!this.state.filter) {
+            return annotators;
+        }
+
+        const searcher = new FuzzySearch(annotators, ['name', 'email'], {
+            caseSensitive: false
+        });
+
+        return searcher.search(this.state.filter);
+    }
+
+    onToggleActive(annotator) {
+        const { adminToken, enableAnnotator, disableAnnotator, eventId } = this.props;
+        if (annotator.active) {
+            disableAnnotator(adminToken, annotator, eventId);
+        } else {
+            enableAnnotator(adminToken, annotator, eventId);
+        }
+    }
 
     render() {
         return (
             <React.Fragment>
+                <div className={`EventDetail--TabHeader ${this.props.loading ? ' loading' : ' '}`}>
+                    <input
+                        className="EventDetail--input"
+                        type="text"
+                        placeholder="Search all annotators"
+                        onChange={e => this.setState({ filter: e.target.value })}
+                    />
+                    <div className="EventDetail--TabActions">
+                        <div className="EventDetail--TabAction" onClick={this.props.onRefresh}>
+                            <i className="EventDetail--TabAction_icon fas fa-sync-alt" />
+                            <span className="EventDetail--TabAction_name">Refresh</span>
+                        </div>
+                    </div>
+                    <i className="EventDetail--TabHeader_spinner fas fa-spinner fa-spin" />
+                </div>
                 <ReactTable
-                    data={this.props.annotators}
+                    data={this.filter(this.props.annotators)}
                     columns={[
                         {
                             Header: 'Name',
@@ -40,13 +92,13 @@ class AnnotatorsTab extends Component {
                             className: 'center'
                         },
                         {
-                            Header: 'Alpha',
+                            Header: d => <div>&Alpha;</div>,
                             id: 'alpha',
                             accessor: d => Math.round(10000 * d.alpha) / 10000,
                             className: 'center'
                         },
                         {
-                            Header: 'Beta',
+                            Header: d => <div>&Beta;</div>,
                             id: 'beta',
                             accessor: d => Math.round(10000 * d.beta) / 10000,
                             className: 'center'
@@ -55,6 +107,23 @@ class AnnotatorsTab extends Component {
                             Header: 'Seen',
                             id: 'seen',
                             accessor: d => d.ignore.length,
+                            className: 'center'
+                        },
+                        {
+                            Header: 'Active',
+                            accessor: 'active',
+                            Cell: row => (
+                                <Switch
+                                    onChange={() => this.onToggleActive(row.original)}
+                                    checked={row.original.active}
+                                    checkedIcon={false}
+                                    uncheckedIcon={false}
+                                    height={20}
+                                    width={40}
+                                    onColor={'#00ff99'}
+                                    offColor={'#cc0000'}
+                                />
+                            ),
                             className: 'center'
                         }
                     ]}
@@ -68,4 +137,18 @@ class AnnotatorsTab extends Component {
     }
 }
 
-export default AnnotatorsTab;
+const mapStateToProps = state => ({
+    adminToken: AdminSelectors.getToken(state)
+});
+
+const mapDispatchToProps = dispatch => ({
+    enableAnnotator: (token, annotatorId, eventId) =>
+        dispatch(AdminActions.enableAnnotator(token, annotatorId, eventId)),
+    disableAnnotator: (token, annotatorId, eventId) =>
+        dispatch(AdminActions.disableAnnotator(token, annotatorId, eventId))
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AnnotatorsTab);

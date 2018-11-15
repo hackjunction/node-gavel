@@ -144,7 +144,7 @@ const API = {
     },
 
     adminEnableAnnotator: (token, annotatorId) => {
-        return GET(`/api/annotators/enable/${annotatorId}/?=token=${token}`);
+        return GET(`/api/annotators/enable/${annotatorId}/?token=${token}`);
     },
 
     adminCreateAnnotator: (token, name, email, eventId) => {

@@ -88,44 +88,43 @@ class AdminEventDetail extends Component {
     }
 
     renderResults() {
-        const { getProjects, isProjectsLoading, isProjectsError } = this.props;
+        const { getProjects, isProjectsLoading, isProjectsError, getEvent, updateProjects, adminToken } = this.props;
         const { eventId } = this.state;
+
+        const event = getEvent(eventId);
 
         if (isProjectsError(eventId)) {
             return this.renderError('Unable to get projects', 'Please reload the page to try again');
         }
 
-        if (isProjectsLoading(eventId)) {
-            return this.renderLoading('Getting projects', 'Hold on...');
-        }
-
+        const loading = isProjectsLoading(eventId) || !event;
         return (
             <ProjectsTab
                 projects={getProjects(eventId)}
-                loading={isProjectsLoading(eventId)}
-                error={isProjectsError(eventId)}
+                loading={loading}
                 eventId={eventId}
+                event={event}
+                onRefresh={() => updateProjects(adminToken, eventId, 1000)}
             />
         );
     }
 
     renderAnnotators() {
-        const { getAnnotators, isAnnotatorsLoading, isAnnotatorsError } = this.props;
+        const { getAnnotators, isAnnotatorsLoading, isAnnotatorsError, updateAnnotators, adminToken } = this.props;
         const { eventId } = this.state;
 
         if (isAnnotatorsError(eventId)) {
             return this.renderError('Unable to get annotators', 'Please reload the page to try again');
         }
 
-        if (isAnnotatorsLoading(eventId)) {
-            return this.renderLoading('Getting annotators', 'Hold on...');
-        }
+        const loading = isAnnotatorsLoading(eventId);
 
         return (
             <AnnotatorsTab
                 annotators={getAnnotators(eventId)}
-                loading={isAnnotatorsLoading(eventId)}
-                error={isAnnotatorsError(eventId)}
+                loading={loading}
+                eventId={eventId}
+                onRefresh={() => updateAnnotators(adminToken, eventId, 1000)}
             />
         );
     }
@@ -192,8 +191,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    updateAnnotators: (token, eventId) => dispatch(AdminActions.fetchAnnotatorsForEvent(token, eventId)),
-    updateProjects: (token, eventId) => dispatch(AdminActions.fetchProjectsForEvent(token, eventId)),
+    updateAnnotators: (token, eventId, minDelay = 0) =>
+        dispatch(AdminActions.fetchAnnotatorsForEvent(token, eventId, minDelay)),
+    updateProjects: (token, eventId, minDelay = 0) =>
+        dispatch(AdminActions.fetchProjectsForEvent(token, eventId, minDelay)),
     updateEvent: (token, eventId) => dispatch(AdminActions.fetchEvent(token, eventId))
 });
 

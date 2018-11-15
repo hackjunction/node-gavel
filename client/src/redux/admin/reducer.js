@@ -75,7 +75,7 @@ export default function reducer(state = initialState, action) {
             }
         }
         case ActionTypes.SET_ANNOTATORS_LOADING_FOR_EVENT: {
-            const eventId = action.payload.eventId;
+            const eventId = action.payload;
 
             if (state.annotators.hasOwnProperty(eventId)) {
                 return {
@@ -104,7 +104,7 @@ export default function reducer(state = initialState, action) {
             }
         }
         case ActionTypes.SET_ANNOTATORS_ERROR_FOR_EVENT: {
-            const eventId = action.payload.eventId;
+            const eventId = action.payload;
 
             if (state.annotators.hasOwnProperty(eventId)) {
                 return {
@@ -163,7 +163,7 @@ export default function reducer(state = initialState, action) {
             }
         }
         case ActionTypes.SET_PROJECTS_LOADING_FOR_EVENT: {
-            const eventId = action.payload.eventId;
+            const eventId = action.payload;
 
             if (state.projects.hasOwnProperty(eventId)) {
                 return {
@@ -192,7 +192,7 @@ export default function reducer(state = initialState, action) {
             }
         }
         case ActionTypes.SET_PROJECTS_ERROR_FOR_EVENT: {
-            const eventId = action.payload.eventId;
+            const eventId = action.payload;
 
             if (state.projects.hasOwnProperty(eventId)) {
                 return {
@@ -242,6 +242,30 @@ export default function reducer(state = initialState, action) {
             }
 
             //If state does not have projects for this event, doesn't make sense to update...
+            return state;
+        }
+        case ActionTypes.UPDATE_ANNOTATOR_FOR_EVENT: {
+            const { annotator, eventId } = action.payload;
+
+            if (state.annotators.hasOwnProperty(eventId)) {
+                return {
+                    ...state,
+                    annotators: {
+                        ...state.annotators,
+                        [eventId]: {
+                            ...state.annotators[eventId],
+                            data: _.map(state.annotators[eventId].data, a => {
+                                if (a._id === annotator._id) {
+                                    return annotator;
+                                }
+                                return a;
+                            })
+                        }
+                    }
+                };
+            }
+
+            //If state does not have annotators for this event, doesn't make sense to update...
             return state;
         }
         default:

@@ -1,41 +1,42 @@
 @import '../../../../styles/base.scss';
 
+.ProjectsTab--Header {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 50px;
+}
+
 .ProjectsTab--Track {
-    margin-top: 30px;
+    margin-top: $base-margin;
     display: flex;
     flex-direction: column;
     align-items: stretch;
 }
 
 .ProjectsTab--Track_header {
+    background: rgba($snow, 0.05);
+    padding: $base-margin;
     display: flex;
     flex: 1;
     flex-direction: row;
     align-items: center;
+
+    &-title {
+        color: $turquoise;
+        margin: 0;
+    }
+
+    &-subtitle {
+        margin: 0;
+        margin-left: $base-margin;
+    }
 }
 
 .ProjectsTab--Track_header-left {
     display: flex;
-    flex: 2;
-    flex-direction: column;
-}
-
-.ProjectsTab--Track_header-input {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba($snow, 0.2);
-    padding-left: $base-margin;
-    padding-right: $base-margin;
-
-    &:focus {
-        background: rgba($snow, 0.05);
-        outline: none;
-    }
-}
-
-.ProjectsTable--centered-item {
-    display: flex;
+    flex: 1;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
 }

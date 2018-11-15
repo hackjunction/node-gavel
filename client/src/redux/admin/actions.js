@@ -1,5 +1,6 @@
 import * as ActionTypes from './actionTypes';
 import API from '../../services/api';
+import pMinDelay from 'p-min-delay';
 
 export const setToken = token => dispatch => {
     dispatch({
@@ -64,9 +65,9 @@ export const setAnnotatorsErrorForEvent = eventId => dispatch => {
     });
 };
 
-export const fetchAnnotatorsForEvent = (token, eventId) => async dispatch => {
+export const fetchAnnotatorsForEvent = (token, eventId, minDelay = 0) => async dispatch => {
     dispatch(setAnnotatorsLoadingForEvent(eventId));
-    return API.adminGetAnnotatorsForEvent(token, eventId)
+    return pMinDelay(API.adminGetAnnotatorsForEvent(token, eventId), minDelay)
         .then(annotators => {
             dispatch(setAnnotatorsForEvent(eventId, annotators));
         })
@@ -100,9 +101,9 @@ export const setProjectsErrorForEvent = eventId => dispatch => {
     });
 };
 
-export const fetchProjectsForEvent = (token, eventId) => dispatch => {
-    dispatch(setProjectsLoadingForEvent(token, eventId));
-    return API.adminGetProjectsForEvent(token, eventId)
+export const fetchProjectsForEvent = (token, eventId, minDelay = 0) => dispatch => {
+    dispatch(setProjectsLoadingForEvent(eventId));
+    return pMinDelay(API.adminGetProjectsForEvent(token, eventId), minDelay)
         .then(projects => {
             dispatch(setProjectsForEvent(eventId, projects));
         })
@@ -110,6 +111,50 @@ export const fetchProjectsForEvent = (token, eventId) => dispatch => {
             console.log('fetchProjectsForEvent', error);
             dispatch(setProjectsErrorForEvent(eventId));
         });
+};
+
+export const enableAnnotator = (token, annotator, eventId) => dispatch => {
+    dispatch({
+        type: ActionTypes.UPDATE_ANNOTATOR_FOR_EVENT,
+        payload: {
+            annotator: {
+                ...annotator,
+                active: true
+            },
+            eventId
+        }
+    });
+    return API.adminEnableAnnotator(token, annotator._id).then(result => {
+        dispatch({
+            type: ActionTypes.UPDATE_ANNOTATOR_FOR_EVENT,
+            payload: {
+                annotator: result,
+                eventId
+            }
+        });
+    });
+};
+
+export const disableAnnotator = (token, annotator, eventId) => dispatch => {
+    dispatch({
+        type: ActionTypes.UPDATE_ANNOTATOR_FOR_EVENT,
+        payload: {
+            annotator: {
+                ...annotator,
+                active: false
+            },
+            eventId
+        }
+    });
+    return API.adminDisableAnnotator(token, annotator._id).then(result => {
+        dispatch({
+            type: ActionTypes.UPDATE_ANNOTATOR_FOR_EVENT,
+            payload: {
+                annotator: result,
+                eventId
+            }
+        });
+    });
 };
 
 export const enableProject = (token, project, eventId) => dispatch => {

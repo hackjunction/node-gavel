@@ -103,3 +103,73 @@
         margin-bottom: 30px;
     }
 }
+
+.EventDetail--TabHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 50px 0;
+
+    &.loading {
+        .EventDetail--TabHeader_spinner {
+            opacity: 1;
+        }
+    }
+}
+
+.EventDetail--TabHeader_spinner {
+    color: $turquoise;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.EventDetail--input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba($snow, 0.2);
+    padding-left: $base-margin;
+    padding-right: $base-margin;
+    text-align: center;
+    transition: all 0.3s ease;
+
+    &:focus {
+        border-bottom-color: $turquoise;
+        outline: none;
+    }
+
+    &.hide {
+        opacity: 0;
+    }
+}
+
+.EventDetail--TabActions {
+    display: flex;
+    flex-direction: row;
+}
+
+.EventDetail--TabAction {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    margin: 0 $double-margin;
+
+    &_icon {
+        color: $snow;
+    }
+
+    &_name {
+        color: $snow;
+        margin-left: $base-margin;
+        user-select: none;
+    }
+
+    &:hover {
+        .EventDetail--TabAction_name,
+        .EventDetail--TabAction_icon {
+            color: $spring-bud;
+        }
+    }
+}

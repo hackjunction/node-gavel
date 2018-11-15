@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import FuzzySearch from 'fuzzy-search';
 
 import * as AdminActions from '../../../../redux/admin/actions';
 import * as AdminSelectors from '../../../../redux/admin/selectors';
@@ -15,12 +16,17 @@ class ProjectsTab extends Component {
     static propTypes = {
         projects: PropTypes.array,
         eventId: PropTypes.string,
+        event: PropTypes.object,
         loading: PropTypes.bool,
         error: PropTypes.bool
     };
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            filter: ''
+        };
 
         this.toggleActive = this.toggleActive.bind(this);
         this.togglePrioritised = this.togglePrioritised.bind(this);
@@ -44,9 +50,29 @@ class ProjectsTab extends Component {
         }
     }
 
+    filter(projects) {
+        if (!this.state.filter) {
+            return projects;
+        }
+
+        const searcher = new FuzzySearch(projects, ['name'], {
+            caseSensitive: false
+        });
+
+        return searcher.search(this.state.filter);
+    }
+
     renderTables() {
-        const { projects } = this.props;
-        const grouped = _.groupBy(projects, 'track');
+        const { event } = this.props;
+        const projects = this.filter(this.props.projects);
+        const grouped = {};
+
+        _.each(event.tracks, track => (grouped[track] = []));
+
+        _.each(projects, project => {
+            grouped[project.track].push(project);
+        });
+
         let tracks = [];
         _.forOwn(grouped, (projects, trackName) => {
             tracks.push({
@@ -64,13 +90,33 @@ class ProjectsTab extends Component {
                     projects={track.projects}
                     onToggleActive={this.toggleActive}
                     onTogglePrioritised={this.togglePrioritised}
+                    hideFilter={this.state.filter.length > 0}
                 />
             );
         });
     }
 
     render() {
-        return <React.Fragment>{this.renderTables()}</React.Fragment>;
+        return (
+            <React.Fragment>
+                <div className={`EventDetail--TabHeader ${this.props.loading ? ' loading' : ' '}`}>
+                    <input
+                        className="EventDetail--input"
+                        type="text"
+                        placeholder="Search all projects"
+                        onChange={e => this.setState({ filter: e.target.value })}
+                    />
+                    <div className="EventDetail--TabActions">
+                        <div className="EventDetail--TabAction" onClick={this.props.onRefresh}>
+                            <i className="EventDetail--TabAction_icon fas fa-sync-alt" />
+                            <span className="EventDetail--TabAction_name">Refresh</span>
+                        </div>
+                    </div>
+                    <i className="EventDetail--TabHeader_spinner fas fa-spinner fa-spin" />
+                </div>
+                {this.renderTables()}
+            </React.Fragment>
+        );
     }
 }
 
