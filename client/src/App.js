@@ -16,6 +16,7 @@ import HomePage from './pages/public/Home';
 import AdminLogin from './pages/admin/Login';
 import AdminEventList from './pages/admin/EventList';
 import AdminCreateEvent from './pages/admin/CreateEvent';
+import AdminEventDetail from './pages/admin/EventDetail';
 
 import TeamDashboard from './pages/team/Dashboard';
 import Vote from './pages/team/Vote';
@@ -58,7 +59,7 @@ class App extends Component {
                 <AdminRoute path="/admin/edit/:id" component={AdminCreateEvent} />
 
                 {/* TODO: Admin route for viewing results of event by id */}
-                <AdminRoute path="/admin/event/:id" component={AdminPanel} />
+                <AdminRoute path="/admin/event/:id" component={AdminEventDetail} />
 
                 {/* Old routes */}
                 <Route exact path="/old/admin" component={AdminPanel} />
