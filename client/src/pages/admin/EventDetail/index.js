@@ -81,6 +81,7 @@ class AdminEventDetail extends Component {
                 projects={getProjects(eventId)}
                 annotators={getAnnotators(eventId)}
                 event={event}
+                eventId={eventId}
                 loading={isProjectsLoading(eventId) || isAnnotatorsLoading(eventId)}
                 error={isProjectsError(eventId) || isAnnotatorsError(eventId)}
             />

@@ -244,3 +244,14 @@ export const deprioritiseProject = (token, project, eventId) => dispatch => {
         });
     });
 };
+
+export const extendSubmissionDeadline = (token, eventId) => dispatch => {
+    return API.adminExtendSubmissionDeadline(token, eventId).then(event => {
+        dispatch({
+            type: ActionTypes.SET_EVENT,
+            payload: event
+        });
+
+        return event;
+    });
+};

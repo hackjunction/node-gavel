@@ -1,3 +1,4 @@
+const moment = require('moment-timezone');
 const { Event, validate } = require('../models/Event');
 
 const EventController = {
@@ -8,6 +9,22 @@ const EventController = {
             } else {
                 return Event.create(validated);
             }
+        });
+    },
+
+    extendSubmissionDeadline: eventId => {
+        return Event.findById(eventId).then(event => {
+            if (!event) {
+                return Promise.reject('No event found with _id ' + eventId);
+            }
+
+            const deadline = moment(event.submissionDeadline)
+                .tz(event.timezone)
+                .add(15, 'minutes')
+                .toDate();
+
+            event.submissionDeadline = deadline;
+            return event.save();
         });
     },
 

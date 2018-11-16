@@ -151,6 +151,10 @@ const API = {
         return POST(`/api/annotators/`, { token, name, email, eventId });
     },
 
+    adminExtendSubmissionDeadline: (token, eventId) => {
+        return GET(`/api/events/extend/${eventId}/?token=${token}`);
+    },
+
     /* Public routes */
 
     getEventWithCode: code => {

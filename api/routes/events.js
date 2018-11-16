@@ -22,6 +22,16 @@ module.exports = function(app) {
     app.get('/api/events/:eventId', passport.authenticate('admin', { session: false }), getEventWithId);
 
     /**
+     * Extend submission deadline by 15 minutes
+     * -> Requires admin token
+     */
+    app.get(
+        '/api/events/extend/:eventId',
+        passport.authenticate('admin', { session: false }),
+        extendSubmissionDeadline
+    );
+
+    /**
      * Get an event with the secret code
      * -> No auth required
      */
@@ -86,6 +96,22 @@ function getEventWithCode(req, res) {
         })
         .catch(error => {
             console.log('getEventWithCode', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
+}
+
+function extendSubmissionDeadline(req, res) {
+    EventController.extendSubmissionDeadline(req.params.eventId)
+        .then(data => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data
+            });
+        })
+        .catch(error => {
+            console.log('extendSubmissionDeadline', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });
