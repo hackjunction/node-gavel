@@ -64,9 +64,7 @@ class Login extends Component {
                 <div className="Login--wrapper">
                     <h2>Invalid link</h2>
                     <p>It seems like this login link is invalid</p>
-                    <p>
-                        If your team hasn't yet registered, you can create a team <a href="/teams/create">here</a>.
-                    </p>
+                    <p>If your team hasn't yet registered, you should do so via the registration platform.</p>
                 </div>
             );
         }

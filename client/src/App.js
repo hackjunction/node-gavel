@@ -5,9 +5,7 @@ import DefaultLayout from './layouts/DefaultLayout';
 import AdminRoute from './layouts/AdminRoute';
 import AnnotatorRoute from './layouts/AnnotatorRoute';
 
-import AdminPanel from './pages/AdminPanel';
 import NotFound from './pages/NotFound';
-import Test from './pages/Test';
 
 import CreateTeam from './pages/public/CreateTeam';
 import Login from './pages/public/Login';

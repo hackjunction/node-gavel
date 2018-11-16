@@ -185,6 +185,9 @@ class TeamDashboard extends Component {
     render() {
         return (
             <div>
+                <div className="TeamDashboard--Header">
+                    <h1 className="TeamDashboard--Header_title">{this.props.event ? this.props.event.name : ''}</h1>
+                </div>
                 <BannerManager ref={ref => (this.bannerManager = ref)} banners={this.getBanners()} />
                 <TabView
                     tabs={[

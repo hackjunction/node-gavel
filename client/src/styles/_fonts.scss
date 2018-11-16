@@ -11,6 +11,7 @@ $fs-secondary: 13px;
 .text-title {
     font-size: $fs-title;
     font-family: $font-title;
+    text-transform: uppercase;
 }
 
 %text-default,

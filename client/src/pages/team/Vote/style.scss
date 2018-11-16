@@ -41,6 +41,7 @@ $animation-time: 0.5s;
     justify-content: flex-start;
     align-items: stretch;
     overflow: hidden;
+    position: relative;
 
     .Vote--Message {
         flex: 1;

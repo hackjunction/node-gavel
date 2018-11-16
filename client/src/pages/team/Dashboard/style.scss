@@ -1,5 +1,17 @@
 @import '../../../styles/base.scss';
 
+.TeamDashboard--Header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.TeamDashboard--Header_title {
+    text-align: center;
+}
+
 .TeamDashboard--team-member {
     display: flex;
     flex-direction: row;
