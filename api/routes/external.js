@@ -31,7 +31,7 @@ module.exports = function(app) {
     );
 
     /**
-     * Add a member to a team
+     * Remove a member from a team
      * -> Requires event API Key
      */
     app.post(
@@ -75,22 +75,38 @@ function addTeamMember(req, res) {
     const { name, email } = req.body;
     const { teamId } = req.params;
 
-    return TeamController.createMember(name, email, teamId).then(newMembers => {
-        return res.status(status.OK).send({
-            status: 'success',
-            data: newMembers
+    return TeamController.createMember(name, email, teamId)
+        .then(newMembers => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data: newMembers
+            });
+        })
+        .catch(error => {
+            console.log('ERROR', error);
+
+            return res.status(status.OK).send({
+                status: 'error'
+            });
         });
-    });
 }
 
 function removeTeamMember(req, res) {
     const { annotatorId } = req.body;
     const { teamId } = req.params;
 
-    return TeamController.deleteMember(annotatorId, teamId).then(newMembers => {
-        return res.status(status.OK).send({
-            status: 'success',
-            data: newMembers
+    return TeamController.deleteMember(annotatorId, teamId)
+        .then(newMembers => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data: newMembers
+            });
+        })
+        .catch(error => {
+            console.log('ERROR', error);
+
+            return res.status(status.OK).send({
+                status: 'error'
+            });
         });
-    });
 }
