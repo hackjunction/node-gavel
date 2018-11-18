@@ -85,7 +85,7 @@ function addTeamMember(req, res) {
         .catch(error => {
             console.log('ERROR', error);
 
-            return res.status(status.OK).send({
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });
         });
@@ -105,7 +105,7 @@ function removeTeamMember(req, res) {
         .catch(error => {
             console.log('ERROR', error);
 
-            return res.status(status.OK).send({
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });
         });
