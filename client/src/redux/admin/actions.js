@@ -1,6 +1,6 @@
 import * as ActionTypes from './actionTypes';
 import API from '../../services/api';
-import pMinDelay from 'p-min-delay';
+import Utils from '../../services/utils';
 
 export const setToken = token => dispatch => {
     dispatch({
@@ -67,7 +67,7 @@ export const setAnnotatorsErrorForEvent = eventId => dispatch => {
 
 export const fetchAnnotatorsForEvent = (token, eventId, minDelay = 0) => async dispatch => {
     dispatch(setAnnotatorsLoadingForEvent(eventId));
-    return pMinDelay(API.adminGetAnnotatorsForEvent(token, eventId), minDelay)
+    return Utils.minDelay(API.adminGetAnnotatorsForEvent(token, eventId), minDelay)
         .then(annotators => {
             dispatch(setAnnotatorsForEvent(eventId, annotators));
         })

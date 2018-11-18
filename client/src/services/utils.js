@@ -5,6 +5,12 @@ const Utils = {
                 resolve();
             }, ms);
         });
+    },
+
+    minDelay: (promise, ms = 1) => {
+        return Promise.all([promise, Utils.sleep(ms)]).then(data => {
+            return data[0];
+        });
     }
 };
 

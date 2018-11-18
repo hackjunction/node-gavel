@@ -1,6 +1,6 @@
-import pMinDelay from 'p-min-delay';
 import * as ActionTypes from './actionTypes';
 import API from '../../services/api';
+import Utils from '../../services/utils';
 
 export const logout = () => dispatch => {
     dispatch({
@@ -54,7 +54,7 @@ export const setOnboarded = secret => dispatch => {
 
 export const submitVote = (secret, choice, minDelay = 0) => dispatch => {
     dispatch(setUserLoading());
-    return pMinDelay(API.submitVote(secret, choice), minDelay).then(user => {
+    return Utils.minDelay(API.submitVote(secret, choice), minDelay).then(user => {
         dispatch(setUser(user));
     });
 };
