@@ -9,7 +9,7 @@ export const getTeamMembers = state => state.user.teamMembers || [];
 export const isTeamMembersLoading = state => state.user.teamMembersLoading;
 export const isTeamMembersError = state => state.user.teamMembersError;
 
-export const getSubmission = state => state.user.submission;
+export const getSubmission = state => state.user.submission || {};
 export const isSubmissionLoading = state => state.user.submissionLoading;
 export const isSubmissionError = state => state.user.submissionError;
 export const hasSubmitted = state => state.user.submission && state.user.submission.hasOwnProperty('_id');
