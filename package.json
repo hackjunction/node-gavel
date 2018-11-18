@@ -43,6 +43,7 @@
         "passport": "^0.4.0",
         "passport-local": "^1.0.0",
         "passport-token": "^0.2.0",
+        "path": "^0.12.7",
         "react-joyride": "^2.0.0-15",
         "react-switch": "^3.0.4",
         "scipy": "^0.1.4",
