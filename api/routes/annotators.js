@@ -74,7 +74,27 @@ module.exports = function(app) {
      * -> Requires annotator secret
      */
     app.get('/api/annotators/event', passport.authenticate('annotator', { session: false }), getEventForAnnotator);
+
+    /**
+     * Get an annotator's
+     */
+    app.get('/api/test/get-annotators', getTestAnnotators);
 };
+
+function getTestAnnotators(req, res) {
+    return AnnotatorController.getAll().then(annotators => {
+        return res.status(status.OK).send({
+            status: 'success',
+            data: _.map(annotators, (annotator) => {
+                return 'https://project-plat.herokuapp.com/login/' + annotator.secret
+            })
+        })
+    })
+    return res.status(status.OK).send({
+        status: 'success',
+        data: 
+    })
+}
 
 function getAnnotator(req, res) {
     //Passport already gets the annotator for us in req.user

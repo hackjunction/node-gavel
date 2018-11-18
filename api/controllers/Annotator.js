@@ -132,6 +132,10 @@ const AnnotatorController = {
         });
     },
 
+    getAll: () => {
+        return Annotator.find({});
+    },
+
     getActiveAnnotators: eventId => {
         return Annotator.find({
             event: eventId,
