@@ -64,7 +64,7 @@ class TeamDashboard extends Component {
 
         const banners = [];
         if (isSubmissionsOpen()) {
-            if (!submission.hasOwnProperty('_id')) {
+            if (!submission || !submission.hasOwnProperty('_id')) {
                 banners.push({
                     type: 'warning',
                     text:
