@@ -2,6 +2,7 @@
 
 const status = require('http-status');
 const passport = require('passport');
+const _ = require('lodash');
 const ReviewingService = require('../services/reviewing');
 const AnnotatorController = require('../controllers/Annotator');
 const EventController = require('../controllers/Event');
@@ -85,15 +86,11 @@ function getTestAnnotators(req, res) {
     return AnnotatorController.getAll().then(annotators => {
         return res.status(status.OK).send({
             status: 'success',
-            data: _.map(annotators, (annotator) => {
-                return 'https://project-plat.herokuapp.com/login/' + annotator.secret
+            data: _.map(annotators, annotator => {
+                return 'https://project-plat.herokuapp.com/login/' + annotator.secret;
             })
-        })
-    })
-    return res.status(status.OK).send({
-        status: 'success',
-        data: 
-    })
+        });
+    });
 }
 
 function getAnnotator(req, res) {
