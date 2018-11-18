@@ -108,11 +108,9 @@ const TeamController = {
     },
 
     deleteMember: (annotatorId, teamId) => {
-        return TeamController.getById(teamId)
+        return TeamController.removeMembers(teamId, [annotatorId])
             .then(team => {
-                return TeamController.removeMembers(teamId, [annotatorId]).then(team => {
-                    return AnnotatorController.deleteById(annotatorId);
-                });
+                return AnnotatorController.deleteById(annotatorId);
             })
             .then(() => {
                 return TeamController.getMembersById(teamId, true);
@@ -121,7 +119,7 @@ const TeamController = {
 
     removeMembers: (teamId, annotatorIds) => {
         const objectIds = _.map(annotatorIds, id => new ObjectId(id));
-        return Team.findByIdAndUpdate(teamId, { $pull: { members: objectIds } }, { new: true });
+        return Team.findByIdAndUpdate(teamId, { $pull: { members: { $in: objectIds } } }, { new: true });
     },
 
     getMembersById: (teamId, includeSecret = false) => {
