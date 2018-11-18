@@ -1,5 +1,4 @@
 import * as ActionTypes from './actionTypes';
-import { ifStatement } from 'babel-types';
 
 const initialState = {
     user: null,

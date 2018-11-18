@@ -117,11 +117,21 @@ class AdminCreateEvent extends Component {
                                 eventData: {
                                     ...this.state.eventData,
                                     ...event,
-                                    startTime: moment(event.startTime).format(DATE_FORMAT),
-                                    endTime: moment(event.endTime).format(DATE_FORMAT),
-                                    submissionDeadline: moment(event.submissionDeadline).format(DATE_FORMAT),
-                                    votingStartTime: moment(event.votingStartTime).format(DATE_FORMAT),
-                                    votingEndTime: moment(event.votingEndTime).format(DATE_FORMAT)
+                                    startTime: moment(event.startTime)
+                                        .tz(event.timezone)
+                                        .format(DATE_FORMAT),
+                                    endTime: moment(event.endTime)
+                                        .tz(event.timezone)
+                                        .format(DATE_FORMAT),
+                                    submissionDeadline: moment(event.submissionDeadline)
+                                        .tz(event.timezone)
+                                        .format(DATE_FORMAT),
+                                    votingStartTime: moment(event.votingStartTime)
+                                        .tz(event.timezone)
+                                        .format(DATE_FORMAT),
+                                    votingEndTime: moment(event.votingEndTime)
+                                        .tz(event.timezone)
+                                        .format(DATE_FORMAT)
                                 },
                                 eventLoading: false
                             });
@@ -461,7 +471,11 @@ class AdminCreateEvent extends Component {
                 </div>
                 <ErrorsBox errors={this.state.errors} />
                 <div style={{ height: '100px' }} />
-                <SubmitButton text={this.state.eventData._id ? 'Update Event' : 'Create Event'} loading={this.state.loading} onClick={this.onSubmit} />
+                <SubmitButton
+                    text={this.state.eventData._id ? 'Update Event' : 'Create Event'}
+                    loading={this.state.loading}
+                    onClick={this.onSubmit}
+                />
                 <div style={{ height: '50px' }} />
                 {this.state.error ? <p className="CreateEvent--error">Oops, something went wrong</p> : null}
             </div>
