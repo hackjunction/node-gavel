@@ -54,4 +54,4 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.listen(port);
-console.log('Node gavel started at http://localhost:' + port);
+console.log('Node gavel started at ' + Settings.BASE_URL);

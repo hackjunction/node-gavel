@@ -129,7 +129,13 @@ class ProjectsTable extends Component {
                                 className: 'center'
                             }
                         ]}
-                        defaultPageSize={10}
+                        defaultPageSize={5}
+                        defaultSorted={[
+                            {
+                                id: 'mu',
+                                desc: true
+                            }
+                        ]}
                         showPageJump={false}
                         className="-striped -highlight"
                     />
