@@ -5,6 +5,7 @@ var express = require('express'),
     bluebird = require('bluebird'),
     passport = require('passport'),
     Settings = require('./api/settings'),
+    path = require('path'),
     port = process.env.PORT || 3000;
 
 /* Check env settigns */
