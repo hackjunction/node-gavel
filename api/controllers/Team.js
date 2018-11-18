@@ -115,7 +115,7 @@ const TeamController = {
                 });
             })
             .then(() => {
-                return TeamController.getMembersById(teamId);
+                return TeamController.getMembersById(teamId, true);
             });
     },
 
@@ -124,11 +124,11 @@ const TeamController = {
         return Team.findByIdAndUpdate(teamId, { $pull: { members: objectIds } }, { new: true });
     },
 
-    getMembersById: teamId => {
+    getMembersById: (teamId, includeSecret = false) => {
         return Team.findById(teamId)
             .lean()
             .then(team => {
-                return AnnotatorController.getManyById(team.members);
+                return AnnotatorController.getManyById(team.members, includeSecret);
             });
     },
     getByEvent: eventId => {
