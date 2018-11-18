@@ -195,7 +195,7 @@ class TeamDashboard extends Component {
                             key: 'submission',
                             label: 'Submission',
                             renderContent: () => <SubmissionForm />,
-                            loading: !this.props.submission || !this.props.event
+                            loading: this.props.submissionLoading || !this.props.event
                         },
                         {
                             key: 'voting',
