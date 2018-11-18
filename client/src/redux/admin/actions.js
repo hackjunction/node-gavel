@@ -103,7 +103,7 @@ export const setProjectsErrorForEvent = eventId => dispatch => {
 
 export const fetchProjectsForEvent = (token, eventId, minDelay = 0) => dispatch => {
     dispatch(setProjectsLoadingForEvent(eventId));
-    return pMinDelay(API.adminGetProjectsForEvent(token, eventId), minDelay)
+    return Utils.minDelay(API.adminGetProjectsForEvent(token, eventId), minDelay)
         .then(projects => {
             dispatch(setProjectsForEvent(eventId, projects));
         })

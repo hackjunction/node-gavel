@@ -185,7 +185,7 @@ export const fetchSubmission = secret => dispatch => {
 export const saveSubmission = (project, secret, minDelay = 0) => dispatch => {
     dispatch(setSubmissionLoading());
 
-    return pMinDelay(API.updateSubmission(project, secret), minDelay)
+    return Utils.minDelay(API.updateSubmission(project, secret), minDelay)
         .then(submission => {
             console.log('DONE', Date.now());
             dispatch(setSubmission(submission));
