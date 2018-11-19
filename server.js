@@ -39,8 +39,8 @@ require('./api/models/Annotator');
 require('./api/models/Decision');
 
 app.get('/api/hello', function(req, res) {
-    res.send({
-        message: 'Hello from the API'
+    res.status(500).send({
+        hello: 'halloe'
     });
 });
 

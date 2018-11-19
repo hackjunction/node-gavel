@@ -15,7 +15,8 @@ const POST = (url, data) => {
             });
 
             if (response.status !== SUCCESS) {
-                reject(new Error('Request failed with response', response));
+                let body = await response.json();
+                reject(new Error(body.message || 'Request failed with status ' + response.status));
             } else {
                 let body = await response.json();
                 resolve(body.data);
@@ -40,7 +41,8 @@ const PATCH = (url, data) => {
             });
 
             if (response.status !== SUCCESS) {
-                reject(new Error('Request failed with response', response));
+                let body = await response.json();
+                reject(new Error(body.message || 'Request failed with status ' + response.status));
             } else {
                 let body = await response.json();
                 resolve(body.data);
@@ -58,7 +60,8 @@ const GET = url => {
             let response = await fetch(url);
 
             if (response.status !== SUCCESS) {
-                reject(new Error('Request failed with response', response));
+                let body = await response.json();
+                reject(new Error(body.message || 'Request failed with status ' + response.status));
             } else {
                 let body = await response.json();
                 resolve(body.data);
@@ -76,7 +79,8 @@ const DELETE = url => {
             let response = await fetch(url, { method: 'DELETE' });
 
             if (response.status !== SUCCESS) {
-                reject(new Error('Request failed with response', response));
+                let body = await response.json();
+                reject(new Error(body.message || 'Request failed with status ' + response.status));
             } else {
                 let body = await response.json();
                 resolve(body.data);
@@ -221,6 +225,10 @@ const API = {
 
     submitVote: (secret, choice) => {
         return GET(`/api/annotators/vote/${choice}/?secret=${secret}`);
+    },
+
+    test: () => {
+        return GET('/api/hello');
     }
 };
 
