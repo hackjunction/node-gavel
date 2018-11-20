@@ -1,0 +1,105 @@
+@import '../../../styles/base.scss';
+
+.DropDownInput {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    &_input-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    &_input {
+        background: transparent;
+        border: none;
+        color: $snow;
+        flex: 1;
+        opacity: 0.7;
+        border-bottom: 1px solid rgba($snow, 0.3);
+        padding: 5px 30px 5px 5px;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &_error {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 30px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+
+        i {
+            color: $error-red;
+        }
+    }
+
+    &_under {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 5px;
+    }
+
+    &_hint {
+        flex: 2;
+        transition: all 0.2s ease;
+        opacity: 0;
+    }
+
+    &_character-count {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        align-self: flex-end;
+        transition: all 0.2s ease;
+        opacity: 0;
+    }
+
+    &_character-count-value {
+        color: $snow;
+    }
+
+    &:focus-within {
+        .DropDownInput_input {
+            opacity: 1;
+        }
+
+        .DropDownInput_hint {
+            opacity: 1;
+        }
+
+        .DropDownInput_character-count {
+            opacity: 1;
+        }
+    }
+
+    &.has-error {
+        .DropDownInput_character-count {
+            opacity: 1;
+
+            .DropDownInput_character-count-value {
+                color: $error-red;
+            }
+        }
+
+        .DropDownInput_error {
+            opacity: 1;
+        }
+
+        .DropDownInput_input {
+            border-bottom-color: $error-red;
+        }
+    }
+}

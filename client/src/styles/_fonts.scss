@@ -26,6 +26,10 @@ $fs-secondary: 13px;
     font-family: $font-title;
 }
 
+* {
+    font-family: $font-regular;
+}
+
 h1 {
     @extend %text-title;
     color: $snow;

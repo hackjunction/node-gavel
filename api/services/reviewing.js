@@ -34,7 +34,7 @@ const ReviewingService = {
         }
     },
 
-    canVote: async annotator => {
+    canVote: async (annotator, choice) => {
         if (!annotator.next) {
             throw new Error('Cannot submit a vote with no project assigned');
         }
@@ -62,6 +62,14 @@ const ReviewingService = {
 
         if (!now.isBetween(startTime, endTime)) {
             throw new Error('Voting is currently closed');
+        }
+
+        if (choice !== 'skip') {
+            const nextVoteEarliest = moment(annotator.updated).tz(event.timezone);
+            const diffSeconds = now.diff(nextVoteEarliest) / 1000;
+            if (diffSeconds < Settings.ANNOTATOR_WAIT_SECONDS) {
+                throw new Error('Annotator must wait ' + diffSeconds + ' seconds before voting again');
+            }
         }
 
         return;
@@ -206,7 +214,7 @@ const ReviewingService = {
 
     submitVote: async (annotator, choice) => {
         //Throws error if conditions fail
-        await ReviewingService.canVote(annotator);
+        await ReviewingService.canVote(annotator, choice);
 
         const VALID_CHOICES = ['done', 'skip'];
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Joyride from 'react-joyride';
+import Countdown from 'react-countdown-now';
 
 import './style.scss';
 
@@ -399,30 +400,83 @@ class Vote extends Component {
             }
             case STATES.VOTE_SINGLE: {
                 return (
-                    <div className="Vote--Bottom">
-                        <p className="Vote--Bottom_title">After you've seen the demo, click DONE</p>
-                        <div className="Vote--Bottom_buttons">
-                            <div className="Vote--Bottom_button" onClick={() => this.vote('done')}>
-                                <p className="Vote--Bottom_button-text">Done</p>
-                            </div>
-                        </div>
-                    </div>
+                    <Countdown
+                        date={this.props.getNextVoteTime().toDate()}
+                        now={() => this.props.getNowInEventTime().toDate()}
+                        renderer={({ minutes, seconds, completed }) => {
+                            if (!completed) {
+                                return (
+                                    <div className="Vote--Bottom">
+                                        <p className="Vote--Bottom_title">
+                                            Go watch the demo! You can vote in {minutes}m {seconds}s
+                                        </p>
+                                        <div className="Vote--Bottom_buttons">
+                                            <div className="Vote--Bottom_button disabled">
+                                                <p className="Vote--Bottom_button-text">Done</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            } else {
+                                return (
+                                    <div className="Vote--Bottom">
+                                        <p className="Vote--Bottom_title">Once you've seen the demo, click DONE.</p>
+                                        <div className="Vote--Bottom_buttons">
+                                            <div className="Vote--Bottom_button" onClick={() => this.vote('done')}>
+                                                <p className="Vote--Bottom_button-text">Done</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            }
+                        }}
+                    />
                 );
             }
             case STATES.VOTE_COMPARE: {
                 return (
-                    <div className="Vote--Bottom">
-                        <p className="Vote--Bottom_title">Which project was better?</p>
-                        <div className="Vote--Bottom_buttons">
-                            <div className="Vote--Bottom_button previous" onClick={() => this.vote('previous')}>
-                                <p className="Vote--Bottom_button-text">Previous</p>
-                            </div>
-                            <div className="Vote--Bottom_separator" />
-                            <div className="Vote--Bottom_button" onClick={() => this.vote('current')}>
-                                <p className="Vote--Bottom_button-text">Current</p>
-                            </div>
-                        </div>
-                    </div>
+                    <Countdown
+                        date={this.props.getNextVoteTime().toDate()}
+                        now={() => this.props.getNowInEventTime().toDate()}
+                        renderer={({ minutes, seconds, completed }) => {
+                            if (!completed) {
+                                return (
+                                    <div className="Vote--Bottom">
+                                        <p className="Vote--Bottom_title">
+                                            Go watch the demo! You can vote in {minutes}m {seconds}s
+                                        </p>
+                                        <div className="Vote--Bottom_buttons">
+                                            <div className="Vote--Bottom_button disabled">
+                                                <p className="Vote--Bottom_button-text">Previous</p>
+                                            </div>
+                                            <div className="Vote--Bottom_separator" />
+                                            <div className="Vote--Bottom_button disabled">
+                                                <p className="Vote--Bottom_button-text">Current</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            } else {
+                                return (
+                                    <div className="Vote--Bottom">
+                                        <p className="Vote--Bottom_title">Which project was better?</p>
+                                        <div className="Vote--Bottom_buttons">
+                                            <div
+                                                className="Vote--Bottom_button previous"
+                                                onClick={() => this.vote('previous')}
+                                            >
+                                                <p className="Vote--Bottom_button-text">Previous</p>
+                                            </div>
+                                            <div className="Vote--Bottom_separator" />
+                                            <div className="Vote--Bottom_button" onClick={() => this.vote('current')}>
+                                                <p className="Vote--Bottom_button-text">Current</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            }
+                        }}
+                    />
                 );
             }
             default: {
@@ -523,11 +577,18 @@ class Vote extends Component {
                 return (
                     <div className={wrapperClass}>
                         <div className="Vote--Previous">
-                            {previous ? <ProjectBlock project={previous} isCurrent={false} /> : null}
+                            {previous ? (
+                                <ProjectBlock parentLoading={this.state.loading} project={previous} isCurrent={false} />
+                            ) : null}
                         </div>
                         <div className="Vote--Current">
                             {current ? (
-                                <ProjectBlock project={current} isCurrent={true} onSkip={() => this.vote('skip')} />
+                                <ProjectBlock
+                                    parentLoading={this.state.loading}
+                                    project={current}
+                                    isCurrent={true}
+                                    onSkip={() => this.vote('skip')}
+                                />
                             ) : null}
                         </div>
                     </div>
@@ -597,6 +658,8 @@ const mapStateToProps = state => ({
     event: UserSelectors.getEvent(state),
     isVotingOpen: UserSelectors.isVotingOpen(state),
     getEventTime: UserSelectors.getNowInEventTime(state),
+    getNextVoteTime: UserSelectors.getNextVoteTime(state),
+    getNowInEventTime: UserSelectors.getNowInEventTime(state),
     votingStartTime: UserSelectors.getVotingStartTime(state),
     votingEndTime: UserSelectors.getVotingEndTime(state)
 });

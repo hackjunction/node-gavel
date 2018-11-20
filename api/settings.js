@@ -35,7 +35,10 @@ const Settings = {
     /** How long after last assigned project should an annotator be considered inactive? */
     ANNOTATOR_TIMEOUT_MINS: 5,
 
-    /** If a project has less than this many views, it will be automatically prioritised */
+    /** How long must an annotator wait between votes? */
+    ANNOTATOR_WAIT_SECONDS: 120,
+
+    /** How many views a project must have to no longer be automatically prioritised */
     ITEM_MIN_VIEWS: 5,
 
     /** Math constants. DO NOT CHANGE unless you have good reason and understand the consequences */

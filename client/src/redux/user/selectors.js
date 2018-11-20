@@ -51,3 +51,12 @@ export const isSubmissionsOpen = state => () => {
     const now = getNowInEventTime(state);
     return now().isBetween(getEventStartTime(state), getSubmissionDeadline(state));
 };
+
+export const getNextVoteTime = state => () => {
+    if (!state.user.event) {
+        return null;
+    }
+
+    const updated = moment(state.user.user.updated).tz(state.user.event.timezone);
+    return updated.add(120, 'seconds');
+};

@@ -5,11 +5,12 @@ class ProjectBlock extends Component {
     static propTypes = {
         project: PropTypes.object.isRequired,
         isCurrent: PropTypes.bool.isRequired,
-        onSkip: PropTypes.func
+        onSkip: PropTypes.func,
+        parentLoading: PropTypes.bool
     };
 
     render() {
-        const { isCurrent, project } = this.props;
+        const { isCurrent, project, parentLoading } = this.props;
 
         return (
             <div className={isCurrent ? 'Vote--Project current' : 'Vote--Project'}>
@@ -20,7 +21,7 @@ class ProjectBlock extends Component {
                 </div>
                 <p className="Vote--Project_description">{project.description.slice(0, 100)}</p>
                 {isCurrent ? (
-                    <span className="Vote--Project_skip" onClick={this.props.onSkip}>
+                    <span className="Vote--Project_skip" onClick={!parentLoading ? this.props.onSkip : null}>
                         I can't find this project
                     </span>
                 ) : null}
