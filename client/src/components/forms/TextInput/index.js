@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import './style.scss';
 
 class TextInput extends Component {
@@ -9,7 +10,8 @@ class TextInput extends Component {
         value: PropTypes.string.isRequired,
         error: PropTypes.string,
         min: PropTypes.number,
-        max: PropTypes.number
+        max: PropTypes.number,
+        validate: PropTypes.func
     };
 
     constructor(props) {
@@ -31,7 +33,7 @@ class TextInput extends Component {
     }
 
     validate(value = '') {
-        const { min, max } = this.props;
+        const { min, max, validate } = this.props;
 
         if (min && value.length < min) {
             return `Must be at least ${min} characters.`;
@@ -39,6 +41,10 @@ class TextInput extends Component {
 
         if (max && value.length > max) {
             return `Cannot be over ${max} characters.`;
+        }
+
+        if (_.isFunction(validate)) {
+            return validate(value);
         }
 
         return null;
@@ -64,7 +70,7 @@ class TextInput extends Component {
     }
 
     render() {
-        const { placeholder, hint } = this.props;
+        const { placeholder, hint, showErrorText } = this.props;
         const { error } = this.state;
         const value = this.props.value || '';
 
@@ -84,7 +90,13 @@ class TextInput extends Component {
                     </div>
                 </div>
                 <div className="TextInput_under">
-                    <span className="TextInput_hint">{hint}</span>
+                    {showErrorText && this.state.error ? (
+                        <div className="TextInput_error-bottom">
+                            <span className="TextInput_error-text">{this.state.error}</span>
+                        </div>
+                    ) : (
+                        <span className="TextInput_hint">{hint}</span>
+                    )}
                     <div className="TextInput_character-count">
                         <span className="TextInput_character-count-value">{this.charCount(value.length)}</span>
                     </div>

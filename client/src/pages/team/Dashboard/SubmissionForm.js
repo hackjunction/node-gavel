@@ -13,9 +13,15 @@ import Validators from '../../../services/validators';
 import * as UserActions from '../../../redux/user/actions';
 import * as user from '../../../redux/user/selectors';
 
+import Form from '../../../components/forms/Form';
+
 class SubmissionForm extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            submission: {}
+        };
 
         this.addBanner = this.addBanner.bind(this);
         this.saveSubmission = this.saveSubmission.bind(this);
@@ -37,37 +43,78 @@ class SubmissionForm extends Component {
         const { submission, saveSubmission } = this.props;
         const { secret } = this.props.user;
 
-        saveSubmission(submission, secret)
-            .then(() => {
-                this.bannerManager.addBanner(
-                    {
-                        type: 'success',
-                        text: 'Your submission was updated!',
-                        canClose: true
-                    },
-                    Date.now(),
-                    2000
-                );
-            })
-            .catch(() => {
-                this.bannerManager.addBanner(
-                    {
-                        type: 'error',
-                        text: "Something went wrong - your changes weren't saved",
-                        canClose: true
-                    },
-                    Date.now()
-                );
-            });
+        this.setState(
+            {
+                loading: true
+            },
+            () => {
+                saveSubmission(submission, secret)
+                    .then(() => {
+                        this.bannerManager.addBanner(
+                            {
+                                type: 'success',
+                                text: 'Your submission was updated!',
+                                canClose: true
+                            },
+                            Date.now(),
+                            2000
+                        );
+
+                        this.setState({
+                            loading: false
+                        });
+                    })
+                    .catch(() => {
+                        this.bannerManager.addBanner(
+                            {
+                                type: 'error',
+                                text: "Something went wrong - your changes weren't saved",
+                                canClose: true
+                            },
+                            Date.now()
+                        );
+
+                        this.setState({
+                            loading: false
+                        });
+                    });
+            }
+        );
     }
 
-    tableOptions() {
+    generateChallengeChoices() {
+        const { challenges } = this.props.event;
+
+        return _.map(challenges, c => {
+            return {
+                value: c,
+                label: c
+            };
+        });
+    }
+
+    generateTrackChoices() {
+        const { tracks } = this.props.event;
+
+        return _.map(tracks, t => {
+            return {
+                value: t,
+                label: t
+            };
+        });
+    }
+
+    generateTableNumbers() {
         const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J', 'K', 'X'];
         const options = [];
 
         _.each(letters, letter => {
             for (let i = 0; i < 30; i++) {
-                options.push(letter + (i + 1));
+                const tableNumber = letter + (i + 1);
+                options.push({
+                    value: tableNumber,
+                    label: tableNumber
+                });
             }
         });
 
@@ -95,152 +142,185 @@ class SubmissionForm extends Component {
     }
 
     render() {
-        const { submission, editSubmission, event } = this.props;
+        const { submission, setSubmission } = this.props;
 
         return (
             <div className="SubmissionForm">
                 <h4>Project Submission</h4>
-                {this.renderTopText()}
-                <BannerManager banners={[]} ref={ref => (this.bannerManager = ref)} />
-                <TextField
-                    ref={ref => (this.submissionName = ref)}
-                    label={'Project name'}
-                    placeholder="A catchy name for your project"
-                    value={submission.name || ''}
-                    onChange={name => {
-                        editSubmission('name', name);
-                    }}
-                    required={true}
-                    validate={value =>
-                        Validators.stringMinMax(
-                            value,
-                            5,
-                            50,
-                            'Project name must be at least 5 characters',
-                            'Project name cannot be over 50 characters'
-                        )
-                    }
+                <Form
+                    data={submission}
+                    onChange={setSubmission}
+                    onSubmit={this.saveSubmission}
+                    loading={this.state.loading}
+                    submitText={'Save submission'}
+                    checkboxes={[
+                        {
+                            id: 'rules',
+                            required: true,
+                            defaultValue: submission.hasOwnProperty('_id'),
+                            render: () => (
+                                <p>
+                                    I have read and confirm that my submission does not break any of the{' '}
+                                    <a
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        href="https://live.hackjunction.com/rules/"
+                                    >
+                                        Competition Rules
+                                    </a>
+                                    {'. '}
+                                </p>
+                            )
+                        },
+                        {
+                            id: 'privacy',
+                            required: true,
+                            defaultValue: submission.hasOwnProperty('_id'),
+                            render: () => (
+                                <p>
+                                    I have read and agree to the updated{' '}
+                                    <a target="_blank" rel="noopener noreferrer" href="https://hackjunction.com/policy">
+                                        Privacy Policy
+                                    </a>{' '}
+                                    and{' '}
+                                    <a target="_blank" rel="noopener noreferrer" href="https://hackjunction.com/terms">
+                                        Terms & Conditions
+                                    </a>{' '}
+                                    , especially as it relates to how we handle your submission data, how we use it
+                                    (e.g. marketing), who we share it with (e.g. event partners), and what your rights
+                                    are related to the submission data.
+                                </p>
+                            )
+                        }
+                    ]}
+                    fields={[
+                        {
+                            label: 'Project name',
+                            type: 'text',
+                            placeholder: 'A catchy name for your project',
+                            id: 'name',
+                            name: 'name',
+                            options: {
+                                min: 2,
+                                max: 100,
+                                required: true
+                            }
+                        },
+                        {
+                            label: 'Punchline',
+                            type: 'text',
+                            placeholder: 'A short punchline',
+                            hint: 'In one sentence, what is your project all about?',
+                            id: 'punchline',
+                            name: 'punchline',
+                            options: {
+                                min: 10,
+                                max: 100,
+                                required: true
+                            }
+                        },
+                        {
+                            label: 'Description',
+                            type: 'textarea',
+                            placeholder: 'A longer description of all the juicy details',
+                            hint:
+                                'What problem does your project solve? What tech did you use? What else do you want to tell us about it?',
+                            id: 'description',
+                            name: 'description',
+                            options: {
+                                min: 0,
+                                max: 2000
+                            }
+                        },
+                        {
+                            label: 'Source Code',
+                            type: 'text',
+                            placeholder: 'Github, BitBucket etc...',
+                            hint:
+                                'As per the submission rules, we require all teams to submit a link to their source code. If you do not wish to have your code openly accessible, please upload it as a .zip file to e.g. Google Drive, and paste a link which allows us to access it.',
+                            id: 'source',
+                            name: 'source',
+                            options: {
+                                required: true,
+                                validate: Validators.url,
+                                showErrorText: true
+                            }
+                        },
+                        {
+                            label: 'Open source?',
+                            type: 'boolean',
+                            hint: 'If no, the link to your source code will not be visible to the public',
+                            id: 'source_public',
+                            name: 'source_public',
+                            options: {
+                                default: true
+                            }
+                        },
+                        {
+                            label: 'Show team members',
+                            type: 'boolean',
+                            hint: 'If no, team members will be shown as anonymous in the project gallery',
+                            id: 'members_public',
+                            name: 'members_public',
+                            options: {
+                                default: true
+                            }
+                        },
+                        {
+                            label: 'Table Location',
+                            type: 'dropdown',
+                            hint: 'What is the nearest table location to you?',
+                            id: 'location',
+                            name: 'location',
+                            options: {
+                                multi: false,
+                                choices: this.generateTableNumbers(),
+                                required: true
+                            }
+                        },
+                        {
+                            label: 'Track',
+                            type: 'dropdown',
+                            hint: 'What track are you participating on?',
+                            id: 'track',
+                            name: 'track',
+                            options: {
+                                multi: false,
+                                choices: this.generateTrackChoices(),
+                                required: true
+                            }
+                        },
+                        {
+                            label: 'Challenges',
+                            type: 'dropdown',
+                            hint: 'What challenges did you complete?',
+                            id: 'challenges',
+                            name: 'challenges',
+                            options: {
+                                multi: true,
+                                choices: this.generateChallengeChoices(),
+                                min: 1,
+                                max: 5,
+                                required: true
+                            }
+                        },
+                        {
+                            label: 'Contact Phone',
+                            type: 'text',
+                            placeholder: 'International format, e.g. +358501234567',
+                            hint:
+                                'This will only be used in case we need to contact you during the event, and not for any other purpose.',
+                            id: 'contactPhone',
+                            name: 'contactPhone',
+                            options: {
+                                validate: Validators.phoneNumber,
+                                showErrorText: true,
+                                required: true
+                            }
+                        }
+                    ]}
                 />
-                <TextField
-                    ref={ref => (this.submissionPunchline = ref)}
-                    label="Punchline"
-                    placeholder="A short punchline about your project"
-                    value={submission.punchline || ''}
-                    onChange={punchline => {
-                        editSubmission('punchline', punchline);
-                    }}
-                    required={true}
-                    validate={value =>
-                        Validators.stringMinMax(
-                            value,
-                            1,
-                            100,
-                            'Your punchline must be at least 1 character',
-                            'Your punchline cannot be over 100 characters'
-                        )
-                    }
-                />
-                <TextArea
-                    ref={ref => (this.submissionDescription = ref)}
-                    label="Description"
-                    placeholder="What problem does your project solve? What tech did you use? What else do you want to tell us about it?"
-                    value={submission.description || ''}
-                    onChange={description => {
-                        editSubmission('description', description);
-                    }}
-                    required={true}
-                    validate={value =>
-                        Validators.stringMinMax(
-                            value,
-                            1,
-                            1000,
-                            'Project description must be at least 1 character',
-                            'Project description cannot be over 1000 characters'
-                        )
-                    }
-                />
-                <TextField
-                    ref={ref => (this.submissionSource = ref)}
-                    label="Source"
-                    placeholder="A link to your source code on GitHub, BitBucket, etc."
-                    value={submission.source || ''}
-                    onChange={source => {
-                        editSubmission('source', source);
-                    }}
-                    required={false}
-                    validate={value =>
-                        Validators.stringMinMax(
-                            value,
-                            1,
-                            500,
-                            'The link must be at least 1 character',
-                            'The link cannot be over 500 characters'
-                        )
-                    }
-                />
-                <DropDown
-                    ref={ref => (this.submissionLocation = ref)}
-                    label="Table Location"
-                    placeholder="Select a table location"
-                    hint="Select the nearest table location to where you are sitting"
-                    value={submission.location || ''}
-                    onChange={location => {
-                        editSubmission('location', location);
-                    }}
-                    required={true}
-                    isMulti={false}
-                    options={this.tableOptions()}
-                    validate={Validators.noValidate}
-                />
-                {event.hasTracks ? (
-                    <DropDown
-                        ref={ref => (this.submissionTrack = ref)}
-                        label="Track"
-                        placeholder="Choose your track"
-                        hint="Which track are you participating on?"
-                        value={submission.track || ''}
-                        onChange={track => {
-                            editSubmission('track', track);
-                        }}
-                        required={true}
-                        isMulti={false}
-                        options={event.tracks}
-                        validate={Validators.noValidate}
-                    />
-                ) : null}
-                {event.hasChallenges ? (
-                    <DropDown
-                        ref={ref => (this.submissionChallenges = ref)}
-                        label="Challenges"
-                        placeholder="Choose your challenges"
-                        hint="Which challenges did you do? Choose up to 5."
-                        value={submission.challenges || []}
-                        onChange={challenges => {
-                            editSubmission('challenges', challenges);
-                        }}
-                        required={true}
-                        isMulti={true}
-                        options={event.challenges}
-                        validate={Validators.noValidate}
-                    />
-                ) : null}
-                <TextField
-                    ref={ref => (this.submissionPhone = ref)}
-                    label="Contact phone"
-                    placeholder="International format (e.g. +358 0123456)"
-                    value={submission.contactPhone || ''}
-                    onChange={contactPhone => {
-                        editSubmission('contactPhone', contactPhone);
-                    }}
-                    required={true}
-                    validate={Validators.phoneNumber}
-                />
-                <SubmitButton
-                    text="Update submission"
-                    align="right"
-                    onClick={this.saveSubmission}
-                    loading={this.props.submissionLoading}
-                />
+                <BannerManager ref={ref => (this.bannerManager = ref)} />
             </div>
         );
     }
@@ -261,7 +341,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     fetchSubmission: secret => dispatch(UserActions.fetchSubmission(secret)),
     fetchEvent: secret => dispatch(UserActions.fetchEvent(secret)),
-    editSubmission: (field, value) => dispatch(UserActions.editSubmission(field, value)),
+    setSubmission: submission => dispatch(UserActions.setSubmission(submission)),
     saveSubmission: (submission, secret) => dispatch(UserActions.saveSubmission(submission, secret, 1000))
 });
 

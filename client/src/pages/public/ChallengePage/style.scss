@@ -1,0 +1,63 @@
+@import '../../../styles/base.scss';
+
+.ChallengePage {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 50px;
+}
+
+.ChallengePage--loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: $double-margin;
+}
+
+.ChallengePage--spinner {
+    color: $turquoise;
+}
+
+.ChallengePage--error {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: $double-margin;
+}
+
+.ChallengePage--error_title,
+.ChallengePage--error_text {
+    text-align: center;
+}
+
+.ChallengePage--title,
+.ChallengePage--subtitle {
+    text-align: center;
+}
+
+.ChallengePage--top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+}
+
+.ChallengePage--separator {
+    width: 200px;
+    height: 2px;
+    margin: $base-margin 0 $double-margin 0;
+    background: $turquoise;
+}
+
+.ChallengePage--Project {
+    background: rgba($snow, 0.05);
+    padding: $base-margin;
+    margin-top: $double-margin;
+}
+
+.ChallengePage--Project-name {
+    color: $turquoise;
+}

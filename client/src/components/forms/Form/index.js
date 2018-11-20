@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import './style.scss';
 
 import FormField from '../FormField';
 import TextInput from '../TextInput';
 import LongTextInput from '../LongTextInput';
 import DropDownInput from '../DropDownInput';
+import BooleanInput from '../BooleanInput';
+import SubmitButton from '../SubmitButton';
 
 const TYPES = {
     text: {
@@ -23,6 +26,10 @@ const TYPES = {
     dropdown: {
         id: 'dropdown',
         options: ['multi', 'choices', 'min', 'max']
+    },
+    boolean: {
+        id: 'boolean',
+        options: ['default']
     }
 };
 
@@ -30,21 +37,85 @@ class Form extends Component {
     static propTypes = {
         fields: PropTypes.arrayOf({
             id: PropTypes.string,
-            type: PropTypes.oneOf(['text', 'textarea', 'date', 'dropdown']),
+            type: PropTypes.string,
             typeParams: PropTypes.object,
             label: PropTypes.string,
             placeholder: PropTypes.string,
             validate: PropTypes.func
         }),
         data: PropTypes.object,
-        onChange: PropTypes.func
+        onChange: PropTypes.func,
+        disableSubmit: PropTypes.bool,
+        loading: PropTypes.loading,
+        submitText: PropTypes.string
     };
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            formErrors: []
+        };
+
+        this.attemptSubmit = this.attemptSubmit.bind(this);
+    }
 
     onChange(field, value) {
         this.props.onChange({
             ...this.props.data,
             [field]: value
         });
+    }
+
+    canSubmit() {
+        let checkboxesChecked = true;
+
+        if (!Array.isArray(this.props.checkboxes) || this.props.checkboxes.length === 0) {
+            return true;
+        }
+
+        _.each(this.props.checkboxes, cb => {
+            const value = this.state['checkbox-' + cb.id];
+
+            if (typeof value === 'undefined') {
+                if (!cb.defaultValue) {
+                    checkboxesChecked = false;
+                }
+            } else if (!value) {
+                checkboxesChecked = false;
+            }
+        });
+
+        if (!checkboxesChecked) {
+            return false;
+        }
+
+        return true;
+    }
+
+    attemptSubmit() {
+        const errors = [];
+        _.each(this.props.fields, field => {
+            const error = this[field.name].validate(this.props.data[field.name]);
+
+            if (error) {
+                errors.push({
+                    field: field.label,
+                    error
+                });
+            }
+        });
+
+        if (errors.length > 0) {
+            this.setState({
+                formErrors: errors
+            });
+        } else {
+            this.setState({
+                formErrors: []
+            });
+            this.props.onSubmit();
+        }
     }
 
     renderFields() {
@@ -56,6 +127,7 @@ class Form extends Component {
                     return (
                         <FormField id={field.id} label={field.label} required={field.required}>
                             <TextInput
+                                ref={ref => (this[field.name] = ref)}
                                 placeholder={field.placeholder}
                                 hint={field.hint}
                                 value={data[field.name]}
@@ -64,6 +136,21 @@ class Form extends Component {
                                 }}
                                 min={field.options && field.options.hasOwnProperty('min') ? field.options.min : null}
                                 max={field.options && field.options.hasOwnProperty('max') ? field.options.max : null}
+                                validate={
+                                    field.options && field.options.hasOwnProperty('validate')
+                                        ? field.options.validate
+                                        : null
+                                }
+                                showErrorText={
+                                    field.options && field.options.hasOwnProperty('showErrorText')
+                                        ? field.options.showErrorText
+                                        : null
+                                }
+                                required={
+                                    field.options && field.options.hasOwnProperty('required')
+                                        ? field.options.required
+                                        : false
+                                }
                             />
                         </FormField>
                     );
@@ -72,6 +159,7 @@ class Form extends Component {
                     return (
                         <FormField id={field.id} label={field.label} required={field.required}>
                             <LongTextInput
+                                ref={ref => (this[field.name] = ref)}
                                 placeholder={field.placeholder}
                                 hint={field.hint}
                                 value={data[field.name]}
@@ -80,6 +168,21 @@ class Form extends Component {
                                 }}
                                 min={field.options && field.options.hasOwnProperty('min') ? field.options.min : null}
                                 max={field.options && field.options.hasOwnProperty('max') ? field.options.max : null}
+                                validate={
+                                    field.options && field.options.hasOwnProperty('validate')
+                                        ? field.options.validate
+                                        : null
+                                }
+                                showErrorText={
+                                    field.options && field.options.hasOwnProperty('showErrorText')
+                                        ? field.options.showErrorText
+                                        : null
+                                }
+                                required={
+                                    field.options && field.options.hasOwnProperty('required')
+                                        ? field.options.required
+                                        : false
+                                }
                             />
                         </FormField>
                     );
@@ -91,10 +194,30 @@ class Form extends Component {
                         </FormField>
                     );
                 }
+                case TYPES.boolean.id: {
+                    return (
+                        <FormField id={field.id} label={field.label}>
+                            <BooleanInput
+                                ref={ref => (this[field.name] = ref)}
+                                hint={field.hint}
+                                value={data[field.name]}
+                                onChange={value => {
+                                    this.onChange(field.name, value);
+                                }}
+                                default={
+                                    field.options && field.options.hasOwnProperty('default')
+                                        ? field.options.default
+                                        : null
+                                }
+                            />
+                        </FormField>
+                    );
+                }
                 case TYPES.dropdown.id: {
                     return (
                         <FormField id={field.id} label={field.label} required={field.required}>
                             <DropDownInput
+                                ref={ref => (this[field.name] = ref)}
                                 placeholder={field.placeholder}
                                 hint={field.hint}
                                 value={data[field.name]}
@@ -111,6 +234,11 @@ class Form extends Component {
                                         ? field.options.choices
                                         : []
                                 }
+                                required={
+                                    field.options && field.options.hasOwnProperty('required')
+                                        ? field.options.required
+                                        : false
+                                }
                             />
                         </FormField>
                     );
@@ -122,8 +250,82 @@ class Form extends Component {
         });
     }
 
+    renderCheckboxes() {
+        if (!Array.isArray(this.props.checkboxes) || this.props.checkboxes.length === 0) {
+            return null;
+        }
+
+        const checkboxes = _.map(this.props.checkboxes, cb => {
+            const id = 'checkbox-' + cb.id;
+            return (
+                <div className="Form--Checkbox">
+                    <div className="Form--Checkbox_check">
+                        <input
+                            type="checkbox"
+                            defaultChecked={cb.defaultValue || false}
+                            value={this.state[id]}
+                            onChange={e =>
+                                this.setState({
+                                    [id]: e.target.checked
+                                })
+                            }
+                        />
+                    </div>
+                    <div className="Form--Checkbox_text">{cb.render()}</div>
+                </div>
+            );
+        });
+
+        return <div className="Form--Checkboxes">{checkboxes}</div>;
+    }
+
+    renderErrors() {
+        if (!Array.isArray(this.state.formErrors) || this.state.formErrors.length === 0) {
+            return null;
+        }
+
+        const errors = _.map(this.state.formErrors, ({ field, error }) => {
+            return (
+                <li className="Form--Errors_item">
+                    <p className="Form--Errors_error">
+                        <strong>{field}: </strong>
+                        {error}
+                    </p>
+                </li>
+            );
+        });
+
+        return (
+            <div className="Form--Errors">
+                <p className="Form--Errors_title">Please check the following fields</p>
+                <ul className="Form--Errors">{errors}</ul>
+            </div>
+        );
+    }
+
+    renderSubmit() {
+        const { disableSubmit, loading, submitText } = this.props;
+        return (
+            <div className="Form--Submit">
+                <SubmitButton
+                    disabled={!this.canSubmit() || disableSubmit}
+                    loading={loading}
+                    text={submitText}
+                    onClick={this.attemptSubmit}
+                />
+            </div>
+        );
+    }
+
     render() {
-        return <div className="Form">{this.renderFields()}</div>;
+        return (
+            <div className="Form">
+                <div className="Form--Fields">{this.renderFields()}</div>
+                {this.renderCheckboxes()}
+                {this.renderErrors()}
+                {this.renderSubmit()}
+            </div>
+        );
     }
 }
 

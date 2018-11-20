@@ -5,6 +5,7 @@ import './style.scss';
 
 import OverviewTab from './OverviewTab';
 import ProjectsTab from './ProjectsTab';
+import ChallengesTab from './ChallengesTab';
 import AnnotatorsTab from './AnnotatorsTab';
 
 import * as AdminActions from '../../../redux/admin/actions';
@@ -110,6 +111,29 @@ class AdminEventDetail extends Component {
         );
     }
 
+    renderChallenges() {
+        const { getProjects, isProjectsLoading, isProjectsError, updateProjects, getEvent, adminToken } = this.props;
+        const { eventId } = this.state;
+
+        const event = getEvent(eventId);
+
+        if (isProjectsError(eventId)) {
+            return this.renderError('Unable to get projects', 'Please reload the page to try again.');
+        }
+
+        if (!event || isProjectsLoading(eventId)) {
+            return this.renderLoading('Loading data', 'Hold on...');
+        }
+
+        return (
+            <ChallengesTab
+                projects={getProjects(eventId)}
+                event={event}
+                onRefresh={() => updateProjects(adminToken, eventId, 1000)}
+            />
+        );
+    }
+
     renderAnnotators() {
         const { getAnnotators, isAnnotatorsLoading, isAnnotatorsError, updateAnnotators, adminToken } = this.props;
         const { eventId } = this.state;
@@ -137,6 +161,8 @@ class AdminEventDetail extends Component {
             case 1:
                 return this.renderResults();
             case 2:
+                return this.renderChallenges();
+            case 3:
                 return this.renderAnnotators();
             default:
                 return null;
@@ -165,11 +191,17 @@ class AdminEventDetail extends Component {
                         className={this.state.activeTab === 1 ? 'EventDetail--Tab active' : 'EventDetail--Tab'}
                         onClick={() => this.setState({ activeTab: 1 })}
                     >
-                        <span className="EventDetail--Tab_text">Results</span>
+                        <span className="EventDetail--Tab_text">Tracks</span>
                     </div>
                     <div
                         className={this.state.activeTab === 2 ? 'EventDetail--Tab active' : 'EventDetail--Tab'}
                         onClick={() => this.setState({ activeTab: 2 })}
+                    >
+                        <span className="EventDetail--Tab_text">Challenges</span>
+                    </div>
+                    <div
+                        className={this.state.activeTab === 3 ? 'EventDetail--Tab active' : 'EventDetail--Tab'}
+                        onClick={() => this.setState({ activeTab: 3 })}
                     >
                         <span className="EventDetail--Tab_text">Annotators</span>
                     </div>

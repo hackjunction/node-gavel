@@ -1,0 +1,34 @@
+@import '../../../styles/base.scss';
+
+.Form {
+}
+
+.Form--Errors {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.Form--Errors_title {
+    padding: 5px;
+    background: $error-red;
+    color: $snow;
+}
+
+.Form--Errors_item {
+    list-style: circle;
+}
+
+.Form--Checkbox {
+    display: flex;
+    flex-direction: row;
+}
+
+.Form--Checkbox_check {
+    margin-right: $double-margin;
+}
+
+.Form--Checkbox_text {
+    flex: 1;
+}

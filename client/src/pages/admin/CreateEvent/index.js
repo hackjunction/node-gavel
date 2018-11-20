@@ -474,6 +474,7 @@ class AdminCreateEvent extends Component {
                 <SubmitButton
                     text={this.state.eventData._id ? 'Update Event' : 'Create Event'}
                     loading={this.state.loading}
+                    disabled={false /** TODO:! */}
                     onClick={this.onSubmit}
                 />
                 <div style={{ height: '50px' }} />

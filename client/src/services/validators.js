@@ -160,15 +160,18 @@ const Validators = {
         const val = phone(value);
 
         if (val.length === 0) {
-            return {
-                error: true,
-                message: 'Please enter a valid phone number, including the country code'
-            };
-        } else {
-            return {
-                error: false,
-                message: val[0]
-            };
+            return 'Please enter a valid phone number, including the country code';
+        }
+
+        return null;
+    },
+
+    url: value => {
+        try {
+            new URL(value);
+            return null;
+        } catch (_) {
+            return 'Please enter a valid url, including the protocol (e.g. http://...)';
         }
     }
 };

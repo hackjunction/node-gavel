@@ -1,6 +1,7 @@
 const ProjectController = require('../controllers/Project');
 const status = require('http-status');
 const passport = require('passport');
+const Utils = require('../services/utils');
 
 module.exports = function(app) {
     /**
@@ -20,6 +21,12 @@ module.exports = function(app) {
      * -> No auth required
      */
     app.get('/api/projects/public/:projectId', getProjectByIdPublic);
+
+    /**
+     * Get all projects with a given challenge (by challenge secret)
+     * -> No auth required
+     */
+    app.get('/api/projects/challenge/:eventId/:secret', getProjectsByChallenge);
 
     /**
      * Set a project as prioritized
@@ -104,6 +111,28 @@ function getProjectsForEvent(req, res) {
         })
         .catch(error => {
             console.log('getProjectsForEvent', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
+}
+
+function getProjectsByChallenge(req, res) {
+    const { secret, eventId } = req.params;
+    const challenge = Utils.decrypt(secret);
+
+    ProjectController.getByChallenge(challenge, eventId)
+        .then(projects => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data: {
+                    projects,
+                    challenge
+                }
+            });
+        })
+        .catch(error => {
+            console.log('getProjectsByChallenge', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });

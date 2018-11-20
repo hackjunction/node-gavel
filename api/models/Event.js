@@ -52,6 +52,14 @@ const EventSchema = new Schema({
     apiKey: {
         type: String,
         required: true
+    },
+    track_winners_public: {
+        type: Boolean,
+        default: false
+    },
+    finalist_voting_open: {
+        type: Boolean,
+        default: false
     }
 });
 

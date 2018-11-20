@@ -1,64 +1,67 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import './style.scss';
 
 class SubmitButton extends Component {
     static propTypes = {
         text: PropTypes.string,
         onClick: PropTypes.func,
+        loading: PropTypes.bool,
+        hidden: PropTypes.bool,
+        disabled: PropTypes.bool,
+        isLink: PropTypes.bool,
+        linkTo: PropTypes.bool
+    };
+
+    static defaultProps = {
         loading: false,
         hidden: false,
         disabled: false,
-        size: PropTypes.string,
-        align: PropTypes.string,
-        noMarginTop: PropTypes.bool,
-        noMarginBottom: PropTypes.bool,
-        error: PropTypes.string
+        isLink: false
     };
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            loading: false
-        };
-    }
-
     render() {
-        let className = 'SubmitButton';
+        const { disabled, loading, hidden, onClick, text, isLink, linkTo } = this.props;
 
-        if (this.props.size) {
-            className += ` SubmitButton-size-${this.props.size}`;
-        }
-        if (this.props.align) {
-            className += ` SubmitButton-align-${this.props.align}`;
-        }
+        if (isLink) {
+            let className = 'SubmitButton';
 
-        if (this.props.noMarginTop) {
-            className += ' SubmitButton-mt-0';
-        }
+            if (disabled) {
+                className += ' disabled';
+            }
 
-        if (this.props.noMarginBottom) {
-            className += ' SubmitButton-mb-0';
-        }
+            return (
+                <div className={className}>
+                    <Link className="SubmitButton--button" to={linkTo}>
+                        <span className="SubmitButton--text">{text}</span>
+                    </Link>
+                </div>
+            );
+        } else {
+            let className = 'SubmitButton';
 
-        if (this.props.loading) {
-            className += ' loading';
-        }
+            if (disabled) {
+                className += ' disabled';
+            }
 
-        if (this.props.hidden) {
-            className += ' hidden';
-        }
+            if (loading) {
+                className += ' loading';
+            }
 
-        return (
-            <div className={className}>
-                <button className="SubmitButton--button" onClick={this.props.onClick} disabled={this.props.disabled}>
-                    <span className="SubmitButton--text">{this.props.text}</span>
-                    <i class="SubmitButton--spinner fas fa-spinner fa-spin" />
-                </button>
-                {this.props.error ? <p className="SubmitButton--error">{this.props.error}</p> : null}
-            </div>
-        );
+            if (hidden) {
+                className += ' hidden';
+            }
+
+            return (
+                <div className={className}>
+                    <button className="SubmitButton--button" onClick={onClick} disabled={disabled}>
+                        <span className="SubmitButton--text">{text}</span>
+                        <i class="SubmitButton--spinner fas fa-spinner fa-spin" />
+                    </button>
+                </div>
+            );
+        }
     }
 }
 

@@ -25,6 +25,9 @@ const Settings = {
     ADMIN_TOKEN: process.env.ADMIN_TOKEN || 'foofoo',
     BASE_URL: process.env.BASE_URL || 'localhost:5000',
 
+    /** Salt for crypto functions */
+    SALT: process.env.SALT || 'super secret 123',
+
     /** Disable sending emails? Email message will be logged in console instead */
     DISABLE_EMAIL: process.env.DISABLE_EMAIL || false,
     /** Sendgrid API key */

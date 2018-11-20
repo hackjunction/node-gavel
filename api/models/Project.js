@@ -22,6 +22,8 @@ const ProjectSchema = new Schema({
     track: String,
     challenges: [String],
     contactPhone: String,
+    source_public: Boolean,
+    members_public: Boolean,
     /** END project info*/
     team: {
         type: Schema.Types.ObjectId,
@@ -95,6 +97,8 @@ const validate = function(item) {
             .uri()
             .optional()
             .trim(),
+        source_public: Joi.boolean().optional(),
+        members_public: Joi.boolean().optional(),
         team: Joi.string().required(),
         event: Joi.string().required()
     };

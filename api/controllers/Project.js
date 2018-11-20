@@ -85,6 +85,10 @@ const ProjectController = {
         return Project.findById(projectId).lean();
     },
 
+    getByChallenge: (challenge, eventId) => {
+        return Project.find({ event: eventId, challenges: { $in: challenge } });
+    },
+
     getByIdPublic: projectId => {
         return Project.findById(projectId)
             .lean()

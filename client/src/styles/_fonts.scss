@@ -5,7 +5,7 @@ $font-regular: 'Lato', sans-serif;
 
 $fs-title: 22px;
 $fs-base: 16px;
-$fs-secondary: 13px;
+$fs-secondary: 14px;
 
 %text-title,
 .text-title {
@@ -23,7 +23,7 @@ $fs-secondary: 13px;
 %text-secondary,
 .text-secondary {
     font-size: $fs-secondary;
-    font-family: $font-title;
+    font-family: $font-regular;
 }
 
 * {

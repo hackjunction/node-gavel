@@ -111,6 +111,10 @@ const API = {
         return GET(`/api/events/${eventId}/?token=${token}`);
     },
 
+    adminGetChallengesForEvent: (token, eventId) => {
+        return GET(`/api/events/${eventId}/challenges/?token=${token}`);
+    },
+
     adminGetProjectsForEvent: (token, eventId) => {
         return GET(`/api/projects/event/${eventId}/?token=${token}`);
     },
@@ -225,6 +229,10 @@ const API = {
 
     submitVote: (secret, choice) => {
         return GET(`/api/annotators/vote/${choice}/?secret=${secret}`);
+    },
+
+    getProjectsByChallenge: (eventId, secret) => {
+        return GET(`/api/projects/challenge/${eventId}/${secret}`);
     },
 
     test: () => {

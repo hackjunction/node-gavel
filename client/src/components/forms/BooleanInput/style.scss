@@ -1,0 +1,11 @@
+@import '../../../styles/base.scss';
+
+.BooleanInput {
+    display: flex;
+    flex-direction: row;
+}
+
+.BooleanInput--Hint {
+    flex: 1;
+    padding-right: $base-margin;
+}

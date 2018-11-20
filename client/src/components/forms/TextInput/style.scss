@@ -42,6 +42,15 @@
         }
     }
 
+    &_error-bottom {
+        opacity: 0;
+        transition: all 0.2s ease;
+    }
+
+    &_error-text {
+        color: $error-red;
+    }
+
     &_under {
         display: flex;
         flex-direction: row;
@@ -94,6 +103,10 @@
         }
 
         .TextInput_error {
+            opacity: 1;
+        }
+
+        .TextInput_error-bottom {
             opacity: 1;
         }
 

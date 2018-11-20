@@ -10,6 +10,7 @@ import NotFound from './pages/NotFound';
 import CreateTeam from './pages/public/CreateTeam';
 import Login from './pages/public/Login';
 import HomePage from './pages/public/Home';
+import ChalllengePage from './pages/public/ChallengePage';
 
 import AdminLogin from './pages/admin/Login';
 import AdminEventList from './pages/admin/EventList';
@@ -32,6 +33,7 @@ class App extends Component {
                 {/* Public Routes */}
                 <DefaultLayout exact path="/login/:secret" component={Login} headerSubtitle="Login" />
                 <DefaultLayout exact path="/admin/login" component={AdminLogin} headerSubtitle="Login" />
+                <DefaultLayout path="/events/:eventId/c/:secret" component={ChalllengePage} headerSubtitle="" />
                 {/* <DefaultLayout exact path="/teams/create" component={CreateTeam} headerSubtitle="Submit your team" /> */}
                 {/* TODO: (Low priority) Public route for viewing submitted projects of event */}
                 <DefaultLayout path="/event/:id" component={null} />

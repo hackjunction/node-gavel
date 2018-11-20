@@ -27,18 +27,17 @@
     }
 
     &_error {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: 30px;
         display: flex;
         flex-direction: row;
-        justify-content: center;
         align-items: center;
         opacity: 0;
 
         i {
+            color: $error-red;
+            margin-right: $base-margin;
+        }
+
+        &-text {
             color: $error-red;
         }
     }

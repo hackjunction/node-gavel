@@ -53,53 +53,19 @@ class OverviewTab extends Component {
                         onClick={() => this.extendSubmissionDeadline(adminToken, eventId)}
                         buttonText="Extend"
                     />
-                    {/* <div className="OverviewTab--Settings_item">
-                        <div className="OverviewTab--Settings_item-left">
-                            <h4 className="OverviewTab--Settings_item-name">Open winner voting</h4>
-                            <p className="OverviewTab--Settings_item-desc">Open the voting between finalist teams</p>
-                        </div>
-                        <div className="OverviewTab--Settings_item-right">
-                            <button className="OverviewTab--Settings_item-button">Announce</button>
-                        </div>
-                    </div>
-                    <div className="OverviewTab--Settings_item">
-                        <div className="OverviewTab--Settings_item-left">
-                            <h4 className="OverviewTab--Settings_item-name">Announce track winners</h4>
-                            <p className="OverviewTab--Settings_item-desc">
-                                Make the winners of each track public to participants
-                            </p>
-                        </div>
-                        <div className="OverviewTab--Settings_item-right">
-                            <button className="OverviewTab--Settings_item-button">Announce</button>
-                        </div>
-                    </div>
-                    <div className="OverviewTab--Settings_item">
-                        <div className="OverviewTab--Settings_item-left">
-                            <h4 className="OverviewTab--Settings_item-name">Close submissions</h4>
-                            <p className="OverviewTab--Settings_item-desc">
-                                Override the submission timetable and close submissions now
-                            </p>
-                        </div>
-                        <div className="OverviewTab--Settings_item-right">
-                            <button className="OverviewTab--Settings_item-button">Close</button>
-                        </div>
-                    </div>
-                    <div className="OverviewTab--Settings_item">
-                        <div className="OverviewTab--Settings_item-left">
-                            <h4 className="OverviewTab--Settings_item-name">Close voting</h4>
-                            <p className="OverviewTab--Settings_item-desc">
-                                Override the voting timetable and close voting now
-                            </p>
-                        </div>
-                        <div className="OverviewTab--Settings_item-right">
-                            <button className="OverviewTab--Settings_item-button">Close</button>
-                        </div>
-                    </div> */}
+                    <SettingsItem
+                        title="Publish track winners"
+                        desc="If enabled, track winners can be seen by participants"
+                        onClick={() => this.publishTrackWinners(adminToken, eventId)}
+                        buttonText="Publish"
+                    />
+                    <SettingsItem
+                        title="Open finalist voting"
+                        desc="If enabled, participants can submit their finalist votes"
+                        onClick={() => this.openFinalistVoting(adminToken, eventId)}
+                        buttonText="Open"
+                    />
                 </div>
-                <h4>Cool graphs and stuff here</h4>
-                <p>Projects: {this.props.projects.length}</p>
-                <p>Annotators: {this.props.annotators.length}</p>
-                <p>Event: {this.props.event.name}</p>
             </React.Fragment>
         );
     }

@@ -1,5 +1,7 @@
 const moment = require('moment-timezone');
+const _ = require('lodash');
 const { Event, validate } = require('../models/Event');
+const Utils = require('../services/utils');
 
 const EventController = {
     create: data => {
@@ -25,6 +27,17 @@ const EventController = {
 
             event.submissionDeadline = deadline;
             return event.save();
+        });
+    },
+
+    getChallengesForEvent: eventId => {
+        return Event.findById(eventId).then(event => {
+            return _.map(event.challenges, challenge => {
+                return {
+                    name: challenge,
+                    secret: Utils.encrypt(challenge)
+                };
+            });
         });
     },
 

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import _ from 'lodash';
 import './style.scss';
 
 class DropDownInput extends Component {
     static propTypes = {
         placeholder: PropTypes.string,
         onChange: PropTypes.func.isRequired,
-        value: PropTypes.string.isRequired,
+        value: PropTypes.any.isRequired,
         error: PropTypes.string,
         min: PropTypes.number,
         max: PropTypes.number,
@@ -23,6 +24,7 @@ class DropDownInput extends Component {
         };
 
         this.onBlur = this.onBlur.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -33,31 +35,26 @@ class DropDownInput extends Component {
         }
     }
 
-    validate(value = '') {
-        const { min, max } = this.props;
+    validate(value) {
+        const { min, max, multi, required } = this.props;
 
-        if (min && value.length < min) {
-            return `Must be at least ${min} characters.`;
-        }
+        if (!multi) {
+            const val = value || null;
+            if (required && !val) {
+                return `This field is required.`;
+            }
+        } else {
+            const val = value || [];
+            if (min && val.length < min) {
+                return `You must choose at least ${min} item(s).`;
+            }
 
-        if (max && value.length > max) {
-            return `Cannot be over ${max} characters.`;
+            if (max && val.length > max) {
+                return `You can't choose over ${max} items.`;
+            }
         }
 
         return null;
-    }
-
-    charCount(curr) {
-        const { min, max } = this.props;
-        if (min && max) {
-            return curr + '/' + min + '-' + max;
-        } else if (min) {
-            return curr + '/' + min + '-';
-        } else if (max) {
-            return curr + '/' + max;
-        } else {
-            return null;
-        }
     }
 
     onBlur() {
@@ -66,25 +63,49 @@ class DropDownInput extends Component {
         });
     }
 
-    onChange() {
-        return null;
+    onChange(data) {
+        if (this.props.multi) {
+            this.props.onChange(_.map(data, 'value'));
+        } else {
+            this.props.onChange(data.value);
+        }
+    }
+
+    getSelectedItems(value) {
+        if (this.props.multi) {
+            return _.filter(this.props.choices, choice => {
+                return this.props.value.indexOf(choice.value) !== -1;
+            });
+        } else {
+            return _.find(this.props.choices, choice => {
+                return choice.value === this.props.value;
+            });
+        }
     }
 
     render() {
         const { choices, multi, hint } = this.props;
         const { error } = this.state;
-        const value = this.props.value || '';
 
         return (
             <div className={`DropDownInput ${error ? 'has-error' : ''}`}>
                 <div className="DropDownInput_input-wrapper">
-                    <Select value={value} onChange={this.onChange} options={choices} multi={multi} />
-                    <div className="DropDownInput_error">
-                        <i className="fas fa-times" />
-                    </div>
+                    <Select
+                        value={this.getSelectedItems()}
+                        onChange={this.onChange}
+                        options={choices}
+                        isMulti={multi}
+                        onBlur={this.onBlur}
+                    />
                 </div>
                 <div className="DropDownInput_under">
-                    <span className="DropDownInput_hint">{hint}</span>
+                    {this.state.error ? (
+                        <div className="DropDownInput_error">
+                            <span className="DropDownInput_error-text">{this.state.error}</span>
+                        </div>
+                    ) : (
+                        <span className="DropDownInput_hint">{hint}</span>
+                    )}
                 </div>
             </div>
         );

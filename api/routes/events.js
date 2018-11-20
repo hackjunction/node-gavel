@@ -22,6 +22,12 @@ module.exports = function(app) {
     app.get('/api/events/:eventId', passport.authenticate('admin', { session: false }), getEventWithId);
 
     /**
+     * Get challenges for an event
+     * -> Requires admin token
+     */
+    app.get('/api/events/:eventId/challenges', passport.authenticate('admin', { session: false }), getEventChallenges);
+
+    /**
      * Extend submission deadline by 15 minutes
      * -> Requires admin token
      */
@@ -48,6 +54,22 @@ function createEvent(req, res) {
         })
         .catch(error => {
             console.log('createEvent', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        });
+}
+
+function getEventChallenges(req, res) {
+    EventController.getChallengesForEvent(req.params.eventId)
+        .then(challenges => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data: challenges
+            });
+        })
+        .catch(error => {
+            console.log('getEventChallenges', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });
