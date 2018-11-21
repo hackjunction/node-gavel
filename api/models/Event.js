@@ -13,14 +13,25 @@ const EventSchema = new Schema({
     },
     hasTracks: {
         type: Boolean,
+        default: true,
         required: true
     },
-    tracks: [String],
+    tracks: [
+        {
+            name: String
+        }
+    ],
     hasChallenges: {
         type: Boolean,
+        default: true,
         required: true
     },
-    challenges: [String],
+    challenges: [
+        {
+            name: String,
+            partner: String
+        }
+    ],
     timezone: {
         type: String,
         required: true
@@ -45,10 +56,6 @@ const EventSchema = new Schema({
         type: Date,
         required: true
     },
-    participantCode: {
-        type: String,
-        required: true
-    },
     apiKey: {
         type: String,
         required: true
@@ -63,51 +70,32 @@ const EventSchema = new Schema({
     }
 });
 
-const DATE_FORMAT = 'DD.MM.YYYY HH:mm';
 const validate = data => {
     if (!moment.tz.zone(data.timezone)) {
         return Promise.reject(new Error('Invalid timezone ' + data.timezone));
     }
 
-    const cleaned = {
-        ...data,
-        startTime: moment(data.startTime, DATE_FORMAT)
-            .tz(data.timezone)
-            .toDate(),
-        endTime: moment(data.endTime, DATE_FORMAT)
-            .tz(data.timezone)
-            .toDate(),
-        submissionDeadline: moment(data.submissionDeadline, DATE_FORMAT)
-            .tz(data.timezone)
-            .toDate(),
-        votingStartTime: moment(data.votingStartTime, DATE_FORMAT)
-            .tz(data.timezone)
-            .toDate(),
-        votingEndTime: moment(data.votingEndTime, DATE_FORMAT)
-            .tz(data.timezone)
-            .toDate(),
-        tracks: data.hasTracks ? data.tracks : [],
-        challenges: data.hasChallenges ? data.challenges : []
-    };
+    console.log('DATA', data);
 
     //TODO: Define more strict schema, shared validation for front/backend
     const schema = Joi.object().keys({
         name: Joi.string().trim(),
-        hasTracks: Joi.boolean(),
-        tracks: Joi.array().items(Joi.string().trim()),
-        hasChallenges: Joi.boolean(),
-        challenges: Joi.array().items(Joi.string().trim()),
+        tracks: Joi.array()
+            .min(1)
+            .max(20),
+        challenges: Joi.array()
+            .min(1)
+            .max(100),
         timezone: Joi.string(),
         startTime: Joi.date(),
         endTime: Joi.date(),
         submissionDeadline: Joi.date(),
         votingStartTime: Joi.date(),
         votingEndTime: Joi.date(),
-        participantCode: Joi.string(),
         apiKey: Joi.string()
     });
 
-    return schema.validate(cleaned, { allowUnknown: true });
+    return schema.validate(data, { allowUnknown: true });
 };
 
 //TODO: set up indexes

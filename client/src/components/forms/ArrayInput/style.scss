@@ -1,0 +1,24 @@
+@import '../../../styles/base.scss';
+
+.ArrayInput--Values {
+    max-width: 100%;
+}
+
+.ArrayInput--Remove {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    opacity: 0.5;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    span {
+        padding: 5px;
+        color: $error-red;
+        font-weight: bold;
+    }
+}

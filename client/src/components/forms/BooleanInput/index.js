@@ -9,10 +9,17 @@ class BooleanInput extends Component {
         onChange: PropTypes.func.isRequired,
         value: PropTypes.string.isRequired,
         error: PropTypes.string,
-        min: PropTypes.number,
-        max: PropTypes.number,
+        default: PropTypes.bool,
         validate: PropTypes.func
     };
+
+    static defaultProps = {
+        default: null
+    };
+
+    focus() {
+        return null;
+    }
 
     validate() {
         return null;

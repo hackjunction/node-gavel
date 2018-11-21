@@ -43,10 +43,16 @@
         align-items: center;
     }
 
+    &_branding {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
     @include up-to-tablet {
-        flex-direction: column;
-        &-right {
-            display: none;
+        &_branding {
+            flex-direction: column;
         }
     }
 

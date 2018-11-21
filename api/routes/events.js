@@ -36,12 +36,6 @@ module.exports = function(app) {
         passport.authenticate('admin', { session: false }),
         extendSubmissionDeadline
     );
-
-    /**
-     * Get an event with the secret code
-     * -> No auth required
-     */
-    app.get('/api/events/code/:code', getEventWithCode);
 };
 
 function createEvent(req, res) {
@@ -102,22 +96,6 @@ function getEventWithId(req, res) {
         })
         .catch(error => {
             console.log('getEventWithId', error);
-            return res.status(status.INTERNAL_SERVER_ERROR).send({
-                status: 'error'
-            });
-        });
-}
-
-function getEventWithCode(req, res) {
-    EventController.getEventWithCode(req.params.code)
-        .then(data => {
-            return res.status(status.OK).send({
-                status: 'success',
-                data
-            });
-        })
-        .catch(error => {
-            console.log('getEventWithCode', error);
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });

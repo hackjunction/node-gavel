@@ -8,9 +8,11 @@ import TextInput from '../TextInput';
 import LongTextInput from '../LongTextInput';
 import DropDownInput from '../DropDownInput';
 import BooleanInput from '../BooleanInput';
+import DateInput from '../DateInput';
 import SubmitButton from '../SubmitButton';
+import ArrayInput from '../ArrayInput';
 
-const TYPES = {
+export const TYPES = {
     text: {
         id: 'text',
         options: ['min', 'max']
@@ -21,7 +23,7 @@ const TYPES = {
     },
     date: {
         id: 'date',
-        options: ['min', 'max']
+        options: ['minDate', 'maxDate']
     },
     dropdown: {
         id: 'dropdown',
@@ -30,6 +32,10 @@ const TYPES = {
     boolean: {
         id: 'boolean',
         options: ['default']
+    },
+    array: {
+        id: 'array',
+        options: ['fields', 'isObject']
     }
 };
 
@@ -125,7 +131,7 @@ class Form extends Component {
             switch (field.type) {
                 case TYPES.text.id: {
                     return (
-                        <FormField id={field.id} label={field.label} required={field.required}>
+                        <FormField key={field.id} id={field.id} label={field.label} required={field.required}>
                             <TextInput
                                 ref={ref => (this[field.name] = ref)}
                                 placeholder={field.placeholder}
@@ -134,30 +140,14 @@ class Form extends Component {
                                 onChange={value => {
                                     this.onChange(field.name, value);
                                 }}
-                                min={field.options && field.options.hasOwnProperty('min') ? field.options.min : null}
-                                max={field.options && field.options.hasOwnProperty('max') ? field.options.max : null}
-                                validate={
-                                    field.options && field.options.hasOwnProperty('validate')
-                                        ? field.options.validate
-                                        : null
-                                }
-                                showErrorText={
-                                    field.options && field.options.hasOwnProperty('showErrorText')
-                                        ? field.options.showErrorText
-                                        : null
-                                }
-                                required={
-                                    field.options && field.options.hasOwnProperty('required')
-                                        ? field.options.required
-                                        : false
-                                }
+                                {...field.options}
                             />
                         </FormField>
                     );
                 }
                 case TYPES.textarea.id: {
                     return (
-                        <FormField id={field.id} label={field.label} required={field.required}>
+                        <FormField key={field.id} id={field.id} label={field.label} required={field.required}>
                             <LongTextInput
                                 ref={ref => (this[field.name] = ref)}
                                 placeholder={field.placeholder}
@@ -166,37 +156,29 @@ class Form extends Component {
                                 onChange={value => {
                                     this.onChange(field.name, value);
                                 }}
-                                min={field.options && field.options.hasOwnProperty('min') ? field.options.min : null}
-                                max={field.options && field.options.hasOwnProperty('max') ? field.options.max : null}
-                                validate={
-                                    field.options && field.options.hasOwnProperty('validate')
-                                        ? field.options.validate
-                                        : null
-                                }
-                                showErrorText={
-                                    field.options && field.options.hasOwnProperty('showErrorText')
-                                        ? field.options.showErrorText
-                                        : null
-                                }
-                                required={
-                                    field.options && field.options.hasOwnProperty('required')
-                                        ? field.options.required
-                                        : false
-                                }
+                                {...field.options}
                             />
                         </FormField>
                     );
                 }
                 case TYPES.date.id: {
                     return (
-                        <FormField id={field.id} label={field.label} required={field.required}>
-                            <p>Date field</p>
+                        <FormField key={field.id} id={field.id} label={field.label} required={field.required}>
+                            <DateInput
+                                ref={ref => (this[field.name] = ref)}
+                                hint={field.hint}
+                                value={data[field.name]}
+                                onChange={value => {
+                                    this.onChange(field.name, value);
+                                }}
+                                {...field.options}
+                            />
                         </FormField>
                     );
                 }
                 case TYPES.boolean.id: {
                     return (
-                        <FormField id={field.id} label={field.label}>
+                        <FormField key={field.id} id={field.id} label={field.label}>
                             <BooleanInput
                                 ref={ref => (this[field.name] = ref)}
                                 hint={field.hint}
@@ -204,18 +186,14 @@ class Form extends Component {
                                 onChange={value => {
                                     this.onChange(field.name, value);
                                 }}
-                                default={
-                                    field.options && field.options.hasOwnProperty('default')
-                                        ? field.options.default
-                                        : null
-                                }
+                                {...field.options}
                             />
                         </FormField>
                     );
                 }
                 case TYPES.dropdown.id: {
                     return (
-                        <FormField id={field.id} label={field.label} required={field.required}>
+                        <FormField key={field.id} id={field.id} label={field.label} required={field.required}>
                             <DropDownInput
                                 ref={ref => (this[field.name] = ref)}
                                 placeholder={field.placeholder}
@@ -224,21 +202,21 @@ class Form extends Component {
                                 onChange={value => {
                                     this.onChange(field.name, value);
                                 }}
-                                min={field.options && field.options.hasOwnProperty('min') ? field.options.min : null}
-                                max={field.options && field.options.hasOwnProperty('max') ? field.options.max : null}
-                                multi={
-                                    field.options && field.options.hasOwnProperty('multi') ? field.options.multi : false
-                                }
-                                choices={
-                                    field.options && field.options.hasOwnProperty('choices')
-                                        ? field.options.choices
-                                        : []
-                                }
-                                required={
-                                    field.options && field.options.hasOwnProperty('required')
-                                        ? field.options.required
-                                        : false
-                                }
+                                {...field.options}
+                            />
+                        </FormField>
+                    );
+                }
+                case TYPES.array.id: {
+                    return (
+                        <FormField key={field.id} id={field.id} label={field.label} required={field.required}>
+                            <ArrayInput
+                                ref={ref => (this[field.name] = ref)}
+                                value={data[field.name]}
+                                onChange={value => {
+                                    this.onChange(field.name, value);
+                                }}
+                                {...field.options}
                             />
                         </FormField>
                     );

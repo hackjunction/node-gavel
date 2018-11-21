@@ -1,0 +1,40 @@
+@import '../../../styles/base.scss';
+
+.DateField {
+    background: transparent;
+    flex: 1;
+    padding: 5px;
+    border: none;
+    color: $snow;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.DateInput {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    &_input-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        border-bottom: 1px solid rgba($snow, 0.3);
+    }
+
+    &_hint {
+        flex: 2;
+        transition: all 0.2s ease;
+        opacity: 1;
+    }
+
+    &_error {
+        flex: 2;
+        transition: all 0.2s ease;
+        opacity: 1;
+        color: $error-red;
+    }
+}

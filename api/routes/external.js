@@ -53,9 +53,9 @@ function getEventInfo(req, res) {
 function createTeam(req, res) {
     const event = req.user;
 
-    const { members, phoneNumber } = req.body;
+    const { members } = req.body;
 
-    return TeamController.create(event._id.toString(), members, phoneNumber)
+    return TeamController.create(event._id.toString(), members)
         .then(team => {
             return TeamController.getByIdPopulated(team._id.toString()).then(populated => {
                 return res.status(status.OK).send({

@@ -11,7 +11,9 @@ class SubmitButton extends Component {
         hidden: PropTypes.bool,
         disabled: PropTypes.bool,
         isLink: PropTypes.bool,
-        linkTo: PropTypes.bool
+        linkTo: PropTypes.bool,
+        small: PropTypes.bool,
+        alignRight: PropTypes.bool
     };
 
     static defaultProps = {
@@ -22,7 +24,7 @@ class SubmitButton extends Component {
     };
 
     render() {
-        const { disabled, loading, hidden, onClick, text, isLink, linkTo } = this.props;
+        const { disabled, loading, hidden, onClick, text, isLink, linkTo, small, alignRight } = this.props;
 
         if (isLink) {
             let className = 'SubmitButton';
@@ -51,6 +53,14 @@ class SubmitButton extends Component {
 
             if (hidden) {
                 className += ' hidden';
+            }
+
+            if (small) {
+                className += ' small';
+            }
+
+            if (alignRight) {
+                className += ' alignRight';
             }
 
             return (

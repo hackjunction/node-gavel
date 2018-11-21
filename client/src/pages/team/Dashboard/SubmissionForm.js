@@ -87,8 +87,8 @@ class SubmissionForm extends Component {
 
         return _.map(challenges, c => {
             return {
-                value: c,
-                label: c
+                value: c._id,
+                label: c.name + ' / ' + c.partner
             };
         });
     }
@@ -98,8 +98,8 @@ class SubmissionForm extends Component {
 
         return _.map(tracks, t => {
             return {
-                value: t,
-                label: t
+                value: t._id,
+                label: t.name
             };
         });
     }
@@ -122,19 +122,31 @@ class SubmissionForm extends Component {
     }
 
     renderTopText() {
-        const { isSubmissionsOpen, submissionDeadline } = this.props;
+        const { isSubmissionsOpen, submissionDeadline, submission } = this.props;
         if (isSubmissionsOpen()) {
-            return (
-                <p>
-                    You should submit a draft of your project as soon as you have a rough idea of what you're working on
-                    - you can always edit your submission until the submission deadline,{' '}
-                    <strong>{submissionDeadline.format('dddd HH:mm A')}</strong>
-                </p>
-            );
+            if (submission.hasOwnProperty('_id')) {
+                return (
+                    <p>
+                        <strong>You've submitted a draft of your project.</strong> As your project evolves, you should keep
+                        updating your project details on this page. You can keep making changes to your project submission until the submission deadline,{' '}
+                        <strong>{submissionDeadline.format('dddd HH:mm A')}</strong>
+                    </p>
+                );
+            } else {
+                return (
+                    <p>
+                        <strong>You haven't submitted anything yet!</strong> Please do so as soon as you have a rough idea of
+                        what you are working on. Once you've submitted a draft, you can always update it in full until the submission deadline, <strong>{submissionDeadline.format('dddd HH:mm A')}</strong>.
+                        <br />
+                        <br />
+                        Submitting a draft now lets our partners know which teams are doing their challenge, so please take a minute to submit a draft well before the deadline.
+                    </p>
+                );
+            }
         } else {
             return (
                 <p>
-                    <strong>Submissions are now closed</strong>. You can still edit some fields of your location, such
+                    <strong>Submissions are now closed</strong>. You can still edit some fields of your submission, such
                     as your table location.
                 </p>
             );
@@ -144,9 +156,12 @@ class SubmissionForm extends Component {
     render() {
         const { submission, setSubmission } = this.props;
 
+        console.log('SUBMISSION', submission);
+
         return (
             <div className="SubmissionForm">
                 <h4>Project Submission</h4>
+                {this.renderTopText()}
                 <Form
                     data={submission}
                     onChange={setSubmission}
@@ -224,7 +239,7 @@ class SubmissionForm extends Component {
                             type: 'textarea',
                             placeholder: 'A longer description of all the juicy details',
                             hint:
-                                'What problem does your project solve? What tech did you use? What else do you want to tell us about it?',
+                            'What problem does your project solve? What tech did you use? What else do you want to tell us about it?',
                             id: 'description',
                             name: 'description',
                             options: {
@@ -237,7 +252,7 @@ class SubmissionForm extends Component {
                             type: 'text',
                             placeholder: 'Github, BitBucket etc...',
                             hint:
-                                'As per the submission rules, we require all teams to submit a link to their source code. If you do not wish to have your code openly accessible, please upload it as a .zip file to e.g. Google Drive, and paste a link which allows us to access it.',
+                            'As per the submission rules, we require all teams to submit a link to their source code. If you do not wish to have your code openly accessible, please upload it as a .zip file to e.g. Google Drive, and paste a link which allows us to access it.',
                             id: 'source',
                             name: 'source',
                             options: {
@@ -309,7 +324,7 @@ class SubmissionForm extends Component {
                             type: 'text',
                             placeholder: 'International format, e.g. +358501234567',
                             hint:
-                                'This will only be used in case we need to contact you during the event, and not for any other purpose.',
+                            'This will only be used in case we need to contact you during the event, and not for any other purpose.',
                             id: 'contactPhone',
                             name: 'contactPhone',
                             options: {

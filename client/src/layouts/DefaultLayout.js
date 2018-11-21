@@ -2,6 +2,8 @@ import React from 'react';
 import { Route, Link } from 'react-router-dom';
 import './style.scss';
 
+import BackLink from '../components/BackLink';
+
 const DefaultLayout = ({ component: Component, ...rest }) => {
     return (
         <Route
@@ -10,20 +12,22 @@ const DefaultLayout = ({ component: Component, ...rest }) => {
                 <div className="Page--Layout">
                     <div className="Page--Header">
                         <div className="Page--Header-left">
-                            <img
-                                className="Page--Header_branding-logo"
-                                alt="Junction"
-                                src={require('../assets/logo_text_white.png')}
-                            />
-                            <span className="Page--Header_branding-text">Projects</span>
+                            {rest.hasBack ? <BackLink to={rest.backTo} text={rest.backText} /> : null}
                         </div>
                         <div className="Page--Header-center">
-                            <h1 className="subtitle">{rest.headerSubtitle}</h1>
+                            <div className="Page--Header_branding">
+                                <img
+                                    className="Page--Header_branding-logo"
+                                    alt="Junction"
+                                    src={require('../assets/logo_text_white.png')}
+                                />
+                                <span className="Page--Header_branding-text">Projects</span>
+                            </div>
                         </div>
                         <div className="Page--Header-right">
                             {rest.isAdmin ? (
                                 <Link className="logout-button" to="/login">
-                                    Log out
+                                    <i class="fas fa-sign-out-alt" />
                                 </Link>
                             ) : null}
                         </div>

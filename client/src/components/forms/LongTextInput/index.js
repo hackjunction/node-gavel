@@ -12,6 +12,14 @@ class LongTextInput extends Component {
         max: PropTypes.number
     };
 
+    static defaultProps = {
+        min: null,
+        max: null,
+        validate: null,
+        showErrorText: false,
+        required: false
+    };
+
     constructor(props) {
         super(props);
 
@@ -28,6 +36,10 @@ class LongTextInput extends Component {
                 error: this.validate(nextProps.value)
             });
         }
+    }
+
+    focus() {
+        this.input.focus();
     }
 
     validate(value = '') {
@@ -72,6 +84,7 @@ class LongTextInput extends Component {
             <div className={`LongTextInput ${error ? 'has-error' : ''}`}>
                 <div className="LongTextInput_input-wrapper">
                     <textarea
+                        ref={ref => (this.input = ref)}
                         className="LongTextInput_input"
                         type="text"
                         value={value}

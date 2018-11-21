@@ -11,7 +11,17 @@ class TextInput extends Component {
         error: PropTypes.string,
         min: PropTypes.number,
         max: PropTypes.number,
-        validate: PropTypes.func
+        validate: PropTypes.func,
+        showErrorText: PropTypes.bool,
+        required: PropTypes.bool
+    };
+
+    static defaultProps = {
+        min: null,
+        max: null,
+        validate: null,
+        showErrorText: false,
+        required: false
     };
 
     constructor(props) {
@@ -30,6 +40,10 @@ class TextInput extends Component {
                 error: this.validate(nextProps.value)
             });
         }
+    }
+
+    focus() {
+        this.input.focus();
     }
 
     validate(value = '') {
@@ -78,6 +92,7 @@ class TextInput extends Component {
             <div className={`TextInput ${error ? 'has-error' : ''}`}>
                 <div className="TextInput_input-wrapper">
                     <input
+                        ref={ref => (this.input = ref)}
                         className="TextInput_input"
                         type="text"
                         value={value}

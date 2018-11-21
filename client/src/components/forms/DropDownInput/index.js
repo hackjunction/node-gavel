@@ -16,6 +16,14 @@ class DropDownInput extends Component {
         options: PropTypes.array
     };
 
+    static defaultProps = {
+        min: null,
+        max: null,
+        multi: false,
+        choices: [],
+        required: false
+    };
+
     constructor(props) {
         super(props);
 
@@ -30,9 +38,22 @@ class DropDownInput extends Component {
     componentWillReceiveProps(nextProps) {
         if (this.state.error) {
             this.setState({
-                error: this.validate(nextProps.value)
+                error: this.validate(this.getValue(nextProps))
             });
         }
+    }
+
+    getValue(props) {
+        if (props.value) return props.value;
+        if (props.isMulti) {
+            return [];
+        } else {
+            return '';
+        }
+    }
+
+    focus() {
+        return null;
     }
 
     validate(value) {
@@ -59,7 +80,7 @@ class DropDownInput extends Component {
 
     onBlur() {
         this.setState({
-            error: this.validate(this.props.value)
+            error: this.validate(this.getValue(this.props))
         });
     }
 
@@ -71,14 +92,15 @@ class DropDownInput extends Component {
         }
     }
 
-    getSelectedItems(value) {
+    getSelectedItems() {
+        const value = this.getValue(this.props);
         if (this.props.multi) {
             return _.filter(this.props.choices, choice => {
-                return this.props.value.indexOf(choice.value) !== -1;
+                return value.indexOf(choice.value) !== -1;
             });
         } else {
             return _.find(this.props.choices, choice => {
-                return choice.value === this.props.value;
+                return choice.value === value;
             });
         }
     }

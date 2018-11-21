@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Joi = require('joi');
+const _ = require('lodash');
 const EventController = require('../controllers/Event');
 const Settings = require('../settings');
 
@@ -62,6 +63,10 @@ const ProjectSchema = new Schema({
     sigma_sq: {
         type: Number,
         default: Settings.MATH.SIGMA_SQ_PRIOR
+    },
+    created: {
+        type: Date,
+        default: Date.now
     }
 });
 
@@ -106,7 +111,7 @@ const validate = function(item) {
     return EventController.getEventWithId(item.event).then(event => {
         if (event.hasChallenges) {
             keys.challenges = Joi.array()
-                .items(Joi.string().valid(event.challenges))
+                .items(Joi.string().valid(_.map(event.challenges, c => c._id.toString())))
                 .min(1)
                 .max(5)
                 .required();
@@ -114,7 +119,7 @@ const validate = function(item) {
 
         if (event.hasTracks) {
             keys.track = Joi.string()
-                .valid(event.tracks)
+                .valid(_.map(event.tracks, t => t._id.toString()))
                 .required();
         }
 

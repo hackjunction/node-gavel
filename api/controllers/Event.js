@@ -45,18 +45,6 @@ const EventController = {
         return Event.find({}).lean();
     },
 
-    getEventWithCode: participantCode => {
-        return Event.findOne({ participantCode })
-            .lean()
-            .then(event => {
-                if (!event) {
-                    return Promise.reject('No event found with code ' + participantCode);
-                }
-
-                return event;
-            });
-    },
-
     getEventWithId: _id => {
         return Event.findById(_id)
             .lean()

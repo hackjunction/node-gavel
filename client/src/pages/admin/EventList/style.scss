@@ -3,9 +3,9 @@
 .AdminEventList {
     .header {
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         margin-bottom: $double-margin;
 
         .create-button {

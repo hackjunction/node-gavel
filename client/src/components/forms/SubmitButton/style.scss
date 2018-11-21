@@ -23,6 +23,20 @@
             display: initial;
         }
     }
+
+    &.small {
+        justify-content: flex-end;
+        padding: $base-margin 0;
+
+        .SubmitButton--button {
+            height: 30px;
+            padding: 0 15px;
+        }
+
+        .SubmitButton--text {
+            font-size: $fs-secondary;
+        }
+    }
 }
 
 .SubmitButton--button {
@@ -40,7 +54,7 @@
     text-decoration: none;
 
     &:hover {
-        background: $spring-green;
+        background: $spring-green !important;
         color: $black;
         text-decoration: none;
 
@@ -51,6 +65,7 @@
 
     &:focus {
         outline: none;
+        background: rgba($spring-green, 0.3);
     }
 
     &:disabled {

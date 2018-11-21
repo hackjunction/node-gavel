@@ -1,0 +1,26 @@
+@import '../../styles/base.scss';
+
+.BackLink {
+    text-decoration: none;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+
+    &:hover {
+        text-decoration: none;
+        opacity: 1;
+    }
+}
+
+.BackLink--arrow {
+    color: $turquoise;
+}
+
+.BackLink--text {
+    margin-left: $base-margin;
+    color: $turquoise;
+    font-weight: bold;
+
+    @include up-to-tablet {
+        display: none;
+    }
+}
