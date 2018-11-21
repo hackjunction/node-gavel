@@ -29,10 +29,10 @@ const AnnotatorController = {
         return Annotator.findByIdAndUpdate(annotatorId, updates, { new: true });
     },
 
-    init: (annotatorId, trackName) => {
+    init: (annotatorId, trackId) => {
         return Annotator.findByIdAndUpdate(
             annotatorId,
-            { assigned_track: trackName, read_welcome: true },
+            { assigned_track: trackId, read_welcome: true },
             { new: true }
         );
     },

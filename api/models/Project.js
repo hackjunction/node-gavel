@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Joi = require('joi');
 const _ = require('lodash');
+const moment = require('moment-timezone');
 const EventController = require('../controllers/Event');
 const Settings = require('../settings');
 
@@ -74,8 +75,8 @@ ProjectSchema.index({ active: 1, viewed: 1, prioritized: 1, team: 1 });
 
 const Project = mongoose.model('Project', ProjectSchema);
 
-const validate = function(item) {
-    const keys = {
+const validate = function (item) {
+    let keys = {
         name: Joi.string()
             .min(1)
             .max(120)
@@ -121,6 +122,26 @@ const validate = function(item) {
             keys.track = Joi.string()
                 .valid(_.map(event.tracks, t => t._id.toString()))
                 .required();
+        }
+
+        const now = moment().tz(event.timezone);
+        const deadline = moment(event.submissionDeadline).tz(event.timezone);
+
+        if (deadline.isBefore(now)) {
+            delete keys.name;
+            delete keys.description;
+            delete keys.punchline;
+            delete keys.track;
+            delete keys.challenges;
+            delete keys.source;
+            delete keys.team;
+            delete keys.event;
+        }
+
+        const eventStart = moment(event.startTime).tz(event.timezone);
+
+        if (eventStart.isAfter(now)) {
+            throw new Error('Submissions are not yet open');
         }
 
         const schema = Joi.object().keys(keys);
