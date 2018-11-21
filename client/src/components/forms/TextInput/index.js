@@ -13,7 +13,8 @@ class TextInput extends Component {
         max: PropTypes.number,
         validate: PropTypes.func,
         showErrorText: PropTypes.bool,
-        required: PropTypes.bool
+        required: PropTypes.bool,
+        editable: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -84,7 +85,7 @@ class TextInput extends Component {
     }
 
     render() {
-        const { placeholder, hint, showErrorText } = this.props;
+        const { placeholder, hint, showErrorText, editable } = this.props;
         const { error } = this.state;
         const value = this.props.value || '';
 
@@ -99,10 +100,17 @@ class TextInput extends Component {
                         placeholder={placeholder}
                         onChange={e => this.props.onChange(e.target.value)}
                         onBlur={this.onBlur}
+                        readOnly={!editable}
                     />
-                    <div className="TextInput_error">
-                        <i className="fas fa-times" />
-                    </div>
+                    {editable ? (
+                        <div className="TextInput_error">
+                            <i className="fas fa-times" />
+                        </div>
+                    ) : (
+                            <div className="TextInput_locked">
+                                <i className="fas fa-lock" />
+                            </div>
+                        )}
                 </div>
                 <div className="TextInput_under">
                     {showErrorText && this.state.error ? (
@@ -110,8 +118,8 @@ class TextInput extends Component {
                             <span className="TextInput_error-text">{this.state.error}</span>
                         </div>
                     ) : (
-                        <span className="TextInput_hint">{hint}</span>
-                    )}
+                            <span className="TextInput_hint">{hint}</span>
+                        )}
                     <div className="TextInput_character-count">
                         <span className="TextInput_character-count-value">{this.charCount(value.length)}</span>
                     </div>

@@ -154,9 +154,11 @@ class SubmissionForm extends Component {
     }
 
     render() {
-        const { submission, setSubmission } = this.props;
+        const { submission, setSubmission, isSubmissionsOpen } = this.props;
 
-        console.log('SUBMISSION', submission);
+        const submissionsOpen = isSubmissionsOpen();
+
+        console.log('IS OPEN', submissionsOpen);
 
         return (
             <div className="SubmissionForm">
@@ -218,7 +220,8 @@ class SubmissionForm extends Component {
                             options: {
                                 min: 2,
                                 max: 100,
-                                required: true
+                                required: true,
+                                editable: submissionsOpen,
                             }
                         },
                         {
@@ -231,7 +234,8 @@ class SubmissionForm extends Component {
                             options: {
                                 min: 10,
                                 max: 100,
-                                required: true
+                                required: true,
+                                editable: submissionsOpen,
                             }
                         },
                         {
@@ -244,7 +248,8 @@ class SubmissionForm extends Component {
                             name: 'description',
                             options: {
                                 min: 0,
-                                max: 2000
+                                max: 2000,
+                                editable: submissionsOpen
                             }
                         },
                         {
@@ -258,7 +263,8 @@ class SubmissionForm extends Component {
                             options: {
                                 required: true,
                                 validate: Validators.url,
-                                showErrorText: true
+                                showErrorText: true,
+                                editable: submissionsOpen,
                             }
                         },
                         {
@@ -268,7 +274,8 @@ class SubmissionForm extends Component {
                             id: 'source_public',
                             name: 'source_public',
                             options: {
-                                default: true
+                                default: true,
+                                editable: true,
                             }
                         },
                         {
@@ -278,7 +285,8 @@ class SubmissionForm extends Component {
                             id: 'members_public',
                             name: 'members_public',
                             options: {
-                                default: true
+                                default: true,
+                                editable: true,
                             }
                         },
                         {
@@ -290,7 +298,8 @@ class SubmissionForm extends Component {
                             options: {
                                 multi: false,
                                 choices: this.generateTableNumbers(),
-                                required: true
+                                required: true,
+                                editable: true,
                             }
                         },
                         {
@@ -302,7 +311,8 @@ class SubmissionForm extends Component {
                             options: {
                                 multi: false,
                                 choices: this.generateTrackChoices(),
-                                required: true
+                                required: true,
+                                editable: submissionsOpen
                             }
                         },
                         {
@@ -316,7 +326,8 @@ class SubmissionForm extends Component {
                                 choices: this.generateChallengeChoices(),
                                 min: 1,
                                 max: 5,
-                                required: true
+                                required: true,
+                                editable: submissionsOpen
                             }
                         },
                         {
@@ -330,7 +341,8 @@ class SubmissionForm extends Component {
                             options: {
                                 validate: Validators.phoneNumber,
                                 showErrorText: true,
-                                required: true
+                                required: true,
+                                editable: true,
                             }
                         }
                     ]}

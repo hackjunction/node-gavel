@@ -106,7 +106,7 @@ class DropDownInput extends Component {
     }
 
     render() {
-        const { choices, multi, hint } = this.props;
+        const { choices, multi, hint, editable } = this.props;
         const { error } = this.state;
 
         return (
@@ -118,6 +118,7 @@ class DropDownInput extends Component {
                         options={choices}
                         isMulti={multi}
                         onBlur={this.onBlur}
+                        isDisabled={!editable}
                     />
                 </div>
                 <div className="DropDownInput_under">
@@ -126,8 +127,8 @@ class DropDownInput extends Component {
                             <span className="DropDownInput_error-text">{this.state.error}</span>
                         </div>
                     ) : (
-                        <span className="DropDownInput_hint">{hint}</span>
-                    )}
+                            <span className="DropDownInput_hint">{hint}</span>
+                        )}
                 </div>
             </div>
         );

@@ -76,7 +76,7 @@ class LongTextInput extends Component {
     }
 
     render() {
-        const { placeholder, hint } = this.props;
+        const { placeholder, hint, editable } = this.props;
         const { error } = this.state;
         const value = this.props.value || '';
 
@@ -91,9 +91,10 @@ class LongTextInput extends Component {
                         placeholder={placeholder}
                         onChange={e => this.props.onChange(e.target.value)}
                         onBlur={this.onBlur}
+                        readOnly={!editable}
                     />
-                    <div className="LongTextInput_error">
-                        <i className="fas fa-times" />
+                    <div className="LongTextInput_locked">
+                        <i className="fas fa-lock" />
                     </div>
                 </div>
                 <div className="LongTextInput_under">
