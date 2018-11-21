@@ -125,8 +125,9 @@ const ReviewingService = {
                     };
                 });
 
+
                 return ProjectController.getByAnnotatorId(annotator._id.toString()).then(project => {
-                    if (project !== null) {
+                    if (project !== null && counts.length > 1) {
                         counts = _.filter(counts, c => c.track !== project.track);
                     }
 
@@ -147,7 +148,7 @@ const ReviewingService = {
     },
 
     getNextDecision(annotator) {
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
             if (!annotator.next) {
                 return ReviewingService.assignNextProject(annotator).then(annotator => {
                     resolve(annotator);

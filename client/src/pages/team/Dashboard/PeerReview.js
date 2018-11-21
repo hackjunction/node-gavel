@@ -38,7 +38,7 @@ class PeerReview extends Component {
                         <p>
                             Click the button below to access the voting page. You will be shown a short tutorial on how
                             the voting system works before you begin. Voting ends at{' '}
-                            <strong>{votingEndTime.format('h:mm A')}</strong> sharp.
+                            <strong>{votingEndTime.format('hh:mm A')}</strong> sharp.
                         </p>
                         <SubmitButton isLink="true" linkTo="/vote" text="Start voting" />
                     </div>
@@ -52,7 +52,7 @@ class PeerReview extends Component {
                         <p>
                             The voting page will be accessible from{' '}
                             <strong>
-                                {votingStartTime.format('hh:mm A')} to {votingEndTime.format('hh:mm A')}
+                                {votingStartTime.format('dddd hh:mm A')} to {votingEndTime.format('hh:mm A')}
                             </strong>{' '}
                             and you will be able to access it from this page.
                         </p>
@@ -74,6 +74,7 @@ class PeerReview extends Component {
 
     render() {
         const { event } = this.props;
+
         return (
             <div className="Voting-Tab">
                 <h4>Peer Reviewing</h4>
