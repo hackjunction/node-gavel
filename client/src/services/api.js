@@ -115,6 +115,10 @@ const API = {
         return GET(`/api/events/${eventId}/challenges/?token=${token}`);
     },
 
+    adminGetChallengeWinnersForEvent: (token, eventId) => {
+        return GET(`/api/events/${eventId}/winners/?token=${token}`);
+    },
+
     adminGetProjectsForEvent: (token, eventId) => {
         return GET(`/api/projects/event/${eventId}/?token=${token}`);
     },

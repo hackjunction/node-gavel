@@ -30,6 +30,12 @@ module.exports = function (app) {
     app.get('/api/events/:eventId/challenges', passport.authenticate('admin', { session: false }), getEventChallenges);
 
     /**
+     * Get winners for an event's challenges
+     * -> Requires admin token
+     */
+    app.get('/api/events/:eventId/winners', passport.authenticate('admin', { session: false }), getEventChallengeWinners);
+
+    /**
      * Extend submission deadline by 15 minutes
      * -> Requires admin token
      */
@@ -70,6 +76,22 @@ function getEventChallenges(req, res) {
                 status: 'error'
             });
         });
+}
+
+function getEventChallengeWinners(req, res) {
+    ChallengeWinnersController.getByEvent(req.params.eventId)
+        .then(winners => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data: winners
+            });
+        })
+        .catch(error => {
+            console.log('getEventChallengeWinners', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        })
 }
 
 function getAllEvents(req, res) {
