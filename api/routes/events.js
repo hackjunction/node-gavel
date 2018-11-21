@@ -1,6 +1,8 @@
 const EventController = require('../controllers/Event');
+const ChallengeWinnersController = require('../controllers/ChallengeWinners');
 const status = require('http-status');
 const passport = require('passport');
+const Utils = require('../services/utils');
 
 module.exports = function (app) {
     /**

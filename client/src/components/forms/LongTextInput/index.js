@@ -93,9 +93,11 @@ class LongTextInput extends Component {
                         onBlur={this.onBlur}
                         readOnly={!editable}
                     />
-                    <div className="LongTextInput_locked">
-                        <i className="fas fa-lock" />
-                    </div>
+                    {!editable ? (
+                        <div className="LongTextInput_locked">
+                            <i className="fas fa-lock" />
+                        </div>
+                    ) : null}
                 </div>
                 <div className="LongTextInput_under">
                     <span className="LongTextInput_hint">{hint}</span>

@@ -77,6 +77,20 @@ const EventController = {
             });
     },
 
+    getChallenge: (eventId, challengeId) => {
+        return EventController.getEventWithId(eventId).then(event => {
+            const challenge = _.find(event.challenges, (c) => {
+                return c._id.toString() === challengeId;
+            });
+
+            if (!challenge) {
+                return Promise.reject('Event ' + event.name + ' has no challenge with id ' + challengeId);
+            }
+
+            return challenge;
+        })
+    },
+
     removeNonPublicFields: event => {
         return {
             ...event,

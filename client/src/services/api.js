@@ -3,7 +3,7 @@ import Promise from 'bluebird';
 const SUCCESS = 200;
 
 const POST = (url, data) => {
-    return new Promise(async function(resolve, reject) {
+    return new Promise(async function (resolve, reject) {
         try {
             let response = await fetch(url, {
                 method: 'POST',
@@ -29,7 +29,7 @@ const POST = (url, data) => {
 };
 
 const PATCH = (url, data) => {
-    return new Promise(async function(resolve, reject) {
+    return new Promise(async function (resolve, reject) {
         try {
             let response = await fetch(url, {
                 method: 'PATCH',
@@ -55,7 +55,7 @@ const PATCH = (url, data) => {
 };
 
 const GET = url => {
-    return new Promise(async function(resolve, reject) {
+    return new Promise(async function (resolve, reject) {
         try {
             let response = await fetch(url);
 
@@ -74,7 +74,7 @@ const GET = url => {
 };
 
 const DELETE = url => {
-    return new Promise(async function(resolve, reject) {
+    return new Promise(async function (resolve, reject) {
         try {
             let response = await fetch(url, { method: 'DELETE' });
 
@@ -233,6 +233,14 @@ const API = {
 
     getProjectsByChallenge: (eventId, secret) => {
         return GET(`/api/projects/challenge/${eventId}/${secret}`);
+    },
+
+    setChallengeWinners: (eventId, secret, data) => {
+        return POST(`/api/projects/challenge/winners/${eventId}/${secret}`, { data });
+    },
+
+    getChallengeWinners: (eventId, secret) => {
+        return GET(`/api/projects/challenge/winners/${eventId}/${secret}`);
     },
 
     test: () => {

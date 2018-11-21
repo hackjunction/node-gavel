@@ -1,6 +1,7 @@
 const ProjectController = require('../controllers/Project');
 const status = require('http-status');
 const passport = require('passport');
+const ChallengeWinnersController = require('../controllers/ChallengeWinners');
 const EventController = require('../controllers/Event');
 const Utils = require('../services/utils');
 
@@ -25,9 +26,28 @@ module.exports = function (app) {
 
     /**
      * Get all projects with a given challenge (by challenge secret)
-     * -> No auth required
+     *  -> Requires challenge secret
      */
     app.get('/api/projects/challenge/:eventId/:secret', getProjectsByChallenge);
+
+
+    /**
+     * Set or update challenge winners for a specific challenge
+     * -> Requires challenge secret
+     */
+    app.post(
+        '/api/projects/challenge/winners/:eventId/:secret',
+        updateChallengeWinners
+    );
+
+    /**
+     * Get winners of a given challenge
+     *  -> Requires challenge secret
+     */
+    app.get(
+        '/api/projects/challenge/winners/:eventId/:secret',
+        getChallengeWinners
+    );
 
     /**
      * Set a project as prioritized
@@ -237,4 +257,41 @@ function disableProject(req, res) {
                 status: 'error'
             });
         });
+}
+
+
+function updateChallengeWinners(req, res) {
+    const { secret, eventId } = req.params;
+    const { data } = req.body;
+    const challengeId = Utils.decrypt(secret);
+
+    ChallengeWinnersController.createOrUpdate(challengeId, eventId, data).then(winners => {
+        return res.status(status.OK).send({
+            status: 'success',
+            data: winners
+        });
+    }).catch(error => {
+        console.log('updateChallengeWinners', error);
+        return res.status(status.INTERNAL_SERVER_ERROR).send({
+            status: 'error'
+        });
+    });
+}
+
+function getChallengeWinners(req, res) {
+    const { secret, eventId } = req.params;
+    const { data } = req.body;
+    const challengeId = Utils.decrypt(secret);
+
+    ChallengeWinnersController.getByChallenge(challengeId).then(winners => {
+        return res.status(status.OK).send({
+            status: 'success',
+            data: winners
+        });
+    }).catch(error => {
+        console.log('getChallengeWinners', error);
+        return res.status(status.INTERNAL_SERVER_ERROR).send({
+            status: 'error'
+        });
+    });
 }
