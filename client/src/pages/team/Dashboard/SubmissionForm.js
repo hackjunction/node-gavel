@@ -105,11 +105,11 @@ class SubmissionForm extends Component {
     }
 
     generateTableNumbers() {
-        const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J', 'K', 'X'];
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
         const options = [];
 
         _.each(letters, letter => {
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 50; i++) {
                 const tableNumber = letter + (i + 1);
                 options.push({
                     value: tableNumber,
@@ -147,7 +147,7 @@ class SubmissionForm extends Component {
             return (
                 <p>
                     <strong>Submissions are now closed</strong>. You can still edit some fields of your submission, such
-                    as your table location.
+                    as your table location and contact phone number. <em>Make sure that especially your table location is still correct!</em>
                 </p>
             );
         }
@@ -157,8 +157,6 @@ class SubmissionForm extends Component {
         const { submission, setSubmission, isSubmissionsOpen } = this.props;
 
         const submissionsOpen = isSubmissionsOpen();
-
-        console.log('IS OPEN', submissionsOpen);
 
         return (
             <div className="SubmissionForm">

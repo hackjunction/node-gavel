@@ -42,7 +42,7 @@ class ChallengesTab extends Component {
         const byChallenge = {};
 
         _.each(challenges, challenge => {
-            byChallenge[challenge] = [];
+            byChallenge[challenge._id] = [];
         });
 
         _.each(projects, project => {
@@ -54,11 +54,12 @@ class ChallengesTab extends Component {
         let result = [];
 
         _.forOwn(byChallenge, (projects, challenge) => {
-            const data = _.find(this.state.challenges, c => {
-                return c.name === challenge;
+            const data = _.find(challenges, c => {
+                return c._id === challenge;
             });
             result.push({
-                challenge,
+                challenge: data.name,
+                partner: data.partner,
                 projects,
                 link: data ? this.getLink(data.secret) : null
             });
@@ -89,6 +90,10 @@ class ChallengesTab extends Component {
                             accessor: 'challenge'
                         },
                         {
+                            Header: 'Partner',
+                            accessor: 'partner'
+                        },
+                        {
                             Header: 'Projects',
                             id: 'projects',
                             accessor: d => d.projects.length,
@@ -116,9 +121,9 @@ class ChallengesTab extends Component {
                             asc: true
                         }
                     ]}
-                    defaultPageSize={50}
-                    pageSizeOptions={[10, 50, 100, 500]}
+                    pageSize={event.challenges.length}
                     showPageJump={false}
+                    showPagination={false}
                     className="-striped -highlight"
                 />
             </React.Fragment>

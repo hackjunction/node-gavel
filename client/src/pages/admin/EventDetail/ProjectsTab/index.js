@@ -67,16 +67,16 @@ class ProjectsTab extends Component {
         const projects = this.filter(this.props.projects);
         const grouped = {};
 
-        _.each(event.tracks, track => (grouped[track] = []));
+        _.each(event.tracks, track => (grouped[track._id] = []));
 
         _.each(projects, project => {
             grouped[project.track].push(project);
         });
 
         let tracks = [];
-        _.forOwn(grouped, (projects, trackName) => {
+        _.forOwn(grouped, (projects, track) => {
             tracks.push({
-                trackName,
+                trackName: _.find(event.tracks, (t) => t._id === track).name,
                 projects
             });
         });
