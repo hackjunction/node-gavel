@@ -2,7 +2,7 @@ const EventController = require('../controllers/Event');
 const status = require('http-status');
 const passport = require('passport');
 
-module.exports = function(app) {
+module.exports = function (app) {
     /**
      * Create a new event, or update an existing one
      * -> Requires admin token

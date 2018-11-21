@@ -1,9 +1,10 @@
 const ProjectController = require('../controllers/Project');
 const status = require('http-status');
 const passport = require('passport');
+const EventController = require('../controllers/Event');
 const Utils = require('../services/utils');
 
-module.exports = function(app) {
+module.exports = function (app) {
     /**
      * Get all projects for an event
      * -> Requires admin token
@@ -119,17 +120,20 @@ function getProjectsForEvent(req, res) {
 
 function getProjectsByChallenge(req, res) {
     const { secret, eventId } = req.params;
-    const challenge = Utils.decrypt(secret);
+    const challengeId = Utils.decrypt(secret);
 
-    ProjectController.getByChallenge(challenge, eventId)
+    ProjectController.getByChallenge(challengeId, eventId)
         .then(projects => {
-            return res.status(status.OK).send({
-                status: 'success',
-                data: {
-                    projects,
-                    challenge
-                }
-            });
+            EventController.getEventWithIdPublic(eventId).then(event => {
+                return res.status(status.OK).send({
+                    status: 'success',
+                    data: {
+                        projects,
+                        event,
+                        challengeId
+                    }
+                });
+            })
         })
         .catch(error => {
             console.log('getProjectsByChallenge', error);

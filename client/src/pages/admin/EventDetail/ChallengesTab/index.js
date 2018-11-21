@@ -54,12 +54,12 @@ class ChallengesTab extends Component {
         let result = [];
 
         _.forOwn(byChallenge, (projects, challenge) => {
-            const data = _.find(challenges, c => {
-                return c._id === challenge;
+            const data = _.find(this.state.challenges, c => {
+                return c.challenge._id === challenge;
             });
             result.push({
-                challenge: data.name,
-                partner: data.partner,
+                challenge: data ? data.challenge.name : '',
+                partner: data ? data.challenge.partner : '',
                 projects,
                 link: data ? this.getLink(data.secret) : null
             });

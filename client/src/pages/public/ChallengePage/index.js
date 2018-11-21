@@ -11,8 +11,9 @@ class ChallengePage extends Component {
         this.state = {
             loading: true,
             error: false,
-            challenge: null,
-            projects: []
+            challengeId: this.props.match.params.challengeId,
+            projects: [],
+            event: null,
         };
     }
 
@@ -22,8 +23,9 @@ class ChallengePage extends Component {
         API.getProjectsByChallenge(eventId, secret)
             .then(data => {
                 this.setState({
-                    challenge: data.challenge,
+                    challengeId: data.challengeId,
                     projects: data.projects,
+                    event: data.event,
                     loading: false
                 });
             })
@@ -66,7 +68,7 @@ class ChallengePage extends Component {
             );
         }
 
-        if (this.state.error || !this.state.challenge) {
+        if (this.state.error || !this.state.challengeId || !this.state.event) {
             return (
                 <div className="ChallengePage">
                     <div className="ChallengePage--error">
@@ -80,10 +82,15 @@ class ChallengePage extends Component {
             );
         }
 
+        const challenge = _.find(this.state.event.challenges, (c) => c._id === this.state.challengeId);
+
         return (
             <div className="ChallengePage">
                 <div className="ChallengePage--top">
-                    <h2 className="ChallengePage--title">{this.state.challenge}</h2>
+                    <h2 className="ChallengePage--title">{challenge.name}</h2>
+                    <p className="ChallengePage--subtitle">
+                        {challenge.partner}
+                    </p>
                     <div className="ChallengePage--separator" />
                     <p className="ChallengePage--subtitle">
                         {this.state.projects.length} teams have submitted this challenge:

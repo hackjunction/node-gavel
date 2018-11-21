@@ -34,8 +34,8 @@ const EventController = {
         return Event.findById(eventId).then(event => {
             return _.map(event.challenges, challenge => {
                 return {
-                    name: challenge,
-                    secret: Utils.encrypt(challenge)
+                    challenge,
+                    secret: Utils.encrypt(challenge._id)
                 };
             });
         });
@@ -55,6 +55,12 @@ const EventController = {
 
                 return event;
             });
+    },
+
+    getEventWithIdPublic: _id => {
+        return EventController.getEventWithId(_id).then(event => {
+            return EventController.removeNonPublicFields(event);
+        })
     },
 
     getEventWithApiKey: apiKey => {
