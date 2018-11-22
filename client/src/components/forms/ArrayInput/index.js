@@ -76,7 +76,7 @@ class ArrayInput extends Component {
                 if (existing) {
                     return `${field.label} must be unique. You've already added an item with the value ${
                         newRow[field.name]
-                    }.`;
+                        }.`;
                 }
             }
 
@@ -131,6 +131,7 @@ class ArrayInput extends Component {
                                     }
                                 });
                             }}
+                            editable={this.props.editable}
                             {...field.options}
                         />
                     );
@@ -151,6 +152,7 @@ class ArrayInput extends Component {
                                     }
                                 });
                             }}
+                            editable={this.props.editable}
                             {...field.options}
                         />
                     );
@@ -170,6 +172,7 @@ class ArrayInput extends Component {
                                     }
                                 });
                             }}
+                            editable={this.props.editable}
                             {...field.options}
                         />
                     );
@@ -189,6 +192,7 @@ class ArrayInput extends Component {
                                     }
                                 });
                             }}
+                            editable={this.props.editable}
                             {...field.options}
                         />
                     );
@@ -209,6 +213,7 @@ class ArrayInput extends Component {
                                     }
                                 });
                             }}
+                            editable={this.props.editable}
                             {...field.options}
                         />
                     );
