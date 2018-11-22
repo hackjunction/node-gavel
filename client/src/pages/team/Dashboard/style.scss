@@ -162,3 +162,10 @@
     margin-bottom: $double-margin;
     text-align: left;
 }
+
+.Voting-Tab {
+    ul {
+        list-style-type: bullet;
+        color: $snow;
+    }
+}
