@@ -167,6 +167,14 @@ const API = {
         return GET(`/api/events/extend/${eventId}/?token=${token}`);
     },
 
+    adminToggleTrackWinnersPublic: (token, eventId, isPublic) => {
+        return GET(`/api/events/track-winners-public/${eventId}/?token=${token}&public=${isPublic}`);
+    },
+
+    adminToggleFinalistVotingOpen: (token, eventId, isOpen) => {
+        return GET(`/api/events/finalist-voting-open/${eventId}/?token=${token}&open=${isOpen}`);
+    },
+
     /* Public routes */
 
     getEventWithCode: code => {

@@ -19,9 +19,57 @@ class OverviewTab extends Component {
         error: PropTypes.bool
     };
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            trackWinnersPublic: false,
+        }
+
+        this.extendSubmissionDeadline = this.extendSubmissionDeadline.bind(this);
+        this.toggleTrackWinnersPublic = this.toggleTrackWinnersPublic.bind(this);
+        this.toggleFinalistVotingOpen = this.toggleFinalistVotingOpen.bind(this);
+    }
+
+    toggleTrackWinnersPublic() {
+        const { adminToken, eventId, event } = this.props;
+
+        return this.props.toggleTrackWinnersPublic(adminToken, eventId, !event.track_winners_public).then(event => {
+            this.bannerManager.addBanner(
+                {
+                    type: 'info',
+                    text: event.track_winners_public ? 'Track winners are now public' : 'Track winners are no longer public',
+                    canClose: true,
+                },
+                'track-winners-public',
+                5000
+            )
+
+            return event;
+        });
+    }
+
+    toggleFinalistVotingOpen() {
+        const { adminToken, eventId, event } = this.props;
+
+        return this.props.toggleFinalistVotingOpen(adminToken, eventId, !event.finalist_voting_open).then(event => {
+            this.bannerManager.addBanner(
+                {
+                    type: 'info',
+                    text: event.finalist_voting_open ? 'Finalist voting is now open!' : 'Finalist voting is now closed',
+                    canClose: true,
+                },
+                'finalist-voting-open',
+                5000
+            )
+
+            return event;
+        });
+    }
+
     extendSubmissionDeadline() {
-        const { adminToken, eventId } = this.props;
-        return this.props.extendSubmissionDeadline(adminToken, eventId).then(event => {
+        const { adminToken, eventId, event } = this.props;
+        return this.props.extendSubmissionDeadline(adminToken, eventId, !event.finalist_voting_open).then(event => {
             const newDeadline = moment(event.submissionDeadline)
                 .tz(event.timezone)
                 .format('HH:mm A');
@@ -41,6 +89,7 @@ class OverviewTab extends Component {
 
     render() {
         const { adminToken, eventId } = this.props;
+        const { track_winners_public, finalist_voting_open } = this.props.event;
 
         return (
             <React.Fragment>
@@ -50,20 +99,23 @@ class OverviewTab extends Component {
                     <SettingsItem
                         title="Extend submission deadline"
                         desc="Add 15 minutes to the submission deadline"
-                        onClick={() => this.extendSubmissionDeadline(adminToken, eventId)}
+                        onClick={this.extendSubmissionDeadline}
                         buttonText="Extend"
+                        isPositive={true}
                     />
                     <SettingsItem
-                        title="Publish track winners"
-                        desc="If enabled, track winners can be seen by participants"
-                        onClick={() => this.publishTrackWinners(adminToken, eventId)}
-                        buttonText="Publish"
+                        title={track_winners_public ? "Track winners public" : "Track winners not public"}
+                        desc={track_winners_public ? "Track winners are currently public" : "Track winners are not public"}
+                        isPositive={!track_winners_public}
+                        buttonText={!track_winners_public ? "Publish" : "Un-publish"}
+                        onClick={this.toggleTrackWinnersPublic}
                     />
                     <SettingsItem
-                        title="Open finalist voting"
-                        desc="If enabled, participants can submit their finalist votes"
-                        onClick={() => this.openFinalistVoting(adminToken, eventId)}
-                        buttonText="Open"
+                        title={finalist_voting_open ? "Finalist voting open" : "Finalist voting closed"}
+                        desc={finalist_voting_open ? "Participants are now able to submit their finalist votes" : "Participants are not able to submit finalist votes"}
+                        isPositive={!finalist_voting_open}
+                        buttonText={!finalist_voting_open ? "Open voting" : "Close voting"}
+                        onClick={this.toggleFinalistVotingOpen}
                     />
                 </div>
             </React.Fragment>
@@ -76,7 +128,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    extendSubmissionDeadline: (token, eventId) => dispatch(AdminActions.extendSubmissionDeadline(token, eventId))
+    extendSubmissionDeadline: (token, eventId) => dispatch(AdminActions.extendSubmissionDeadline(token, eventId)),
+    toggleTrackWinnersPublic: (token, eventId, isPublic) => dispatch(AdminActions.toggleTrackWinnersPublic(token, eventId, isPublic)),
+    toggleFinalistVotingOpen: (token, eventId, isOpen) => dispatch(AdminActions.toggleFinalistVotingOpen(token, eventId, isOpen)),
 });
 
 export default connect(

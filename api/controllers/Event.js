@@ -30,6 +30,26 @@ const EventController = {
         });
     },
 
+    setTrackWinnersPublic: (eventId, public) => {
+        return Event.findByIdAndUpdate(eventId, { track_winners_public: public }, { new: true }).then(event => {
+            if (!event) {
+                return Promise.reject('No event found with _id ' + eventId);
+            }
+
+            return event;
+        });
+    },
+
+    setFinalistVotingOpen: (eventId, open) => {
+        return Event.findByIdAndUpdate(eventId, { finalist_voting_open: open }, { new: true }).then(event => {
+            if (!event) {
+                return Promise.reject('No event found with _id ' + eventId);
+            }
+
+            return event;
+        })
+    },
+
     getChallengesForEvent: eventId => {
         return Event.findById(eventId).then(event => {
             return _.map(event.challenges, challenge => {

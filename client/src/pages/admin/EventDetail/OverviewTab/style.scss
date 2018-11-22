@@ -18,6 +18,12 @@
         background: rgba($snow, 0.05);
         padding: $base-margin;
 
+        &.positive {
+            .OverviewTab--Settings_item-button {
+                color: $spring-green;
+            }
+        }
+
         &-name {
             margin: 0;
         }
@@ -28,7 +34,7 @@
 
         &-button {
             background: transparent;
-            color: $spring-green;
+            color: $warning;
             border: none;
             cursor: pointer;
 

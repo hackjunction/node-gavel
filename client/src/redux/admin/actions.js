@@ -255,3 +255,25 @@ export const extendSubmissionDeadline = (token, eventId) => dispatch => {
         return event;
     });
 };
+
+export const toggleTrackWinnersPublic = (token, eventId, isPublic) => dispatch => {
+    return API.adminToggleTrackWinnersPublic(token, eventId, isPublic).then(event => {
+        dispatch({
+            type: ActionTypes.SET_EVENT,
+            payload: event,
+        });
+
+        return event;
+    })
+}
+
+export const toggleFinalistVotingOpen = (token, eventId, isOpen) => dispatch => {
+    return API.adminToggleFinalistVotingOpen(token, eventId, isOpen).then(event => {
+        dispatch({
+            type: ActionTypes.SET_EVENT,
+            payload: event,
+        });
+
+        return event;
+    })
+}

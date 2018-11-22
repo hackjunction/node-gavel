@@ -44,6 +44,26 @@ module.exports = function (app) {
         passport.authenticate('admin', { session: false }),
         extendSubmissionDeadline
     );
+
+    /**
+     * Toggle track winners public
+     * -> Requires admin token
+     */
+    app.get(
+        '/api/events/track-winners-public/:eventId',
+        passport.authenticate('admin', { session: false }),
+        toggleTrackWinnersPublic
+    );
+
+    /**
+     * Toggle finalist voting open
+     * -> Requires admin token
+     */
+    app.get(
+        '/api/events/finalist-voting-open/:eventId',
+        passport.authenticate('admin', { session: false }),
+        toggleFinalistVotingOpen
+    );
 };
 
 function createEvent(req, res) {
@@ -140,4 +160,41 @@ function extendSubmissionDeadline(req, res) {
                 status: 'error'
             });
         });
+}
+
+function toggleTrackWinnersPublic(req, res) {
+    const { eventId } = req.params;
+    const { public } = req.query;
+
+    console.log('QUERY', req.query);
+
+
+    EventController.setTrackWinnersPublic(eventId, public).then(event => {
+        return res.status(status.OK).send({
+            status: 'success',
+            data: event
+        });
+    }).catch(error => {
+        console.log('toggleTrackWinnersPublic', error);
+        return res.status(status.INTERNAL_SERVER_ERROR).send({
+            status: 'error'
+        });
+    })
+}
+
+function toggleFinalistVotingOpen(req, res) {
+    const { eventId } = req.params;
+    const { open } = req.query;
+
+    EventController.setFinalistVotingOpen(eventId, open).then(event => {
+        return res.status(status.OK).send({
+            status: 'success',
+            data: event
+        });
+    }).catch(error => {
+        console.log('toggleFinalistVotingOpen', error);
+        return res.status(status.INTERNAL_SERVER_ERROR).send({
+            status: 'error'
+        });
+    })
 }
