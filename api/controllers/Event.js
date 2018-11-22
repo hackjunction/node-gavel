@@ -2,7 +2,6 @@ const moment = require('moment-timezone');
 const _ = require('lodash');
 const { Event, validate } = require('../models/Event');
 const Utils = require('../services/utils');
-// const ProjectController = require('./Project');
 
 const EventController = {
     create: data => {
@@ -61,31 +60,6 @@ const EventController = {
             });
         });
     },
-
-    // getTrackWinners: eventId => {
-    //     return EventController.getEventWithId(eventId).then(event => {
-    //         if (!event.track_winners_public) {
-    //             return Promise.reject('Track winners are not public');
-    //         }
-
-    //         return ProjectController.getByEvent(eventId).then(projects => {
-    //             const byTrack = _.groupBy(projects, (p) => 'track');
-
-    //             const winners = [];
-
-    //             _.forOwn(byTrack, (projects, trackId) => {
-    //                 const eligible = _.filter(projects, 'active');
-    //                 const track = _.find(event.tracks, (t) => t._id.toString() === trackId);
-    //                 winners.push({
-    //                     track,
-    //                     winner: _.maxBy(eligible, 'mu')
-    //                 });
-    //             });
-
-    //             return winners;
-    //         });
-    //     })
-    // },
 
     getAll: () => {
         return Event.find({}).lean();
