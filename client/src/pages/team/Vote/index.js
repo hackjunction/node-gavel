@@ -517,16 +517,14 @@ class Vote extends Component {
                             You can decide for yourself what you think is a good project, but it's important to be consistent
                             and review all projects based on the same criteria. Here are some guidelines that we think make a good project:
                             <br />
-                            <br />
-                            <strong>1) Impact:</strong> Does it solve a real-world problem?
-                            <br />
-                            <strong>2) Tech:</strong> Does it use bleeding edge tech or is it just another app?
-                            <br />
-                            <strong>3) Ability: </strong> Is the hack useful from a business perspective?
-                            <br />
-                            <strong>4) Wow-Factor: </strong> Does the hack leave you amazed at how creative it is? Does it leave you wondering how it could have been built over a single weekend?
-                            <br />
-                            <br />
+                        </p>
+                        <ul>
+                            <li><strong>Impact: </strong> Does it solve a real-world problem?</li>
+                            <li><strong>Tech: </strong> Does it use bleeding edge tech or is it just another app?</li>
+                            <li><strong>Potential: </strong> Is the hack useful from a business perspective?</li>
+                            <li><strong>Wow-Factor: </strong> Does the hack leave you amazed at how creative it is? Does it leave you wondering how it could have been built over a single weekend?</li>
+                        </ul>
+                        <p>
                             But most importantly, remember: be fair, have fun!
                         </p>
                     </div>

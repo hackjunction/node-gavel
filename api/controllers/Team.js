@@ -84,7 +84,7 @@ const TeamController = {
     createMember: (name, email, teamId, sendEmail = true) => {
         return TeamController.getById(teamId)
             .then(team => {
-                return AnnotatorController.create(name, email, teamId).then(annotator => {
+                return AnnotatorController.create(name, email, teamId, team.event).then(annotator => {
                     return TeamController.addMembers(teamId, [annotator._id]).then(() => {
                         return {
                             team,
