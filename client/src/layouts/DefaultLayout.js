@@ -26,7 +26,7 @@ const DefaultLayout = ({ component: Component, ...rest }) => {
                         </div>
                         <div className="Page--Header-right">
                             {rest.isAdmin ? (
-                                <Link className="logout-button" to="/login">
+                                <Link className="logout-button" to="/admin/login">
                                     <i class="fas fa-sign-out-alt" />
                                 </Link>
                             ) : null}
