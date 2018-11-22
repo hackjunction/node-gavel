@@ -216,7 +216,7 @@ class SubmissionForm extends Component {
                             id: 'name',
                             name: 'name',
                             options: {
-                                min: 2,
+                                min: 1,
                                 max: 100,
                                 required: true,
                                 editable: submissionsOpen,
@@ -230,7 +230,7 @@ class SubmissionForm extends Component {
                             id: 'punchline',
                             name: 'punchline',
                             options: {
-                                min: 10,
+                                min: 1,
                                 max: 100,
                                 required: true,
                                 editable: submissionsOpen,

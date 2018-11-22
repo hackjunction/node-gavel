@@ -9,5 +9,9 @@ html,
     background: $black;
 }
 
+body {
+    overflow-y: scroll;
+}
+
 $base-margin: 10px;
 $double-margin: $base-margin * 2;
