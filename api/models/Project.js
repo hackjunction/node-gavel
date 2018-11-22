@@ -21,6 +21,7 @@ const ProjectSchema = new Schema({
     description: String,
     image: String,
     source: String,
+    demo: String,
     track: String,
     challenges: [String],
     contactPhone: String,
@@ -101,6 +102,11 @@ const validate = function (item) {
             .trim(),
         source: Joi.string()
             .uri()
+            .optional()
+            .trim(),
+        demo: Joi.string()
+            .uri()
+            .allow(['', null])
             .optional()
             .trim(),
         source_public: Joi.boolean().optional(),

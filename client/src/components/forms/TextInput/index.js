@@ -48,7 +48,11 @@ class TextInput extends Component {
     }
 
     validate(value = '') {
-        const { min, max, validate } = this.props;
+        const { min, max, validate, required } = this.props;
+
+        if (!required && !value) {
+            return null;
+        }
 
         if (min && value.length < min) {
             return `Must be at least ${min} characters.`;

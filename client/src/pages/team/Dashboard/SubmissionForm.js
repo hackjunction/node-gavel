@@ -266,6 +266,20 @@ class SubmissionForm extends Component {
                             }
                         },
                         {
+                            label: 'Demo link',
+                            type: 'text',
+                            placeholder: 'Have a demo? Link it here',
+                            hint: 'A link your code running somewhere, a video of your project in action, etc...',
+                            id: 'demo',
+                            name: 'demo',
+                            options: {
+                                required: false,
+                                validate: Validators.url,
+                                showErrorText: true,
+                                editable: submissionsOpen,
+                            }
+                        },
+                        {
                             label: 'Open source?',
                             type: 'boolean',
                             hint: 'If no, the link to your source code will not be visible to the public',
