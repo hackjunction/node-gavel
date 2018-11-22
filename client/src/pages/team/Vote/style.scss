@@ -208,6 +208,7 @@ $animation-time: 0.5s;
         transition: all $animation-time ease;
         max-height: 30px;
         overflow: hidden;
+        cursor: pointer;
     }
 
     &.current &_description {

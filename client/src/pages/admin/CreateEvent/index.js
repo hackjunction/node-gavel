@@ -212,7 +212,8 @@ class AdminCreateEvent extends Component {
                             options: {
                                 min: 5,
                                 max: 50,
-                                required: true
+                                required: true,
+                                editable: true,
                             }
                         },
                         {
@@ -220,12 +221,13 @@ class AdminCreateEvent extends Component {
                             type: 'text',
                             placeholder: 'Europe/Helsinki',
                             hint:
-                                'Enter a timezone for the event - see here for a list of timezones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones',
+                            'Enter a timezone for the event - see here for a list of timezones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones',
                             id: 'timezone',
                             name: 'timezone',
                             options: {
                                 validate: Validators.timezone,
-                                showErrorText: true
+                                showErrorText: true,
+                                editable: true,
                             }
                         },
                         {
@@ -234,7 +236,9 @@ class AdminCreateEvent extends Component {
                             hint: 'When does the event begin?',
                             id: 'startTime',
                             name: 'startTime',
-                            options: {}
+                            options: {
+                                editable: true,
+                            }
                         },
                         {
                             label: 'Submission deadline',
@@ -243,7 +247,8 @@ class AdminCreateEvent extends Component {
                             id: 'submissionDeadline',
                             name: 'submissionDeadline',
                             options: {
-                                minDate: eventData.startTime
+                                minDate: eventData.startTime,
+                                editable: true,
                             }
                         },
                         {
@@ -253,7 +258,8 @@ class AdminCreateEvent extends Component {
                             id: 'votingStartTime',
                             name: 'votingStartTime',
                             options: {
-                                minDate: eventData.submissionDeadline
+                                minDate: eventData.submissionDeadline,
+                                editable: true,
                             }
                         },
                         {
@@ -263,7 +269,8 @@ class AdminCreateEvent extends Component {
                             id: 'votingEndTime',
                             name: 'votingEndTime',
                             options: {
-                                minDate: eventData.votingStartTime
+                                minDate: eventData.votingStartTime,
+                                editable: true,
                             }
                         },
                         {
@@ -273,7 +280,8 @@ class AdminCreateEvent extends Component {
                             id: 'endTime',
                             name: 'endTime',
                             options: {
-                                minDate: eventData.votingEndTime
+                                minDate: eventData.votingEndTime,
+                                editable: true,
                             }
                         },
                         {
@@ -286,6 +294,7 @@ class AdminCreateEvent extends Component {
                                 min: 1,
                                 max: 100,
                                 addText: 'Add challenge',
+                                editable: true,
                                 fields: [
                                     {
                                         label: 'Challenge name',
@@ -327,6 +336,7 @@ class AdminCreateEvent extends Component {
                                 min: 1,
                                 max: 20,
                                 addText: 'Add track',
+                                editable: true,
                                 fields: [
                                     {
                                         label: 'Track name',
@@ -354,7 +364,8 @@ class AdminCreateEvent extends Component {
                             options: {
                                 min: 20,
                                 max: 100,
-                                required: true
+                                required: true,
+                                editable: true,
                             }
                         }
                     ]}

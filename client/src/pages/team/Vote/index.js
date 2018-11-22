@@ -37,7 +37,7 @@ const JOYRIDE_STEPS_SINGLE = [
         target: '.Vote--Current',
         spotlightPadding: 0,
         content:
-            "First up, you'll be assigned a single project. Your task is to find that project, and ask them to show you a short demo of what they've created!"
+        "First up, you'll be assigned a single project. Your task is to find that project, and ask them to show you a short demo of what they've created!"
     },
     {
         disableBeacon: true,
@@ -48,7 +48,7 @@ const JOYRIDE_STEPS_SINGLE = [
         disableBeacon: true,
         target: '.Vote--Current .Vote--Project_skip',
         content:
-            "If, for some reason, you're unable to find the project currently assigned to you, you can skip it. You'll be assigned a new project, but please don't do this unless absolutely necessary."
+        "If, for some reason, you're unable to find the project currently assigned to you, you can skip it. You'll be assigned a new project, but please don't do this unless absolutely necessary."
     },
     {
         disableBeacon: true,
@@ -70,14 +70,14 @@ const JOYRIDE_STEPS_COMPARE = [
         target: '.Vote--Previous',
         spotlightPadding: 0,
         content:
-            "First, an important thing to remember: you'll always be comparing your current project to the *one you saw immediately before* it, not whichever project won your previous comparison."
+        "First, an important thing to remember: you'll always be comparing your current project to the *one you saw immediately before* it, not whichever project won your previous comparison."
     },
     {
         disableBeacon: true,
         target: '.Vote--Current',
         spotlightPadding: 0,
         content:
-            'As before, you can see the details of your current project here. You should find their table, and ask to see a demo of their project.'
+        'As before, you can see the details of your current project here. You should find their table, and ask to see a demo of their project.'
     },
     {
         disableBeacon: true,
@@ -87,7 +87,7 @@ const JOYRIDE_STEPS_COMPARE = [
     {
         disableBeacon: true,
         target: '#root',
-        content: "That's it! You can continue submitting votes until the end of the voting period. Happy voting!",
+        content: "That's it for the tutorial! You can continue submitting votes until the end of the voting period. Happy voting!",
         placement: 'center'
     }
 ];
@@ -199,7 +199,7 @@ class Vote extends Component {
 
     setStateAsync(updates) {
         return new Promise(
-            function(resolve, reject) {
+            function (resolve, reject) {
                 this.setState(updates, () => resolve());
             }.bind(this)
         );

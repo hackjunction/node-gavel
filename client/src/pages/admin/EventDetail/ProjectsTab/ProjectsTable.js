@@ -136,6 +136,7 @@ class ProjectsTable extends Component {
                                 desc: true
                             }
                         ]}
+                        pageSizeOptions={[5, 10, projects.length]}
                         showPageJump={false}
                         className="-striped -highlight"
                     />
