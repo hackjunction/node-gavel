@@ -6,7 +6,7 @@ import rootReducer from './rootReducer';
 
 
 const persistConfig = {
-    key: 'gavel_' + process.env.REDUX_KEY,
+    key: 'gavel_' + process.env.NODE_ENV,
     storage
 };
 
