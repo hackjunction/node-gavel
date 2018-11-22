@@ -44,10 +44,18 @@ $animation-time: 0.5s;
     position: relative;
     height: 400px;
 
+    &.no-max-height {
+        height: auto;
+    }
+ 
     .Vote--Message {
         flex: 1;
         text-align: center;
         padding: $base-margin;
+
+        &.align-left {
+            text-align: left;
+        }
     }
 
     .Vote--Previous {

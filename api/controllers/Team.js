@@ -103,7 +103,7 @@ const TeamController = {
                 return team._id;
             })
             .then(teamId => {
-                return TeamController.getMembersById(teamId);
+                return TeamController.getMembersById(teamId, true);
             });
     },
 

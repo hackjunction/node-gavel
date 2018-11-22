@@ -500,8 +500,8 @@ class Vote extends Component {
             }
             case STATES.NOT_READ_WELCOME: {
                 return (
-                    <div className="Vote--Content">
-                        <p className="Vote--Message">
+                    <div className="Vote--Content no-max-height">
+                        <p className="Vote--Message align-left">
                             Next you will be directed to the reviewing page, and taken through a short tutorial.
                             When you start reviewing, we will assign you to a random track that is not your own. Go through
                             the tutorial step by step and make sure to read the instructions carefully. If you want to take a break
@@ -515,7 +515,7 @@ class Vote extends Component {
                             <strong>Criteria of a good project</strong>
                             <br />
                             You can decide for yourself what you think is a good project, but it's important to be consistent
-                            and review all projects based on the same criteria. Here's some guidelines that we think make a good project:
+                            and review all projects based on the same criteria. Here are some guidelines that we think make a good project:
                             <br />
                             <br />
                             <strong>1) Impact:</strong> Does it solve a real-world problem?
@@ -647,6 +647,10 @@ class Vote extends Component {
         }
 
         const isSingle = !previous;
+
+        if (isSingle && user.ignore && user.ignore.length > 0) {
+            return null;
+        }
 
         return (
             <Joyride
