@@ -216,7 +216,7 @@ class ChallengePage extends Component {
                                 label: 'Comments',
                                 type: 'textarea',
                                 hint: 'Please write anything else you want to tell us here - such as if you have more than 3 winners, etc.',
-                                placeholder: 'Anything else we should know?',
+                                placeholder: 'More than 3 winners? Anything else we should know?',
                                 id: 'comments',
                                 name: 'comments',
                                 options: {
