@@ -135,10 +135,12 @@ class AdminEventDetail extends Component {
     }
 
     renderAnnotators() {
-        const { getAnnotators, isAnnotatorsLoading, isAnnotatorsError, updateAnnotators, adminToken } = this.props;
+        const { getAnnotators, isAnnotatorsLoading, isAnnotatorsError, updateAnnotators, adminToken, getEvent } = this.props;
         const { eventId } = this.state;
 
-        if (isAnnotatorsError(eventId)) {
+        const event = getEvent(eventId);
+
+        if (!event || isAnnotatorsError(eventId)) {
             return this.renderError('Unable to get annotators', 'Please reload the page to try again');
         }
 
@@ -149,6 +151,7 @@ class AdminEventDetail extends Component {
                 annotators={getAnnotators(eventId)}
                 loading={loading}
                 eventId={eventId}
+                event={event}
                 onRefresh={() => updateAnnotators(adminToken, eventId, 1000)}
             />
         );

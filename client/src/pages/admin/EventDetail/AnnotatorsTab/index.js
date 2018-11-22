@@ -4,6 +4,7 @@ import moment from 'moment-timezone';
 import FuzzySearch from 'fuzzy-search';
 import Switch from 'react-switch';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
@@ -50,6 +51,16 @@ class AnnotatorsTab extends Component {
         }
     }
 
+    getTrackName(trackId) {
+        const { event } = this.props;
+
+        const track = _.find(event.tracks, (t) => {
+            return t._id === trackId;
+        });
+
+        return track ? track.name : 'None'
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -82,7 +93,7 @@ class AnnotatorsTab extends Component {
                         {
                             Header: 'Track',
                             id: 'track',
-                            accessor: d => d.assigned_track || 'None',
+                            accessor: d => this.getTrackName(d.assigned_track),
                             className: 'center'
                         },
                         {

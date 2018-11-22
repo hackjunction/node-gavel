@@ -75,8 +75,6 @@ const validate = data => {
         return Promise.reject(new Error('Invalid timezone ' + data.timezone));
     }
 
-    console.log('DATA', data);
-
     //TODO: Define more strict schema, shared validation for front/backend
     const schema = Joi.object().keys({
         name: Joi.string().trim(),

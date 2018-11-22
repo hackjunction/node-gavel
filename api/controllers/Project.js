@@ -7,7 +7,7 @@ const Settings = require('../settings');
 
 const ProjectController = {
     /** For usage via team dashboard, by participants */
-    update: (project, annotator) => {
+    update: (project, annotator, force = false) => {
         const doc = {
             ...project,
             team: annotator.team.toString(),
@@ -19,7 +19,7 @@ const ProjectController = {
             new: true
         };
 
-        return validate(doc).then(validatedData => {
+        return validate(doc, force).then(validatedData => {
             if (project.hasOwnProperty('_id')) {
                 return Project.findByIdAndUpdate(project._id, validatedData, options);
             } else {
@@ -187,7 +187,7 @@ const ProjectController = {
                 }
             });
         });
-    }
+    },
 };
 
 module.exports = ProjectController;

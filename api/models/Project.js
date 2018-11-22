@@ -76,7 +76,7 @@ ProjectSchema.index({ active: 1, viewed: 1, prioritized: 1, team: 1 });
 
 const Project = mongoose.model('Project', ProjectSchema);
 
-const validate = function (item) {
+const validate = function (item, force = false) {
     let keys = {
         name: Joi.string()
             .min(1)
@@ -146,7 +146,7 @@ const validate = function (item) {
 
         const eventStart = moment(event.startTime).tz(event.timezone);
 
-        if (eventStart.isAfter(now)) {
+        if (eventStart.isAfter(now) && !force) {
             throw new Error('Submissions are not yet open');
         }
 

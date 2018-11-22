@@ -34,21 +34,9 @@ const TIMEZONE = 'Europe/Helsinki';
 const TRACK_WEIGHTS = [1, 2, 1.1, 2.4, 1.3, 1.1, 0.7, 1.4, 2, 2];
 
 const EVENTS = [
-    //Starts in 1 hour from generating
-    {
-        name: 'JUNCTIONxBudapest',
-        timezone: TIMEZONE,
-        startTimeOffset: 1,
-        endTimeOffset: 73,
-        submissionDeadlineOffset: 60,
-        votingStartTimeOffset: 61,
-        votingEndTimeOffset: 63,
-        trackCount: 10,
-        challengeCount: 30
-    },
     //Already running
     {
-        name: 'JUNCTIONxHelsinki',
+        name: 'JUNCTIONxTest',
         timezone: TIMEZONE,
         startTimeOffset: 0,
         endTimeOffset: 72,
@@ -58,37 +46,13 @@ const EVENTS = [
         trackCount: 10,
         challengeCount: 30
     },
-    //Voting active
-    {
-        name: 'JUNCTIONxEspoo',
-        timezone: TIMEZONE,
-        startTimeOffset: -60,
-        endTimeOffset: 12,
-        submissionDeadlineOffset: -1,
-        votingStartTimeOffset: 0,
-        votingEndTimeOffset: 2,
-        trackCount: 10,
-        challengeCount: 30
-    },
-    //Voting ended
-    {
-        name: 'JUNCTIONxVantaa',
-        timezone: TIMEZONE,
-        startTimeOffset: -62,
-        endTimeOffset: 10,
-        submissionDeadlineOffset: -3,
-        votingStartTimeOffset: -2,
-        votingEndTimeOffset: 0,
-        trackCount: 10,
-        challengeCount: 30
-    }
 ];
 
-const script = function() {
+const script = function () {
     Settings.check();
     mongoose.connect(
         Settings.MONGODB_URI,
-        function(err) {
+        function (err) {
             if (err) {
                 console.log('Failed to connect to database at ', MONGODB_URI);
                 process.exit(1);
@@ -125,8 +89,12 @@ const script = function() {
                                 };
 
                                 const project = generateProject(_events[eventIdx]);
+                                if (project.challenges.length === 0) {
+                                    console.log('PROJECT', project);
+                                    console.log('EVENT', event);
+                                }
 
-                                return ProjectController.update(project, annotator);
+                                return ProjectController.update(project, annotator, true);
                             });
                         }).then(projectsPerEvent => {
                             return _.flatten(projectsPerEvent);
@@ -142,11 +110,11 @@ const script = function() {
                                 console.log('-> Start time: ' + moment(event.startTime).fromNow());
                                 console.log(
                                     '-> Submissions open: ' +
-                                        (moment().isBetween(event.startTime, event.submissionDeadline) ? 'YES' : 'NO')
+                                    (moment().isBetween(event.startTime, event.submissionDeadline) ? 'YES' : 'NO')
                                 );
                                 console.log(
                                     '-> Voting open: ' +
-                                        (moment().isBetween(event.votingStartTime, event.votingEndTime) ? 'YES' : 'NO')
+                                    (moment().isBetween(event.votingStartTime, event.votingEndTime) ? 'YES' : 'NO')
                                 );
                                 console.log('-> Annotator: ' + annotators[0].name + ' / ' + annotators[0]._id);
                                 console.log('-> Login link: ' + Settings.BASE_URL + '/login/' + annotators[0].secret);
@@ -174,19 +142,19 @@ function generateEvents(count) {
             timezone: event.timezone,
             startTime: moment()
                 .tz(event.timezone)
-                .add(event.startTimeOffset, 'hours'),
+                .add(event.startTimeOffset, 'hours').toDate(),
             endTime: moment()
                 .tz(event.timezone)
-                .add(event.endTimeOffset, 'hours'),
+                .add(event.endTimeOffset, 'hours').toDate(),
             submissionDeadline: moment()
                 .tz(event.timezone)
-                .add(event.submissionDeadlineOffset, 'hours'),
+                .add(event.submissionDeadlineOffset, 'hours').toDate(),
             votingStartTime: moment()
                 .tz(event.timezone)
-                .add(event.votingStartTimeOffset, 'hours'),
+                .add(event.votingStartTimeOffset, 'hours').toDate(),
             votingEndTime: moment()
                 .tz(event.timezone)
-                .add(event.votingEndTimeOffset, 'hours'),
+                .add(event.votingEndTimeOffset, 'hours').toDate(),
             participantCode: chance.word({ length: 16 }),
             apiKey: uuid()
         };
@@ -197,7 +165,9 @@ function generateTracks(count) {
     const tracks = [];
 
     for (let i = 0; i < count; i++) {
-        tracks.push('Track ' + i);
+        tracks.push({
+            name: 'Track ' + i
+        });
     }
 
     return tracks;
@@ -207,7 +177,10 @@ function generateChallenges(count) {
     const challenges = [];
 
     for (let i = 0; i < count; i++) {
-        challenges.push('Challenge ' + chance.company());
+        challenges.push({
+            name: 'Challenge ' + i,
+            partner: chance.company()
+        });
     }
 
     return challenges;
@@ -255,8 +228,8 @@ function generateProject(event) {
         }),
         contactPhone: chance.phone(),
         location: chance.letter().toUpperCase() + chance.natural({ min: 1, max: 50 }),
-        track: chance.weighted(event.tracks, TRACK_WEIGHTS),
-        challenges: chance.pickset(event.challenges, Math.floor(Math.random() * 5) + 1),
+        track: chance.weighted(event.tracks, TRACK_WEIGHTS)._id.toString(),
+        challenges: _.map(chance.pickset(event.challenges, Math.floor(Math.random() * 5) + 1), (c) => c._id.toString()),
         event: event._id.toString()
     };
 }
