@@ -106,8 +106,8 @@ class PeerReview extends Component {
                     send an email to santeri.hietanen@hackjunction.com or joonas.nurmi@hackjunction.com).
                     <br />
                     <br />
-                    More detailed information about the peer reviewing process can be found on the
-                    <a href="https://live.hackjunction.com/demo-expo/">live website</a>.
+                    More detailed information about the peer reviewing process can be found on the{' '}
+                    <a target="_blank" href="https://live.hackjunction.com/demo-expo/">live website</a>.
                 </p>
                 {this.renderContent()}
             </div>

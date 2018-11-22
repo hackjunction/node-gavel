@@ -143,7 +143,7 @@ class FinalistVote extends Component {
                         <div className="TrackWinner--Block_Project">
                             <h4 className="TrackWinner--Block_Project-name">{item.winner.name}</h4>
                             <p className="TrackWinner--Block_Project-punchline">{item.winner.punchline}</p>
-                            {item.winner.demo ? <a className="TrackWinner--Block_Project-demo" href={item.winner.demo}>Demo</a> : null}
+                            {item.winner.demo ? <a target="_blank" className="TrackWinner--Block_Project-demo" href={item.winner.demo}>Demo</a> : null}
                         </div>
                     </div>
                 );
