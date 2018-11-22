@@ -4,8 +4,9 @@ import storage from 'redux-persist/lib/storage'; // defaults to localStorage
 import thunk from 'redux-thunk';
 import rootReducer from './rootReducer';
 
+
 const persistConfig = {
-    key: 'gavel',
+    key: 'gavel_' + process.env.REDUX_KEY,
     storage
 };
 
