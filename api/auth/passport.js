@@ -7,7 +7,7 @@ const Settings = require('../settings');
 //Admin token authentication
 passport.use(
     'admin',
-    new LocalStrategy({ usernameField: 'token', passwordField: 'token' }, function(username, token, done) {
+    new LocalStrategy({ usernameField: 'token', passwordField: 'token' }, function (username, token, done) {
         if (token === Settings.ADMIN_TOKEN) {
             return done(null, {
                 isAdmin: true
@@ -21,7 +21,7 @@ passport.use(
 //Annotator token authentication
 passport.use(
     'annotator',
-    new LocalStrategy({ usernameField: 'secret', passwordField: 'secret' }, function(username, secret, done) {
+    new LocalStrategy({ usernameField: 'secret', passwordField: 'secret' }, function (username, secret, done) {
         if (!secret) {
             return done(null, false, { message: 'Annotator secret is required' });
         }
@@ -33,10 +33,9 @@ passport.use(
                         message: 'No annotator found with secret ' + secret
                     });
                 }
-
                 return done(null, annotator);
             })
-            .catch(() => {
+            .catch((err) => {
                 return done(null, false, {
                     message: 'No annotator found with secret ' + secret
                 });
@@ -47,7 +46,7 @@ passport.use(
 //External API Key authentication
 passport.use(
     'apiKey',
-    new LocalStrategy({ usernameField: 'key', passwordField: 'key' }, function(username, key, done) {
+    new LocalStrategy({ usernameField: 'key', passwordField: 'key' }, function (username, key, done) {
         if (!key) {
             return done(null, false, { message: 'API Key is required' });
         }

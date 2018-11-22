@@ -60,6 +60,7 @@ const GET = url => {
             let response = await fetch(url);
 
             if (response.status !== SUCCESS) {
+                console.log('RESPONSE', response);
                 let body = await response.json();
                 reject(new Error(body.message || 'Request failed with status ' + response.status));
             } else {
@@ -255,9 +256,13 @@ const API = {
         return GET(`/api/projects/challenge/winners/${eventId}/${secret}`);
     },
 
-    test: () => {
-        return GET('/api/hello');
-    }
+    getTrackWinners: (secret, eventId) => {
+        return GET(`/api/events/track-winners/${eventId}/?secret=${secret}`);
+    },
+
+    updateWinnerVote: (secret, projectId) => {
+        return GET(`/api/annotators/set-finalist-vote/${projectId}/?secret=${secret}`);
+    },
 };
 
 export default API;

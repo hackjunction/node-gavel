@@ -111,3 +111,53 @@
 .TeamDashboard--team-member-remove__cancel {
     background: rgba($snow, 0.3);
 }
+
+.TrackWinner--Block {
+    background: rgba($snow, 0.05);
+}
+
+.TrackWinner--Block_Track {
+    background: rgba($turquoise, 0.7);
+    padding: $base-margin;
+}
+
+.TrackWinner--Block_Track-name {
+    color: $black;
+    margin: 0;
+}  
+
+.TrackWinner--Block_Project {
+    padding: $base-margin;
+}
+
+.TrackWinner--Block_Project-name {
+
+}
+
+.TrackWinner--Block_Project-punchline {
+
+}
+
+.TrackWinner--Block_Project-demo {
+    color: $spring-green;
+    text-decoration: underline;
+}  
+
+.FinalistVote--TrackWinners-Loading {
+    padding: $double-margin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $turquoise;
+}
+
+.FinalistVote--VoteForm {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+.FinalistVote--VoteForm_title {
+    margin-bottom: $double-margin;
+    text-align: left;
+}

@@ -7,7 +7,7 @@ const ReviewingService = require('../services/reviewing');
 const AnnotatorController = require('../controllers/Annotator');
 const EventController = require('../controllers/Event');
 
-module.exports = function(app) {
+module.exports = function (app) {
     /**
      * Get all annotators for an event
      * -> Requires admin token
@@ -75,6 +75,12 @@ module.exports = function(app) {
      * -> Requires annotator secret
      */
     app.get('/api/annotators/event', passport.authenticate('annotator', { session: false }), getEventForAnnotator);
+
+    /**
+     * Set an annotator's finalist vote
+     * -> Requires annotator secret
+     */
+    app.get('/api/annotators/set-finalist-vote/:projectId', passport.authenticate('annotator', { session: false }), setAnnotatorVotedFor);
 };
 
 function getAnnotator(req, res) {
@@ -232,4 +238,20 @@ function enableAnnotator(req, res) {
                 status: 'error'
             });
         });
+}
+
+function setAnnotatorVotedFor(req, res) {
+    const userId = req.user._id.toString();
+    const projectId = req.params.projectId;
+
+    return AnnotatorController.setVotedFor(projectId, userId).then((annotator) => {
+        return res.status(status.OK).send({
+            status: 'success',
+            data: annotator
+        });
+    }).catch(error => {
+        return res.status(status.INTERNAL_SERVER_ERROR).send({
+            status: 'error'
+        });
+    })
 }

@@ -152,7 +152,11 @@ const AnnotatorController = {
     deleteById: _id => {
         console.log('DELETING WITH ID', _id);
         return Annotator.findByIdAndDelete(_id);
-    }
+    },
+
+    setVotedFor: (projectId, annotatorId) => {
+        return Annotator.findByIdAndUpdate(annotatorId, { winner_vote: projectId }, { new: true });
+    },
 };
 
 module.exports = AnnotatorController;

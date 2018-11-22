@@ -187,7 +187,6 @@ export const saveSubmission = (project, secret, minDelay = 0) => dispatch => {
 
     return Utils.minDelay(API.updateSubmission(project, secret), minDelay)
         .then(submission => {
-            console.log('DONE', Date.now());
             dispatch(setSubmission(submission));
             return Promise.resolve('foofee');
         })
@@ -196,3 +195,14 @@ export const saveSubmission = (project, secret, minDelay = 0) => dispatch => {
             return Promise.reject('feefoo');
         });
 };
+
+export const updateWinnerVote = (projectId, secret, minDelay = 1000) => dispatch => {
+    return Utils.minDelay(API.updateWinnerVote(secret, projectId), minDelay)
+        .then(annotator => {
+            dispatch(setUser(annotator));
+            return annotator;
+        })
+        .catch(() => {
+            return null;
+        });
+} 

@@ -29,6 +29,10 @@ const AnnotatorSchema = new Schema({
         type: String,
         required: true
     },
+    winner_vote: {
+        type: Schema.Types.ObjectId,
+        ref: 'Project'
+    },
     next: {
         type: Schema.Types.ObjectId,
         ref: 'Project'
@@ -75,7 +79,7 @@ const Annotator = mongoose.model('Annotator', AnnotatorSchema);
  * Returns: Promise resolved with cleaned annotator data,
  * or Promise rejected with error details
  */
-const validate = function(annotator) {
+const validate = function (annotator) {
     const schema = Joi.object().keys({
         name: Joi.string()
             .min(1)

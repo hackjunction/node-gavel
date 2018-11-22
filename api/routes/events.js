@@ -1,7 +1,9 @@
-const EventController = require('../controllers/Event');
-const ChallengeWinnersController = require('../controllers/ChallengeWinners');
 const status = require('http-status');
 const passport = require('passport');
+const _ = require('lodash');
+const EventController = require('../controllers/Event');
+const ChallengeWinnersController = require('../controllers/ChallengeWinners');
+const ProjectController = require('../controllers/Project');
 const Utils = require('../services/utils');
 
 module.exports = function (app) {
@@ -63,6 +65,17 @@ module.exports = function (app) {
         '/api/events/finalist-voting-open/:eventId',
         passport.authenticate('admin', { session: false }),
         toggleFinalistVotingOpen
+    );
+
+    /**
+     * Get track winners
+     * -> Requires annotator secret
+     */
+
+    app.get(
+        '/api/events/track-winners/:eventId',
+        passport.authenticate('annotator', { session: false }),
+        getTrackWinners
     );
 };
 
@@ -166,9 +179,6 @@ function toggleTrackWinnersPublic(req, res) {
     const { eventId } = req.params;
     const { public } = req.query;
 
-    console.log('QUERY', req.query);
-
-
     EventController.setTrackWinnersPublic(eventId, public).then(event => {
         return res.status(status.OK).send({
             status: 'success',
@@ -197,4 +207,41 @@ function toggleFinalistVotingOpen(req, res) {
             status: 'error'
         });
     })
+}
+
+function getTrackWinners(req, res) {
+    const eventId = req.user.event;
+
+    EventController.getEventWithId(eventId).then(event => {
+        if (!event.track_winners_public) {
+            return Promise.reject('Track winners are not public');
+        }
+
+        return ProjectController.getByEvent(eventId).then(projects => {
+            const byTrack = _.groupBy(projects, 'track');
+
+            const winners = [];
+
+            _.forOwn(byTrack, (projects, trackId) => {
+                const eligible = _.filter(projects, 'active');
+                const track = _.find(event.tracks, (t) => t._id.toString() === trackId);
+                winners.push({
+                    track,
+                    winner: _.maxBy(eligible, 'mu')
+                });
+            });
+
+            return winners;
+        });
+    }).then(winners => {
+        return res.status(status.OK).send({
+            status: 'success',
+            data: winners
+        });
+    }).catch(error => {
+        console.log('getTrackWinners', error);
+        return res.status(status.INTERNAL_SERVER_ERROR).send({
+            status: 'error'
+        })
+    });
 }
