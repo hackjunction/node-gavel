@@ -1,4 +1,5 @@
 const passport = require('passport');
+const moment = require('moment-timezone');
 const LocalStrategy = require('passport-local').Strategy;
 const AnnotatorController = require('../controllers/Annotator');
 const EventController = require('../controllers/Event');
