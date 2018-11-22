@@ -59,6 +59,16 @@ passport.use(
                     });
                 }
 
+                const now = moment().tz(event.timezone);
+                const submissionDeadline = moment(event.submissionDeadline).tz(event.timezone);
+                const startTime = moment(event.startTime).tz(event.timezone);
+
+                if (!now.isBetween(startTime, submissionDeadline)) {
+                    return done(null, false, {
+                        message: 'Event is not open'
+                    });
+                }
+
                 return done(null, event);
             })
             .catch(() => {

@@ -164,20 +164,12 @@ class FinalistVote extends Component {
     }
 
     renderContent() {
+
         const { event } = this.props;
         if (!event.track_winners_public) {
             return (
                 <div className="FinalistVote--TrackWinners">
                     <h4>Track winners not yet announced</h4>
-                    <p>After the Demo Expo, we will announce the winner of each track, and they will be visible here.
-                    Each track winner will get a chance to pitch their project on the main stage, after which you will
-                    be able to vote for the winner of the Main Prize here.
-                    </p>
-                    <h4>Finalist voting</h4>
-                    <p>
-                        Every participant will be able to give an upvote to their favorite project. The project with the most upvotes will
-                        be the winner of the Main Prize. Be sure to check back here once finalist voting opens, and submit your vote!
-                    </p>
                 </div>
             );
         } else {
@@ -186,16 +178,13 @@ class FinalistVote extends Component {
                     {event.finalist_voting_open ? (
                         <div>
                             <h4>Finalist voting is open!</h4>
-                            <p><strong>Finalist voting is open!</strong> It's time to decide which project you'll give your vote to. The project with the most upvotes
-                            will be the winner of the Main Prize. You'll be able to submit your vote at the bottom of this list - choose carefully!
-                            </p>
+                            <p>You'll be able to submit your vote at the bottom of this list - choose carefully!</p>
                         </div>
                     ) : (
                             <div>
                                 <h4>Track Winners</h4>
                                 <p><strong>Track winners</strong> You'll see the winner of each track below, as decided by you and your peers.
-                        All of the track winners will get a chance to pitch their project on the Main Stage, after which voting for the
-                        Main Prize winner will open here!
+                                Voting for the Main Prize winner will be opened here soon, after all track winners have pitched their project.
                         </p>
 
                             </div>
@@ -211,6 +200,21 @@ class FinalistVote extends Component {
         console.log(this.props.user);
         return (
             <div className="FinalistVote">
+                <h4>Finals</h4>
+                <p>
+                    Here you will be able to see the track winners after the demo expo has ended and the track winners have been announced.
+                    You, the participants, will also get to vote on the winner of the Main Prize after seeing all of the track winners' pitches.
+                    Make sure to come and listen to the final pitches on the Main Stage, starting 16:00 on Sunday.
+                    <br />
+                    <br />
+                    After all of the track winners have pitched their project, each participant will be able to give an upvote to their favorite
+                    project. The project with the most votes will be the winner of the Main Prize. The voting will happen on this page, and will be
+                    available once all of the track winners are done with their pitch.
+                    <br />
+                    <br />
+                    To make the voting as fair as possible, each participant will be shown the track winners in a random order. This means that
+                    they will most likely not be in the order that they pitched on stage in.
+                </p>
                 {this.renderContent()}
             </div>
         );
