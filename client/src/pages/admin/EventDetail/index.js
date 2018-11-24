@@ -7,6 +7,7 @@ import OverviewTab from './OverviewTab';
 import ProjectsTab from './ProjectsTab';
 import ChallengesTab from './ChallengesTab';
 import AnnotatorsTab from './AnnotatorsTab';
+import FinalsTab from './FinalsTab';
 
 import * as AdminActions from '../../../redux/admin/actions';
 import * as admin from '../../../redux/admin/selectors';
@@ -157,6 +158,39 @@ class AdminEventDetail extends Component {
         );
     }
 
+    renderFinals() {
+        const {
+            getAnnotators,
+            isAnnotatorsLoading,
+            isAnnotatorsError,
+            updateAnnotators,
+            getEvent,
+            getProjects,
+            isProjectsLoading,
+            isProjectsError
+        } = this.props;
+        const { eventId } = this.state;
+
+        const event = getEvent(eventId);
+
+        if (!event || isAnnotatorsError(eventId) || isProjectsError(eventId)) {
+            console.log('EVENT', event);
+            return this.renderError('Unable to get data', 'Please reload the page to try again.');
+        }
+
+        if (isAnnotatorsLoading(eventId) || isProjectsLoading(eventId)) {
+            return this.renderLoading('Loading results', 'Hold on...');
+        }
+
+        return (
+            <FinalsTab
+                annotators={getAnnotators(eventId)}
+                projects={getProjects(eventId)}
+                event={event}
+            />
+        );
+    }
+
     renderContent() {
         switch (this.state.activeTab) {
             case 0:
@@ -167,6 +201,8 @@ class AdminEventDetail extends Component {
                 return this.renderChallenges();
             case 3:
                 return this.renderAnnotators();
+            case 4:
+                return this.renderFinals();
             default:
                 return null;
         }
@@ -207,6 +243,12 @@ class AdminEventDetail extends Component {
                         onClick={() => this.setState({ activeTab: 3 })}
                     >
                         <span className="EventDetail--Tab_text">Annotators</span>
+                    </div>
+                    <div
+                        className={this.state.activeTab === 4 ? 'EventDetail--Tab active' : 'EventDetail--Tab'}
+                        onClick={() => this.setState({ activeTab: 4 })}
+                    >
+                        <span className="EventDetail--Tab_text">Finals</span>
                     </div>
                 </div>
                 <div className="EventDetail--Content">{this.renderContent()}</div>
