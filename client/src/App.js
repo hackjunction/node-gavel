@@ -10,6 +10,7 @@ import NotFound from './pages/NotFound';
 import Login from './pages/public/Login';
 import HomePage from './pages/public/Home';
 import ChallengePage from './pages/public/ChallengePage';
+import Test from './pages/public/Test';
 
 import AdminLogin from './pages/admin/Login';
 import AdminEventList from './pages/admin/EventList';
@@ -36,6 +37,7 @@ class App extends Component {
                 {/* <DefaultLayout exact path="/teams/create" component={CreateTeam} headerSubtitle="Submit your team" /> */}
                 {/* TODO: (Low priority) Public route for viewing submitted projects of event */}
                 <DefaultLayout path="/event/:id" component={null} />
+                <DefaultLayout path="/test" component={Test} />
 
                 {/* Accessible with annotator token */}
                 <AnnotatorRoute exact path="/dashboard" component={TeamDashboard} headerSubtitle="Team Dashboard" />
@@ -43,9 +45,9 @@ class App extends Component {
 
                 {/* Admin Routes */}
                 <AdminRoute exact path="/admin" component={AdminEventList} />
-                <AdminRoute exact path="/admin/edit/new" component={AdminCreateEvent} headerSubtitle={'Create event'} hasBack={true} backTo="/admin" backText="Event list"/>
-                <AdminRoute path="/admin/edit/:id" component={AdminCreateEvent} headerSubtitle={'Edit event'} hasBack={true} backTo="/admin" backText="Event list"/>
-                <AdminRoute path="/admin/event/:id" component={AdminEventDetail} headerSubtitle={'Event Detail'} hasBack={true} backTo="/admin" backText="Event list"/>
+                <AdminRoute exact path="/admin/edit/new" component={AdminCreateEvent} headerSubtitle={'Create event'} hasBack={true} backTo="/admin" backText="Event list" />
+                <AdminRoute path="/admin/edit/:id" component={AdminCreateEvent} headerSubtitle={'Edit event'} hasBack={true} backTo="/admin" backText="Event list" />
+                <AdminRoute path="/admin/event/:id" component={AdminEventDetail} headerSubtitle={'Event Detail'} hasBack={true} backTo="/admin" backText="Event list" />
 
                 {/* Misc Routes */}
                 <DefaultLayout component={NotFound} headerSubtitle="404" />

@@ -99,6 +99,7 @@ const validate = function (item, force = false) {
         image: Joi.string()
             .uri()
             .optional()
+            .allow(null)
             .trim(),
         source: Joi.string()
             .uri()

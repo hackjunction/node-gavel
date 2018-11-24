@@ -1,0 +1,66 @@
+@import "../../../styles/base.scss";
+
+.ImageInput {
+    flex: 1;
+}
+
+.ImageInput--Image {
+    flex: 1;
+    position: relative;
+
+    img {
+        width: 100%;
+    }
+}
+
+.ImageInput--Image_overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    transition: 0.2s ease;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.3);
+
+    &:hover {
+        opacity: 1;
+    }
+
+    @include up-to-tablet {
+        opacity: 1;
+    }
+}
+
+.ImageInput--Image_button {
+    background: $black;
+    padding: 10px;
+    color: $snow;
+    border: none;
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.ImageInput--Image_lock {
+    color: $snow;
+}
+
+.ImageInput--Image_remove {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+    z-index: 10;
+    cursor: pointer;
+
+    &-icon {
+        color: $snow;
+    }
+}

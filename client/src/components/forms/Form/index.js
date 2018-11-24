@@ -11,6 +11,7 @@ import BooleanInput from '../BooleanInput';
 import DateInput from '../DateInput';
 import SubmitButton from '../SubmitButton';
 import ArrayInput from '../ArrayInput';
+import ImageInput from '../ImageInput';
 
 export const TYPES = {
     text: {
@@ -36,6 +37,9 @@ export const TYPES = {
     array: {
         id: 'array',
         options: ['fields', 'isObject']
+    },
+    image: {
+        id: 'image'
     }
 };
 
@@ -215,6 +219,20 @@ class Form extends Component {
                                 value={data[field.name]}
                                 onChange={value => {
                                     this.onChange(field.name, value);
+                                }}
+                                {...field.options}
+                            />
+                        </FormField>
+                    );
+                }
+                case TYPES.image.id: {
+                    return (
+                        <FormField key={field.id} id={field.id} label={field.label} required={field.required}>
+                            <ImageInput
+                                ref={ref => (this[field.name] = ref)}
+                                value={data[field.name]}
+                                onChange={value => {
+                                    this.onChange(field.name, value)
                                 }}
                                 {...field.options}
                             />

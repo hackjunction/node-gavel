@@ -210,6 +210,16 @@ class SubmissionForm extends Component {
                     ]}
                     fields={[
                         {
+                            label: 'Header Image',
+                            type: 'image',
+                            id: 'image',
+                            name: 'image',
+                            options: {
+                                required: false,
+                                editable: true,
+                            }
+                        },
+                        {
                             label: 'Project name',
                             type: 'text',
                             placeholder: 'A catchy name for your project',
