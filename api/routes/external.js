@@ -1,5 +1,6 @@
 const status = require('http-status');
 const passport = require('passport');
+const Joi = require('joi');
 
 const TeamController = require('../controllers/Team');
 
@@ -46,7 +47,7 @@ module.exports = function (app) {
      * -> supply @members, an array of the correct members a team should have. Each member must have @name and @email fields.
      * -> If a member also contains an @_id field, check that any duplicates are removed and only the one with that if remains.
      * -> If a member does not contain @_id, create a new member with the name and email provided
-     * 
+     *
      * Returns the resulting updated list of team members
      */
     app.post(
@@ -127,17 +128,23 @@ function removeTeamMember(req, res) {
 }
 
 function updateTeamMembers(req, res) {
+  console.log("update members called")
     const { teamId } = req.params;
     const { members } = req.body;
 
-    const schema = Joi.object.keys({
-        name: Joi.string().required(),
-        email: Joi.string().required(),
-        _id: Joi.string().optional()
+    const schema = Joi.object().keys({
+      'members': Joi.array().items(Joi.object().keys(
+        {
+          name: Joi.string().required(),
+          email: Joi.string().required(),
+          _id: Joi.string().optional()
+        }
+      )).min(1).max(6).required(),
+      'key': Joi.string().optional()
     }, { allowUnknown: false })
 
-    return schema.validate(members).then((validatedMembers) => {
-        return TeamController.updateMembers(members).then((newMembers) => {
+    return schema.validate(req.body).then((validatedMembers) => {
+        return TeamController.updateMembers(members, teamId).then((newMembers) => {
             return res.status(status.OK).send({
                 status: 'success',
                 data: newMembers
