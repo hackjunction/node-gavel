@@ -130,12 +130,16 @@ const TeamController = {
                 if (member.hasOwnProperty('_id')) {
                     const pullIds = _.filter(team.members, (m) => {
                         return m.email === member.email && m._id.toString() !== member._id;
-                    });
+                    }).map(member => member._id);
 
-                    return TeamController.findByIdAndUpdate(teamId, {
-                        members: {
-                            $pull: pullIds
+                    return Team.findByIdAndUpdate(teamId, {
+                        $pull: {
+                            members: {$in: pullIds}
                         }
+                    }).then(() => {
+                      return Promise.each(pullIds, (id) => {
+                        return AnnotatorController.deleteById(id)
+                      })
                     });
                 } else {
                     return TeamController.createMember(member.name, member.email, teamId);
