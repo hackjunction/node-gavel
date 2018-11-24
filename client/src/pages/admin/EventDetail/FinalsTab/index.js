@@ -30,7 +30,7 @@ class FinalsTab extends Component {
 			});
 		});
 
-		return _.sortBy(trackWinners, 'votes');
+		return _.reverse(_.sortBy(trackWinners, 'votes'));
 	}
 
 	renderTrackWinners() {
