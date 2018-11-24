@@ -7,7 +7,7 @@ const TeamController = require('../controllers/Team');
  * Endpoints to be used by external applications with an event API key
  */
 
-module.exports = function(app) {
+module.exports = function (app) {
     /**
      * Get event info
      * -> Requires event API Key
@@ -38,6 +38,21 @@ module.exports = function(app) {
         '/api/external/teams/remove-member/:teamId',
         passport.authenticate('apiKey', { session: false }),
         removeTeamMember
+    );
+
+    /**
+     * Update team members
+     * -> Requires event API Key
+     * -> supply @members, an array of the correct members a team should have. Each member must have @name and @email fields.
+     * -> If a member also contains an @_id field, check that any duplicates are removed and only the one with that if remains.
+     * -> If a member does not contain @_id, create a new member with the name and email provided
+     * 
+     * Returns the resulting updated list of team members
+     */
+    app.post(
+        '/api/external/teams/update-members/:teamId',
+        passport.authenticate('apiKey', { session: false }),
+        updateTeamMembers,
     );
 };
 
@@ -83,7 +98,7 @@ function addTeamMember(req, res) {
             });
         })
         .catch(error => {
-            console.log('ERROR', error);
+            console.log('addTeamMember', error);
 
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
@@ -103,10 +118,28 @@ function removeTeamMember(req, res) {
             });
         })
         .catch(error => {
-            console.log('ERROR', error);
+            console.log('removeTeamMember', error);
 
             return res.status(status.INTERNAL_SERVER_ERROR).send({
                 status: 'error'
             });
         });
+}
+
+function updateTeamMembers(req, res) {
+    const { teamId } = req.params;
+    const { members } = req.body;
+
+    return TeamController.updateMembers(members).then((newMembers) => {
+        return res.status(status.OK).send({
+            status: 'success',
+            data: newMembers
+        });
+    }).catch(error => {
+        console.log('updateTeamMembers', error);
+
+        return res.status(status.INTERNAL_SERVER_ERROR).send({
+            status: 'error'
+        });
+    });
 }

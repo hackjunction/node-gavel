@@ -122,6 +122,34 @@ const TeamController = {
         return Team.findByIdAndUpdate(teamId, { $pull: { members: { $in: objectIds } } }, { new: true });
     },
 
+    updateMembers: (newMembers, teamId) => {
+        return TeamController.getByIdPopulated(teamId).then(team => {
+
+            return Promise.each(newMembers, (member) => {
+
+                if (member.hasOwnProperty('email') && member.hasOwnProperty('name')) {
+                    if (member.hasOwnProperty('_id')) {
+                        const pullIds = _.filter(team.members, (m) => {
+                            return m.email && member.email && m._id.toString() !== member._id;
+                        });
+
+                        return TeamController.findByIdAndUpdate(teamId, {
+                            members: {
+                                $pull: pullIds
+                            }
+                        });
+                    } else {
+                        return TeamController.createMember(name, email, teamId);
+                    }
+                } else {
+                    return Promise.resolve();
+                }
+            }).then(() => {
+                return TeamController.getMembersById(teamId);
+            })
+        });
+    },
+
     getMembersById: (teamId, includeSecret = false) => {
         return Team.findById(teamId)
             .lean()
