@@ -92,7 +92,7 @@ class ImageInput extends Component {
     renderEmpty() {
         return (
             <div className="ImageInput--Image">
-                <img src="https://placehold.it/1920x1080" />
+                <img src={require('../../../assets/default_img.png')} />
                 <div className="ImageInput--Image_overlay">
                     {this.renderButton('Choose Image')}
                 </div>

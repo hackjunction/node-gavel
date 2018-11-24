@@ -118,12 +118,12 @@
 }
 
 .TrackWinner--Block_Track {
-    background: rgba($turquoise, 0.7);
+    background: rgba($snow, 0.05);
     padding: $base-margin;
 }
 
 .TrackWinner--Block_Track-name {
-    color: $black;
+    color: $turquoise;
     margin: 0;
 }  
 
@@ -143,6 +143,17 @@
     color: $spring-green;
     text-decoration: underline;
 }  
+
+.TrackWinner--Block_image {
+    width: 100%;
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+
+    @include up-to-tablet {
+        height: 200px;
+    }
+}
 
 .FinalistVote--TrackWinners-Loading {
     padding: $double-margin;

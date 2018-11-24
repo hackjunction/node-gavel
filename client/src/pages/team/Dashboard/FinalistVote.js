@@ -135,11 +135,13 @@ class FinalistVote extends Component {
 
         if (!winnersLoading && winners) {
             const blocks = _.map(winners, (item) => {
+                const bg = item.image ? item.image : require('../../../assets/default_img.png');
                 return (
                     <div key={item.track._id} className="TrackWinner--Block">
                         <div className="TrackWinner--Block_Track">
                             <h4 className="TrackWinner--Block_Track-name">{item.track.name}</h4>
                         </div>
+                        <div className="TrackWinner--Block_image" style={{ backgroundImage: 'url(' + bg + ')' }}></div>
                         <div className="TrackWinner--Block_Project">
                             <h4 className="TrackWinner--Block_Project-name">{item.winner.name}</h4>
                             <p className="TrackWinner--Block_Project-punchline">{item.winner.punchline}</p>

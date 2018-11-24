@@ -114,18 +114,25 @@ class ChallengePage extends Component {
     renderProjects() {
         const projects = _.sortBy(this.state.projects, 'name');
         return _.map(projects, (p, index) => {
+            const bg = p.image ? p.image : require('../../../assets/default_img.png');
             return (
                 <div className="ChallengePage--Project">
-                    <h4 className="ChallengePage--Project-name">#{index + 1} - {p.name}</h4>
-                    <p className="ChallengePage--Project-punchline">
-                        <em>{p.punchline}</em>
-                    </p>
-                    <p className="ChallengePage--Project-location">
-                        <strong>Table:</strong> {p.location}
-                    </p>
-                    <p className="ChallengePage--Project-contactPhone">
-                        <strong>Phone number:</strong> <a href={'tel:' + p.contactPhone}>{p.contactPhone}</a>
-                    </p>
+                    <div className="ChallengePage--Project_left">
+                        <div className="ChallengePage--Project_image" style={{ backgroundImage: 'url(' + bg + ')' }} />
+                    </div>
+                    <div className="ChallengePage--Project_right">
+                        <h4 className="ChallengePage--Project-name">#{index + 1} - {p.name}</h4>
+                        <p className="ChallengePage--Project-punchline">
+                            <em>{p.punchline}</em>
+                        </p>
+                        <p className="ChallengePage--Project-location">
+                            <strong>Table:</strong> {p.location}
+                        </p>
+                        <p className="ChallengePage--Project-contactPhone">
+                            <strong>Phone number:</strong> <a href={'tel:' + p.contactPhone}>{p.contactPhone}</a>
+                        </p>
+                        {p.demo ? <a target="_blank" href={p.demo}>Demo</a> : null}
+                    </div>
                 </div>
             );
         });
