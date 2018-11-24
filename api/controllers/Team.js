@@ -145,7 +145,7 @@ const TeamController = {
                     return TeamController.createMember(member.name, member.email, teamId);
                 }
             }).then(() => {
-                return TeamController.getMembersById(teamId);
+                return TeamController.getMembersById(teamId, true);
             })
         });
     },
