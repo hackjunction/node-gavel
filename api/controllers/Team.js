@@ -1,5 +1,6 @@
 const Promise = require('bluebird');
 const _ = require('lodash');
+const Joi = require('joi');
 const { Team, validate } = require('../models/Team');
 const AnnotatorController = require('./Annotator');
 const EmailService = require('../services/email');
@@ -126,23 +127,18 @@ const TeamController = {
         return TeamController.getByIdPopulated(teamId).then(team => {
 
             return Promise.each(newMembers, (member) => {
+                if (member.hasOwnProperty('_id')) {
+                    const pullIds = _.filter(team.members, (m) => {
+                        return m.email === member.email && m._id.toString() !== member._id;
+                    });
 
-                if (member.hasOwnProperty('email') && member.hasOwnProperty('name')) {
-                    if (member.hasOwnProperty('_id')) {
-                        const pullIds = _.filter(team.members, (m) => {
-                            return m.email && member.email && m._id.toString() !== member._id;
-                        });
-
-                        return TeamController.findByIdAndUpdate(teamId, {
-                            members: {
-                                $pull: pullIds
-                            }
-                        });
-                    } else {
-                        return TeamController.createMember(name, email, teamId);
-                    }
+                    return TeamController.findByIdAndUpdate(teamId, {
+                        members: {
+                            $pull: pullIds
+                        }
+                    });
                 } else {
-                    return Promise.resolve();
+                    return TeamController.createMember(member.name, member.email, teamId);
                 }
             }).then(() => {
                 return TeamController.getMembersById(teamId);

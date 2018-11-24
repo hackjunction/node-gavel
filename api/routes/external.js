@@ -130,15 +130,28 @@ function updateTeamMembers(req, res) {
     const { teamId } = req.params;
     const { members } = req.body;
 
-    return TeamController.updateMembers(members).then((newMembers) => {
-        return res.status(status.OK).send({
-            status: 'success',
-            data: newMembers
+    const schema = Joi.object.keys({
+        name: Joi.string().required(),
+        email: Joi.string().required(),
+        _id: Joi.string().optional()
+    }, { allowUnknown: false })
+
+    return schema.validate(members).then((validatedMembers) => {
+        return TeamController.updateMembers(members).then((newMembers) => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data: newMembers
+            });
+        }).catch(error => {
+            console.log('updateTeamMembers', error);
+
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
         });
     }).catch(error => {
-        console.log('updateTeamMembers', error);
-
-        return res.status(status.INTERNAL_SERVER_ERROR).send({
+        console.log('BAD REQUEST, updateTeamMembers', error);
+        return res.status(status.BAD_REQUEST).send({
             status: 'error'
         });
     });
