@@ -38,18 +38,19 @@ const ChallengeWinners = mongoose.model('ChallengeWinners', ChallengeWinnersSche
 /** Validates decision
  */
 const validate = function (decision) {
+
 	const schema = Joi.object().keys({
 		_id: Joi.string().optional(),
 		challenge: Joi.string().required(),
 		event: Joi.string().required(),
 		first: Joi.string().required(),
-		second: Joi.string().optional(),
-		third: Joi.string().optional(),
-		comments: Joi.string().optional(),
+		second: Joi.string().optional().allow(null),
+		third: Joi.string().optional().allow(null),
+		comments: Joi.string().optional().allow(''),
 		updated: Joi.date().optional()
 	});
 
-	return schema.validate(decision);
+	return schema.validate(decision, { stripUnknown: true });
 };
 
 module.exports = {
