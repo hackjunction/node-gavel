@@ -19,7 +19,7 @@ class ProjectBlock extends Component {
                     <p className="Vote--Project_header-name">{project.name}</p>
                     <p className="Vote--Project_location">{project.location}</p>
                 </div>
-                <p className="Vote--Project_description">{project.description.slice(0, 100)}</p>
+                <p className="Vote--Project_description">{project.punchline}</p>
                 {isCurrent ? (
                     <span className="Vote--Project_skip" onClick={!parentLoading ? this.props.onSkip : null}>
                         I can't find this project
