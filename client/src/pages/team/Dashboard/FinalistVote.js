@@ -151,7 +151,6 @@ class FinalistVote extends Component {
                             <p className="TrackWinner--Block_Project-punchline">{item.winner.punchline}</p>
                             {item.winner.demo ? <a target="_blank" className="TrackWinner--Block_Project-demo" href={item.winner.demo}>Demo</a> : null}
                             {' '}
-                            {item.winner.source ? <a target="_blank" className="TrackWinner--Block_Project-demo" href={item.winner.source}>Source</a> : null}
                         </div>
                     </div>
                 );
