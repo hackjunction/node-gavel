@@ -96,7 +96,9 @@ const mapStateToProps = state => ({
     submissionLoading: user.isSubmissionLoading(state),
     eventLoading: user.isEventLoading(state),
     user: user.getUser(state),
-    event: user.getEvent(state)
+    event: user.getEvent(state),
+    getNowInEventTime: user.getNowInEventTime(state),
+    getSubmissionDeadline: user.getSubmissionDeadline(state),
 });
 
 const mapDispatchToProps = dispatch => ({

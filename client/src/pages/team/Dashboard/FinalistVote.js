@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import shuffleSeed from 'shuffle-seed';
 
 import Form from '../../../components/forms/Form';
 import BannerManager from '../../../components/BannerManager';
@@ -77,8 +78,12 @@ class FinalistVote extends Component {
         });
     }
 
+    getWinners() {
+        return shuffleSeed.shuffle(this.state.winners, this.props.user._id);
+    }
+
     generateWinnerChoices() {
-        return _.map(this.state.winners, (w) => {
+        return _.map(this.getWinners(), (w) => {
             return {
                 label: w.winner.name,
                 value: w.winner._id
@@ -129,12 +134,11 @@ class FinalistVote extends Component {
     }
 
     renderTrackWinners() {
-        const { event } = this.props;
+        const { event, user } = this.props;
         const { winners, winnersLoading } = this.state;
 
-
         if (!winnersLoading && winners) {
-            const blocks = _.map(winners, (item) => {
+            const blocks = _.map(this.getWinners(), (item) => {
                 const bg = item.image ? item.image : require('../../../assets/default_img.png');
                 return (
                     <div key={item.track._id} className="TrackWinner--Block">
@@ -146,6 +150,8 @@ class FinalistVote extends Component {
                             <h4 className="TrackWinner--Block_Project-name">{item.winner.name}</h4>
                             <p className="TrackWinner--Block_Project-punchline">{item.winner.punchline}</p>
                             {item.winner.demo ? <a target="_blank" className="TrackWinner--Block_Project-demo" href={item.winner.demo}>Demo</a> : null}
+                            {' '}
+                            {item.winner.source ? <a target="_blank" className="TrackWinner--Block_Project-demo" href={item.winner.source}>Source</a> : null}
                         </div>
                     </div>
                 );
@@ -199,7 +205,6 @@ class FinalistVote extends Component {
     }
 
     render() {
-        console.log(this.props.user);
         return (
             <div className="FinalistVote">
                 <h4>Finals</h4>
