@@ -87,14 +87,18 @@ class ChallengesTab extends Component {
             const winnerData = _.find(this.state.winners, w => {
                 return w.challenge === challenge;
             });
+
+            const first = winnerData ? _.find(projects, p => p._id === winnerData.first) : null;
+            const second = winnerData ? _.find(projects, p => p._id === winnerData.second) : null;
+            const third = winnerData ? _.find(projects, p => p._id === winnerData.third) : null;
             result.push({
                 challenge: data ? data.challenge.name : '',
                 partner: data ? data.challenge.partner : '',
                 projects,
                 link: data ? this.getLink(data.secret) : null,
-                first: winnerData ? _.find(projects, p => p._id === winnerData.first).name : 'None',
-                second: winnerData ? _.find(projects, p => p._id === winnerData.second).name : 'None',
-                third: winnerData ? _.find(projects, p => p._id === winnerData.third).name : 'None',
+                first: first ? first.name : 'None',
+                second: second ? second.name : 'None',
+                third: third ? third.name : 'None',
                 comments: winnerData ? winnerData.comments : '',
             });
         });
