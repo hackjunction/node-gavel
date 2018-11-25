@@ -5,6 +5,8 @@ import './style.scss';
 
 import BannerManager from '../../../components/BannerManager';
 
+import ProjectRow from './ProjectRow';
+
 import API from '../../../services/api';
 import Utils from '../../../services/utils';
 import Form from '../../../components/forms/Form';
@@ -114,27 +116,7 @@ class ChallengePage extends Component {
     renderProjects() {
         const projects = _.sortBy(this.state.projects, 'name');
         return _.map(projects, (p, index) => {
-            const bg = p.image ? p.image : require('../../../assets/default_img.png');
-            return (
-                <div className="ChallengePage--Project">
-                    <div className="ChallengePage--Project_left">
-                        <div className="ChallengePage--Project_image" style={{ backgroundImage: 'url(' + bg + ')' }} />
-                    </div>
-                    <div className="ChallengePage--Project_right">
-                        <h4 className="ChallengePage--Project-name">#{index + 1} - {p.name}</h4>
-                        <p className="ChallengePage--Project-punchline">
-                            <em>{p.punchline}</em>
-                        </p>
-                        <p className="ChallengePage--Project-location">
-                            <strong>Table:</strong> {p.location}
-                        </p>
-                        <p className="ChallengePage--Project-contactPhone">
-                            <strong>Phone number:</strong> <a href={'tel:' + p.contactPhone}>{p.contactPhone}</a>
-                        </p>
-                        {p.demo ? <a target="_blank" href={p.demo}>Demo</a> : null}
-                    </div>
-                </div>
-            );
+            return <ProjectRow index={index} project={p} />
         });
     }
 

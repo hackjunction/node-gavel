@@ -81,7 +81,6 @@
     width: 200px;
     background-size: cover;
     background-position: center;
-    background-image: url('/static/media/default_img.png');
     height: 100%;
 }
 
@@ -95,4 +94,9 @@
 
 .ChallengePage--Form {
     margin-top: 50px;
+}
+
+.ChallengePage--Project-toggle-desc {
+    color: $turquoise;
+    cursor: pointer;
 }
