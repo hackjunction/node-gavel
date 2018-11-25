@@ -99,7 +99,7 @@ class FinalistVote extends Component {
         return (
             <div className="FinalistVote--VoteForm">
                 <h4 className="FinalistVote--VoteForm_title">
-                    {isOpen ? 'Submit your vote' : 'Finalist voting is closed'}
+                    {isOpen ? 'Submit your vote' : 'Finalist voting is not currently open'}
                 </h4>
                 {isOpen ? (
                     <Form
@@ -139,7 +139,7 @@ class FinalistVote extends Component {
 
         if (!winnersLoading && winners) {
             const blocks = _.map(this.getWinners(), (item) => {
-                const bg = item.image ? item.image : require('../../../assets/default_img.png');
+                const bg = item.winner.image ? item.winner.image : require('../../../assets/default_img.png');
                 return (
                     <div key={item.track._id} className="TrackWinner--Block">
                         <div className="TrackWinner--Block_Track">
@@ -191,7 +191,7 @@ class FinalistVote extends Component {
                     ) : (
                             <div>
                                 <h4>Track Winners</h4>
-                                <p><strong>Track winners</strong> You'll see the winner of each track below, as decided by you and your peers.
+                                <p>You'll see the winner of each track below, as decided by you and your peers.
                                 Voting for the Main Prize winner will be opened here soon, after all track winners have pitched their project.
                         </p>
 
