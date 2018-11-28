@@ -91,7 +91,7 @@ class AdminEventDetail extends Component {
     }
 
     renderResults() {
-        const { getProjects, isProjectsLoading, isProjectsError, getEvent, updateProjects, adminToken } = this.props;
+        const { getProjects, isProjectsLoading, isProjectsError, getEvent, updateProjects, adminToken, getAnnotators } = this.props;
         const { eventId } = this.state;
 
         const event = getEvent(eventId);
@@ -104,6 +104,7 @@ class AdminEventDetail extends Component {
         return (
             <ProjectsTab
                 projects={getProjects(eventId)}
+                annotators={getAnnotators(eventId)}
                 loading={loading}
                 eventId={eventId}
                 event={event}

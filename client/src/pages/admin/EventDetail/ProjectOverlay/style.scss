@@ -1,0 +1,94 @@
+@import "../../../../styles/base.scss";
+
+.ProjectOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    background: rgba($black, 0.8);
+    padding: 50px 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+	justify-content: flex-start;
+	overflow-y: scroll;
+
+}
+
+.ProjectOverlay_close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: $base-margin;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+
+    span,
+    i {
+      color: $snow;  
+    }
+
+    span {
+        margin-right: $base-margin;
+    }
+}
+
+.ProjectOverlay_content {
+    background: $snow;
+	flex: 1;
+	max-width: 600px;
+}
+
+.ProjectOverlay_image {
+	width: 100%;
+}
+
+.ProjectOverlay_inner {
+	padding: $base-margin;
+	border-top: 1px solid rgba($black, 0.2);
+}
+
+.ProjectOverlay_title {
+	color: $black;
+}
+
+.ProjectOverlay_punchline {
+	color: $black;
+	font-style: italic;
+}
+
+.ProjectOverlay_description {
+	color: $black;
+}
+
+.ProjectOverlay_link {
+	text-decoration: none;
+	color: $black;
+	padding: $base-margin $double-margin;
+
+	span {
+		color: $black;
+		margin-left: $base-margin;
+	}
+
+	&:hover {
+		text-decoration: none;
+		color: $turquoise;
+
+		span {
+			color: $turquoise;
+		}
+	}
+}
+
+.ProjectOverlay_challenge {
+	color: $black;
+}
+
+.ProjectOverlay_teamMember {
+	color: $black;
+}

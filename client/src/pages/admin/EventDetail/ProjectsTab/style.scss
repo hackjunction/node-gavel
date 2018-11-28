@@ -40,3 +40,10 @@
     flex-direction: row;
     align-items: center;
 }
+
+.ProjectsTable--Details {
+    color: $turquoise;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+}

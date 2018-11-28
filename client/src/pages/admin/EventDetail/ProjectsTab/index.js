@@ -11,6 +11,7 @@ import 'react-table/react-table.css';
 import './style.scss';
 
 import ProjectsTable from './ProjectsTable';
+import ProjectOverlay from '../ProjectOverlay';
 
 class ProjectsTab extends Component {
     static propTypes = {
@@ -25,11 +26,13 @@ class ProjectsTab extends Component {
         super(props);
 
         this.state = {
-            filter: ''
+            filter: '',
+            activeProject: null,
         };
 
         this.toggleActive = this.toggleActive.bind(this);
         this.togglePrioritised = this.togglePrioritised.bind(this);
+        this.onSelect = this.onSelect.bind(this);
     }
 
     toggleActive(project) {
@@ -48,6 +51,12 @@ class ProjectsTab extends Component {
         } else {
             prioritiseProject(adminToken, project, eventId);
         }
+    }
+
+    onSelect(project) {
+        this.setState({
+            activeProject: project
+        });
     }
 
     filter(projects) {
@@ -90,15 +99,28 @@ class ProjectsTab extends Component {
                     projects={track.projects}
                     onToggleActive={this.toggleActive}
                     onTogglePrioritised={this.togglePrioritised}
+                    onSelect={this.onSelect}
                     hideFilter={this.state.filter.length > 0}
                 />
             );
         });
     }
 
+    renderActive() {
+        return (
+            <ProjectOverlay
+                project={this.state.activeProject}
+                event={this.props.event}
+                annotators={this.props.annotators}
+                onClose={() => this.setState({ activeProject: null })}
+            />
+        );
+    }
+
     render() {
         return (
             <React.Fragment>
+                {this.state.activeProject ? this.renderActive() : null}
                 <div className={`EventDetail--TabHeader ${this.props.loading ? ' loading' : ' '}`}>
                     <input
                         className="EventDetail--input"

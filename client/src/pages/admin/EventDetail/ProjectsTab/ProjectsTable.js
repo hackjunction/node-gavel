@@ -127,6 +127,14 @@ class ProjectsTable extends Component {
                                     />
                                 ),
                                 className: 'center'
+                            },
+                            {
+                                Header: 'Details',
+                                id: 'details',
+                                Cell: row => (
+                                    <span className="ProjectsTable--Details" onClick={() => this.props.onSelect(row.original)}>Details</span>
+                                ),
+                                className: 'center',
                             }
                         ]}
                         defaultPageSize={5}
