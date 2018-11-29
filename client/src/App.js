@@ -9,6 +9,7 @@ import NotFound from './pages/NotFound';
 
 import Login from './pages/public/Login';
 import HomePage from './pages/public/Home';
+import ProjectsPage from './pages/public/Projects';
 import ChallengePage from './pages/public/ChallengePage';
 import Test from './pages/public/Test';
 
@@ -29,7 +30,8 @@ class App extends Component {
         return (
             <Switch>
                 {/* TODO: (Low priority) Public front page */}
-                <DefaultLayout exact path="/" component={HomePage} />
+                <DefaultLayout exact path="/" component={HomePage} headerImage={require('./assets/header_img.jpg')} />
+                <DefaultLayout path="/projects/:slug" component={ProjectsPage} headerImage={require('./assets/default_img.png')} />
                 {/* Public Routes */}
                 <DefaultLayout exact path="/login/:secret" component={Login} headerSubtitle="Login" />
                 <DefaultLayout exact path="/admin/login" component={AdminLogin} headerSubtitle="Login" />

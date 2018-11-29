@@ -20,6 +20,12 @@ module.exports = function (app) {
     app.get('/api/events', passport.authenticate('admin', { session: false }), getAllEvents);
 
     /**
+     * Get all events, with public info only
+     */
+    app.get('/api/events/public', getAllEventsPublic);
+
+
+    /**
      * Get an event by id
      * -> Requires admin token
      */
@@ -141,6 +147,21 @@ function getAllEvents(req, res) {
                 status: 'error'
             });
         });
+}
+
+function getAllEventsPublic(req, res) {
+    EventController.getAllPublic()
+        .then(data => {
+            console.log('DATA', data);
+            return res.status(status.OK).send({
+                status: 'success',
+                data
+            });
+        }).catch(error => {
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        })
 }
 
 function getEventWithId(req, res) {

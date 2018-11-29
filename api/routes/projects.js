@@ -12,6 +12,13 @@ module.exports = function (app) {
      */
     app.get('/api/projects/event/:eventId', passport.authenticate('admin', { session: false }), getProjectsForEvent);
 
+
+    /**
+     * Get all projects for an event (only public details)
+     * -> No auth required
+     */
+    app.get('/api/projects/event/public/:eventId', getProjectsForEventPublic);
+
     /**
      * Get a project by id
      * -> Requires admin token
@@ -136,6 +143,22 @@ function getProjectsForEvent(req, res) {
                 status: 'error'
             });
         });
+}
+
+function getProjectsForEventPublic(req, res) {
+    ProjectController.getByEventPublic(req.params.eventId)
+        .then(projects => {
+            return res.status(status.OK).send({
+                status: 'success',
+                data: projects
+            })
+        })
+        .catch(error => {
+            console.log('getProjectsForEventPublic', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        })
 }
 
 function getProjectsByChallenge(req, res) {

@@ -81,6 +81,17 @@ const ProjectController = {
         return Project.find({ event: eventId }).lean();
     },
 
+    getByEventPublic: eventId => {
+        return ProjectController.getByEvent(eventId).then(projects => {
+
+            return _.map(projects, (project) => {
+                return ProjectController.removeNonPublicFields(project);
+            })
+        }).then((projects) => {
+            return ProjectController.appendRankings(projects);
+        });
+    },
+
     getById: projectId => {
         return Project.findById(projectId).lean();
     },
@@ -187,6 +198,35 @@ const ProjectController = {
                 }
             });
         });
+    },
+
+    removeNonPublicFields: project => {
+        return {
+            ...project,
+            source: project.source_public ? project.source : null,
+            team: project.members_public ? project.team : null,
+            contactPhone: null,
+            viewed_by: null,
+            skipped_by: null,
+            sigma_sq: null,
+            active: null,
+            prioritized: null,
+        }
+    },
+
+    appendRankings: projects => {
+        const trackWinners = _.mapValues(_.groupBy(projects, 'track'), (projects) => {
+            return _.map(_.sortBy(projects, (p) => p.mu * -1), '_id').slice(0, 3);
+        });
+
+        const ranked = _.map(projects, p => {
+            const idx = trackWinners[p.track].indexOf(p._id);
+
+            p.trackPos = idx !== -1 ? idx + 1 : 9000;
+            return p;
+        });
+
+        return _.sortBy(ranked, 'trackPos');
     },
 };
 

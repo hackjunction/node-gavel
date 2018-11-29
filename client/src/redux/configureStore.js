@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware } from 'redux';
-import { persistStore, persistReducer, purgeStoredState } from 'redux-persist';
+import { persistStore, persistReducer, purgeStoredState, createMigrate } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage
 import thunk from 'redux-thunk';
 import rootReducer from './rootReducer';
@@ -7,18 +7,17 @@ import rootReducer from './rootReducer';
 
 const persistConfig = {
     key: 'gavel_' + process.env.NODE_ENV,
-    storage
+    version: 0,
+    storage,
+    // migrate: createMigrate(migrations)
 };
-
-// Uncomment to clear stored state on reload
-//purgeStoredState(persistConfig);
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export default () => {
     let store = createStore(
         persistedReducer,
-        //window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
         applyMiddleware(thunk)
     );
     let persistor = persistStore(store);

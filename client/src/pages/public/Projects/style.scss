@@ -1,0 +1,117 @@
+@import "../../../styles/base.scss";
+
+.Projects {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 500px;
+}
+
+.Projects_loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+
+    i {
+        color: $turquoise;
+    }
+}
+
+.Projects_header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &-title {
+        text-align: center;
+    }
+
+    &-separator {
+        height: 2px;
+        width: 200px;
+        background: $turquoise;
+        margin-bottom: $base-margin;
+    }
+}
+
+.Projects_filters {
+    display: flex;
+    flex-direction: row;
+
+    @include up-to-tablet {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+.ProjectsGallery {
+    margin: $base-margin / 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+    margin-bottom: 50px;
+
+    @include up-to-tablet {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include mobile-only {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+.ProjectsGallery--Block {
+    background: black;
+    overflow: hidden;
+    position: relative;
+}
+
+.ProjectsGallery--Block_img-wrapper {
+    width: 100%;
+    height: auto;
+}
+
+.ProjectsGallery--Block_img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.ProjectsGallery--Block_content {
+    padding: $base-margin;
+}
+
+.ProjectsGallery--Header {
+    margin: 5px;
+}
+
+.ProjectsGallery--Block_awards {
+    padding: $base-margin;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(black, 0.4);
+
+    .ProjectsGallery--Block_icon-gold {
+        color: gold;
+    }
+
+    .ProjectsGallery--Block_icon-silver {
+        color: silver;
+    }
+
+    .ProjectsGallery--Block_icon-bronze {
+        color: brown;
+    }
+
+    .ProjectsGallery--Block_rank {
+        font-weight: bold;
+        color: $snow;
+        margin-left: $base-margin;
+        text-shadow: 1px 1px 3px black;
+    }
+}

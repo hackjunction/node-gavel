@@ -1,36 +1,63 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import moment from 'moment-timezone';
+import slugify from 'slugify';
+import _ from 'lodash';
+import Utils from '../../../services/utils';
 import './style.scss';
 
+import * as CommonSelectors from '../../../redux/common/selectors';
+import * as CommonActions from '../../../redux/common/actions';
+
 class Home extends Component {
-    addBanner() {
-        this.bannerManager.addBanner(
-            {
-                type: 'info',
-                text: 'Submissions are open! The submission deadline is Sunday 2pm',
-                canClose: true
-            },
-            Date.now()
-        );
+
+    static propTypes = {
+        events: PropTypes.array,
+        eventsLoading: PropTypes.bool,
+        eventsError: PropTypes.bool,
+    }
+
+    componentDidMount() {
+        this.props.updateEvents();
+    }
+
+    getLink(event) {
+        return '/projects/' + Utils.slugify(event.name);
+    }
+
+    renderEvents() {
+        return _.map(this.props.events, (event) => {
+            return (
+                <div className="Home--event">
+                    <h3 className="Home--event_title">{event.name}<strong>{moment(event.startTime).format('DD.MM.YYYY')} - {moment(event.endTime).format('DD.MM.YYYY')}</strong></h3>
+                    <p className="Home--event_stats">{event.challenges.length} Challenges, {event.tracks.length} Tracks</p>
+                    <a href={this.getLink(event)}>
+                        View submissions
+                    </a>
+                </div>
+            );
+        });
     }
 
     render() {
         return (
             <div className="Home">
-                <img
-                    alt="Junction logo"
-                    className="Home--logo"
-                    src={require('../../../assets/logo_emblem_white.png')}
-                />
-                <h1 className="Home--title">Welcome to the Junction project platform</h1>
-                <p className="Home--body">
-                    When participating at a Junction event, this is where you'll submit your project, and participate in
-                    peer-reviewing. If you haven't already received your personal login link, please register your team
-                    in the registration platform. If you've already done that, you can access your team dashboard via
-                    the registration platform, or by opening your personal login link that we sent you by email.
-                </p>
+                <h1 className="Home--title">Latest events</h1>
+                {this.renderEvents()}
             </div>
         );
     }
 }
 
-export default Home;
+const mapStateToProps = state => ({
+    events: CommonSelectors.getEvents(state),
+    eventsLoading: CommonSelectors.isEventsLoading(state),
+    eventsError: CommonSelectors.isEventsError(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+    updateEvents: () => dispatch(CommonActions.fetchEvents()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

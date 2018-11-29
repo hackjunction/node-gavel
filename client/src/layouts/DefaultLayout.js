@@ -32,6 +32,11 @@ const DefaultLayout = ({ component: Component, ...rest }) => {
                             ) : null}
                         </div>
                     </div>
+                    {rest.headerImage ? (
+                        <div className="Page--Header-image" style={{ backgroundImage: 'url(' + rest.headerImage + ')' }}>
+                            <h1 className="Page--Header-image_title">{rest.headerImageTitle}</h1>
+                        </div>
+                    ) : null}
                     <div className="Page--Content">
                         <Component {...matchProps} />
                     </div>

@@ -1,0 +1,119 @@
+@import "../../../styles/base.scss";
+
+
+$animation-time: 0.4s;
+
+.Filters {
+	position: relative;
+	flex: 1;
+	z-index: 10;
+	margin: $base-margin / 2;
+
+	&:nth-child(1) {
+		z-index: 10;
+	}
+	&:nth-child(2) {
+		z-index: 9;
+	}
+	&:nth-child(3) {
+		z-index: 8;
+	}
+	&:nth-child(4) {
+		z-index: 7;
+	}
+	&:nth-child(5) {
+		z-index: 6;
+	}
+}
+
+.Filters--Header {
+	background: black;
+	border-bottom: 1px solid $turquoise;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	cursor: pointer;
+}
+
+.Filters--Header_label {
+	color: $snow;
+	font-weight: bold;
+	user-select: none;
+	-moz-user-select: none;
+}
+
+.Filters--Header_left {
+	flex: 1;
+	padding: $base-margin;
+}
+
+.Filters--Header_right {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 0 $base-margin;
+}
+
+.Filters--Header_expand {
+	padding: $base-margin;
+	i {
+		color: $turquoise;
+		transition: all $animation-time ease;
+	}
+
+	&.expanded {
+		i {
+			transform: rotateX(180deg);
+		}	
+	}
+}
+
+.Filters--Header_clear {
+	padding: $base-margin;
+	margin-right: $base-margin;
+	display: none;
+
+	i {
+		color: $error-red;
+	}
+
+	&.visible {
+		display: block;
+	}
+}
+
+.Filters--Content {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	background: black;
+	position: absolute;
+	left: 0;
+	right: 0;
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height $animation-time ease;
+
+	&.expanded {
+		max-height: 200px;
+		overflow-y: scroll;
+	}
+}
+
+.Filters--Item {
+	padding: 5px $base-margin;
+	cursor: pointer;
+
+	&_label {
+		color: $snow;
+	}
+
+	&.selected {
+		font-weight: bold;
+		
+		.Filters--Item_label {
+			color: $turquoise;
+		}
+	}
+}

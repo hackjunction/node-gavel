@@ -65,6 +65,14 @@ const EventController = {
         return Event.find({}).lean();
     },
 
+    getAllPublic: () => {
+        return EventController.getAll().then(events => {
+            return _.map(events, e => {
+                return EventController.removeNonPublicFields(e);
+            });
+        })
+    },
+
     getEventWithId: _id => {
         return Event.findById(_id)
             .lean()

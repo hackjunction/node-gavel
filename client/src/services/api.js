@@ -190,6 +190,14 @@ const API = {
         return GET('/api/projects/public/' + projectId);
     },
 
+    getProjectsForEventPublic: eventId => {
+        return GET(`/api/projects/event/public/${eventId}`);
+    },
+
+    getEventsPublic: () => {
+        return GET('/api/events/public');
+    },
+
     /* Requires annotator secret */
 
     updateSubmission: (project, secret) => {
