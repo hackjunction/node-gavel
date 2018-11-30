@@ -48,6 +48,32 @@ class FullProject extends Component {
 		}
 	}
 
+	renderTrackAward() {
+		const { project } = this.props;
+
+		switch (project.trackPos) {
+			case 1: return (
+				<div className="FullProject--Award">
+					<i className="ProjectGridBlock--Award_icon-gold fas fa-award"></i>
+					<span className="ProjectGridBlock--Award_text">1st place</span>
+				</div>
+			);
+			case 2: return (
+				<div className="FullProject--Award">
+					<i className="ProjectGridBlock--Award_icon-silver fas fa-award"></i>
+					<span className="ProjectGridBlock--Award_text">2nd place</span>
+				</div>
+			);
+			case 3: return (
+				<div className="FullProject--Award">
+					<i className="ProjectGridBlock--Award_icon-bronze fas fa-award"></i>
+					<span className="ProjectGridBlock--Award_text">3rd place</span>
+				</div>
+			);
+			default: return null;
+		}
+	}
+
 	renderDemoLink() {
 		const { project } = this.props;
 
@@ -102,6 +128,8 @@ class FullProject extends Component {
 		const { project, event } = this.props;
 		const { teamMembersLoading } = this.state;
 
+		console.log('P', project);
+
 		return (
 			<div className="FullProject">
 				<div className="FullProject--Image_wrapper">
@@ -115,6 +143,7 @@ class FullProject extends Component {
 				<div className="FullProject--Section">
 					<h4 className="FullProject--Section_title"><strong>Track</strong></h4>
 					<p className="FullProject--Section_text">{Utils.getTrackName(project.track, event.tracks)}</p>
+					{this.renderTrackAward()}
 				</div>
 				<div className="FullProject--Section">
 					<h4 className="FullProject--Section_title"><strong>Challenges</strong></h4>
