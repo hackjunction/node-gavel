@@ -7,6 +7,8 @@ import { Redirect } from 'react-router-dom';
 import './style.scss';
 import Utils from '../../../services/utils';
 
+import NotFound from '../../../pages/NotFound';
+
 import FullProject from '../../../components/ProjectBlocks/FullProject';
 import BackLink from '../../../components/BackLink';
 
@@ -72,7 +74,11 @@ class ProjectDetail extends Component {
     render() {
 
         const { slug } = this.props.match.params;
-        const { loading, event, project } = this.state;
+        const { loading, error, event, project } = this.state;
+
+        if (error) {
+            return <NotFound />;
+        }
 
         return (
             <div className="ProjectDetail">

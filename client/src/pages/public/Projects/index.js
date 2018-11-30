@@ -9,6 +9,7 @@ import './style.scss';
 import Utils from '../../../services/utils';
 import Filters from './Filters';
 
+import NotFound from '../../../pages/NotFound';
 import ProjectGridBlock from '../../../components/ProjectBlocks/ProjectGridBlock';
 
 import * as CommonSelectors from '../../../redux/common/selectors';
@@ -106,7 +107,7 @@ class Projects extends Component {
         }
 
         if (!event || isProjectsError(event._id)) {
-            return <Redirect to="/404"></Redirect>
+            return <NotFound />
         }
 
         const projects = this.getFilteredProjects();
