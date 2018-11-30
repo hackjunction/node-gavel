@@ -198,6 +198,10 @@ const API = {
         return GET('/api/events/public');
     },
 
+    getMembersForProject: (projectId) => {
+        return GET(`/api/projects/public/members/${projectId}`);
+    },
+
     /* Requires annotator secret */
 
     updateSubmission: (project, secret) => {

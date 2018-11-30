@@ -63,55 +63,6 @@
     }
 }
 
-.ProjectsGallery--Block {
-    background: black;
-    overflow: hidden;
-    position: relative;
-}
-
-.ProjectsGallery--Block_img-wrapper {
-    width: 100%;
-    height: auto;
-}
-
-.ProjectsGallery--Block_img {
-    display: block;
-    width: 100%;
-    height: auto;
-}
-
-.ProjectsGallery--Block_content {
-    padding: $base-margin;
-}
-
 .ProjectsGallery--Header {
     margin: 5px;
-}
-
-.ProjectsGallery--Block_awards {
-    padding: $base-margin;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: rgba(black, 0.4);
-
-    .ProjectsGallery--Block_icon-gold {
-        color: gold;
-    }
-
-    .ProjectsGallery--Block_icon-silver {
-        color: silver;
-    }
-
-    .ProjectsGallery--Block_icon-bronze {
-        color: brown;
-    }
-
-    .ProjectsGallery--Block_rank {
-        font-weight: bold;
-        color: $snow;
-        margin-left: $base-margin;
-        text-shadow: 1px 1px 3px black;
-    }
 }

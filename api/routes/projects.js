@@ -2,6 +2,7 @@ const ProjectController = require('../controllers/Project');
 const status = require('http-status');
 const passport = require('passport');
 const ChallengeWinnersController = require('../controllers/ChallengeWinners');
+const AnnotatorController = require('../controllers/Annotator');
 const EventController = require('../controllers/Event');
 const Utils = require('../services/utils');
 
@@ -30,6 +31,12 @@ module.exports = function (app) {
      * -> No auth required
      */
     app.get('/api/projects/public/:projectId', getProjectByIdPublic);
+
+    /**
+     * Get members of a project by id (only if public)
+     * -> No auth required
+     */
+    app.get('/api/projects/public/members/:projectId', getProjectMembersByIdPublic);
 
     /**
      * Get all projects with a given challenge (by challenge secret)
@@ -216,6 +223,28 @@ function getProjectByIdPublic(req, res) {
                 status: 'error'
             });
         });
+}
+
+function getProjectMembersByIdPublic(req, res) {
+    ProjectController.getByIdPublic(req.params.projectId)
+        .then(project => {
+            if (project.members_public) {
+                return AnnotatorController.getByTeamPublic(project.team).then(members => {
+                    return res.status(status.OK).send({
+                        status: 'success',
+                        data: members
+                    });
+                })
+            }
+            else {
+                throw new Error('Team members are not public');
+            }
+        }).catch(error => {
+            console.log('ERR', error);
+            return res.status(status.INTERNAL_SERVER_ERROR).send({
+                status: 'error'
+            });
+        })
 }
 
 function prioritizeProject(req, res) {

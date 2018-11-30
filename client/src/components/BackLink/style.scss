@@ -9,6 +9,15 @@
         text-decoration: none;
         opacity: 1;
     }
+
+    &.hide-text-mobile {
+
+        .BackLink--text {
+            @include up-to-tablet {
+                display: none;
+            }
+        }
+    }
 }
 
 .BackLink--arrow {
@@ -19,8 +28,6 @@
     margin-left: $base-margin;
     color: $turquoise;
     font-weight: bold;
-
-    @include up-to-tablet {
-        display: none;
-    }
 }
+
+

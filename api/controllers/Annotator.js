@@ -122,6 +122,14 @@ const AnnotatorController = {
             });
     },
 
+    getByTeamPublic: (teamId) => {
+        return Annotator.find({ team: teamId }).lean().then(annotators => {
+            return _.map(annotators, (a) => {
+                return AnnotatorController.removeNonPublicFields(a);
+            });
+        });
+    },
+
     getByEvent: eventId => {
         return Annotator.find({ event: eventId }).lean();
     },
@@ -157,6 +165,19 @@ const AnnotatorController = {
     setVotedFor: (projectId, annotatorId) => {
         return Annotator.findByIdAndUpdate(annotatorId, { winner_vote: projectId }, { new: true });
     },
+
+    removeNonPublicFields: (annotator) => {
+        return {
+            ...annotator,
+            secret: null,
+            alpha: null,
+            beta: null,
+            winner_vote: null,
+            next: null,
+            prev: null,
+            active: null,
+        };
+    }
 };
 
 module.exports = AnnotatorController;

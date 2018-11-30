@@ -9,6 +9,8 @@ import './style.scss';
 import Utils from '../../../services/utils';
 import Filters from './Filters';
 
+import ProjectGridBlock from '../../../components/ProjectBlocks/ProjectGridBlock';
+
 import * as CommonSelectors from '../../../redux/common/selectors';
 import * as CommonActions from '../../../redux/common/actions';
 
@@ -49,23 +51,11 @@ class Projects extends Component {
                 updateProjects(event._id);
             }
         }).catch((error) => {
-            console.log('ERROR', error);
             this.setState({
                 ready: true,
                 event: null,
             });
         })
-    }
-
-    getCloudinaryDetails(url) {
-        if (!url) return null;
-
-        const parts = url.split('/');
-
-        return {
-            publicId: parts[8],
-            cloudName: parts[3],
-        }
     }
 
     getFilteredProjects() {
@@ -82,68 +72,21 @@ class Projects extends Component {
         return all;
     }
 
-    getTrackName(trackId) {
-        const track = _.find(this.state.event.tracks, (t) => t._id === trackId);
-
-        return track ? track.name : '';
-    }
-
-    renderImage(url) {
-        if (!url) {
-            return (
-                <div className="ProjectsGallery--Block_img-wrapper">
-                    <img src={require('../../../assets/default_img_small.png')} className="ProjectsGallery--Block_img" />
-                </div>
-            );
-        } else {
-            const parts = url.split('/');
-            parts[6] += ',q_auto/w_480';
-
-
-            return (
-                <div className="ProjectsGallery--Block_img-wrapper">
-                    <img src={parts.join('/')} className="ProjectsGallery--Block_img" />
-                </div>
-            );
-        }
-    }
-
-    renderAwards(project) {
-        switch (project.trackPos) {
-            case 1: return (
-                <div className="ProjectsGallery--Block_awards">
-                    <i className="ProjectsGallery--Block_icon-gold fas fa-award"></i>
-                    <span className="ProjectsGallery--Block_rank">1st: {this.getTrackName(project.track)}</span>
-                </div>
-            );
-            case 2: return (
-                <div className="ProjectsGallery--Block_awards">
-                    <i className="ProjectsGallery--Block_icon-silver fas fa-award"></i>
-                    <span className="ProjectsGallery--Block_rank">2nd: {this.getTrackName(project.track)}</span>
-                </div>
-            );
-            case 3: return (
-                <div className="ProjectsGallery--Block_awards">
-                    <i className="ProjectsGallery--Block_icon-bronze fas fa-award"></i>
-                    <span className="ProjectsGallery--Block_rank">3rd: {this.getTrackName(project.track)}</span>
-                </div>
-            );
-            default: return null;
-        }
-    }
-
     renderProjects(projects) {
+
+        const { event } = this.state;
+        const { slug } = this.props.match.params;
 
         return _.map(projects, (p) => {
             return (
-                <div key={p._id} className="ProjectsGallery--Block">
-                    {this.renderImage(p.image)}
-                    <div className="ProjectsGallery--Block_content">
-                        <h4>{p.name}</h4>
-                        <p>{p.punchline}</p>
-                    </div>
-                    {this.renderAwards(p)}
-                </div>
+                <ProjectGridBlock
+                    key={p._id}
+                    project={p}
+                    event={event}
+                    isLink={true}
+                    linkText="View project"
+                    linkTo={`/projects/${slug}/${p._id}`}
+                />
             );
         });
     }

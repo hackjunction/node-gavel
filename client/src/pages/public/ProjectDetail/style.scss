@@ -1,0 +1,17 @@
+@import '../../../styles/base.scss';
+
+.ProjectDetail--Header {
+    padding: $double-margin 0;
+}
+
+.ProjectDetail--Loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $double-margin;
+
+    i {
+        color: $turquoise;
+    }
+}
