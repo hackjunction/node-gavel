@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import moment from 'moment-timezone';
+import Promise from 'bluebird';
+import { CSVLink } from "react-csv";
 import './style.scss';
 
 import BannerManager from '../../../components/BannerManager';
@@ -29,6 +31,8 @@ class ChallengePage extends Component {
             },
             submitLoading: false,
             winnersLoading: true,
+            exportData: null,
+            exportDataLoading: false,
         };
 
         this.submitWinners = this.submitWinners.bind(this);
@@ -68,6 +72,37 @@ class ChallengePage extends Component {
                     winnersLoading: false
                 });
             })
+    }
+
+    buildExportData() {
+        this.setState({
+            exportDataLoading: true,
+        })
+        Promise.map(this.state.projects, project => {
+            return API.getMembersForProject(project._id).then(members => {
+                return {
+                    'Project Name': project.name,
+                    'Punchline': project.punchline,
+                    'Description': project.description,
+                    'Source code': project.source || 'Not available',
+                    'Demo': project.demo || 'Not available',
+                    'Team members': members ? members.map(member => member.name + ',' + member.email).join('\n') : 'Not available',
+                }
+            })
+            // return Promise.resolve(project)
+        }).then(projects => {
+            this.setState({
+                exportData: projects,
+                exportDataLoading: false,
+            })
+        }).catch(error => {
+            console.log('error generating export', error)
+            window.alert('Could not generate .csv, please try again')
+            this.setState({
+                exportData: null,
+                exportDataLoading: false,
+            })
+        })
     }
 
     submitWinners() {
@@ -221,6 +256,34 @@ class ChallengePage extends Component {
         }
     }
 
+    renderExport(filename) {
+        const { exportData, exportDataLoading } = this.state
+
+        if (exportDataLoading) {
+            return (
+                <div className="ChallengePage--export">
+                    <i className="ChallengePage--export__loading fas fas-spinner fa-spin"></i>
+                </div>
+            )
+        }
+
+        if (!exportData) {
+            return (
+                <div className="ChallengePage--export">
+                    <button className="ChallengePage--export__generate" onClick={() => this.buildExportData()}>Generate .csv</button>
+                </div>
+            )
+        }
+
+        return (
+            <div className="ChallengePage--export">
+                <CSVLink data={this.state.exportData} filename={filename + '.csv'}>
+                    Download .csv
+                </CSVLink>
+            </div>
+        )
+    }
+
     render() {
         if (this.state.loading) {
             return (
@@ -248,8 +311,6 @@ class ChallengePage extends Component {
 
         const challenge = _.find(this.state.event.challenges, (c) => c._id === this.state.challengeId);
 
-        console.log('DATA', this.state.winners);
-
         return (
             <div className="ChallengePage">
                 <div className="ChallengePage--top">
@@ -262,6 +323,7 @@ class ChallengePage extends Component {
                         {this.state.projects.length} teams have submitted this challenge:
                     </p>
                 </div>
+                {this.renderExport(challenge.name)}
                 {this.renderProjects()}
                 {this.renderWinnerForm()}
             </div>

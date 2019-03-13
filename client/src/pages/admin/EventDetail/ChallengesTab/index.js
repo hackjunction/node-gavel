@@ -45,12 +45,10 @@ class ChallengesTab extends Component {
     exportData() {
         const state = this.reactTable.getResolvedState();
 
-        console.log('DATA', state);
-
         const exportData = _.map(state.resolvedData, row => {
             const o = _.pick(row, ['challenge', 'partner', 'projects', 'first', 'second', 'third', 'comments']);
 
-            //TODO: don't hardcode this lol xd
+            //TODO: don't hardcode this lol
             o.link = 'https://projects.hackjunction.com/' + row.link;
             return o;
         })
